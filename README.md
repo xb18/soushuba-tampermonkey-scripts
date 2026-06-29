@@ -16,6 +16,7 @@
 | [Ophel](./ophel/README.md) | ![](https://img.shields.io/greasyfork/v/563646?style=flat-square&color=orange&label=V&logo=greasyfork) | 全能 AI 助手，支持 Gemini/ChatGPT/Claude/Grok/AI Studio | ![](https://img.shields.io/greasyfork/dt/563646?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/563646?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/563646-ophel) |
 | [Gemini Helper](./gemini-helper/README.md) | ![](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork) | Gemini 体验增强（大纲、会话管理、宽屏等） | ![](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) |
 | [Coomer 佬友严选](./coomer/README.md) | ![](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork) | OnlyFans/Coomer 体验增强（极简 UI、视频播放器、批量下载） | ![](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
+| [搜书吧免积分下载](./soushu-bypass/README.md) | ![](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square) | 搜书吧附件免积分一键下载（Discuz! 论坛） | ![](https://img.shields.io/badge/INSTALLS-soon-lightgrey?style=flat-square) | ![](https://img.shields.io/badge/RATING-new-lightgrey?style=flat-square) | [Greasy Fork](#) |
 
 ### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
 
@@ -76,6 +77,14 @@
 **最新版本**: v1.0.4
 
 [文档 Docs](./coomer/README.md) | [安装 Install](https://greasyfork.org/zh-CN/scripts/559828-coomer-%E4%BD%AC%E5%8F%8B%E4%B8%A5%E9%80%89)
+
+### ⚡ 搜书吧免积分下载 (Soushu Bypass)
+
+> 搜书吧附件免积分一键下载，省去积分消耗！
+
+**最新版本**: v1.0.0
+
+[文档 Docs](./soushu-bypass/README.md) | [安装 Install](#) _(即将上架)_
 
 ## 🐛 反馈问题
 
