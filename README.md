@@ -13,7 +13,7 @@
 
 | 名称 | 版本 | 简介 | 总安装量 | 评分 | 发布页 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Ophel](./ophel/README.md) | ![](https://img.shields.io/greasyfork/v/563646?style=flat-square&color=orange&label=V&logo=greasyfork) | 全能 AI 助手，支持 Gemini/ChatGPT/Claude/Grok/AI Studio | ![](https://img.shields.io/greasyfork/dt/563646?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/563646?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/563646-ophel) |
+| [Ophel](./ophel/README.md) | ![](https://img.shields.io/greasyfork/v/563646?style=flat-square&color=orange&label=V&logo=greasyfork) | 全能 AI 助手，支持 Gemini/ChatGPT/Claude/Grok/AI Studio/DeepSeek 等15个AI站点 | ![](https://img.shields.io/greasyfork/dt/563646?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/563646?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/563646-ophel) |
 | [Gemini Helper](./gemini-helper/README.md) | ![](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork) | Gemini 体验增强（大纲、会话管理、宽屏等） | ![](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) |
 | [Coomer 佬友严选](./coomer/README.md) | ![](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork) | OnlyFans/Coomer 体验增强（极简 UI、视频播放器、批量下载） | ![](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
 | [搜书吧免积分下载](./soushu-bypass/README.md) | ![](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork) | 搜书吧附件免积分一键下载（Discuz! 论坛） | ![](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
@@ -64,7 +64,7 @@
 |:---:|:---:|:---:|
 | <video src="https://github.com/user-attachments/assets/a40eb655-295e-4f9c-b432-9313c9242c9d" width="280" controls></video> | <video src="https://github.com/user-attachments/assets/a249baeb-2e82-4677-847c-2ff584c3f56b" width="280" controls></video> | <video src="https://github.com/user-attachments/assets/c704463c-1ca9-4ab1-937d-7ce638a4f4bb" width="280" controls></video> |
 
-**最新版本**: v999.0.0
+**最新版本**: v999.0.1
 
 [文档 Docs](./gemini-helper/README.md) | [安装 Install](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) | [路线图 Roadmap](./gemini-helper/TODO.md)
 
