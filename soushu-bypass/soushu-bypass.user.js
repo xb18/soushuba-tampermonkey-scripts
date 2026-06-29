@@ -6,6 +6,7 @@
 // @author       urzeye
 // @include      *://*/*forum.php*
 // @grant        none
+// @license MIT
 // @run-at       document-end
 // ==/UserScript==
 
