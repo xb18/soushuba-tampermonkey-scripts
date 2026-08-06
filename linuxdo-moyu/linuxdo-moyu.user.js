@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.5.0
+// @version      1.6.2
 // @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.5.0';
+	const SCRIPT_VERSION = '1.6.2';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -84,6 +84,7 @@
 		onlyOP: 'KeyR',
 		settingPanel: 'KeyS',
 		excelMode: 'KeyX',
+		hideSidebar: 'KeyH', // Excel 开启时等价于「导航/侧栏」开关
 	};
 
 	// Excel 主题资源（移植自 NGA-BBS-Script，MIT）
@@ -233,6 +234,115 @@
 			item.classList.remove('show');
 			setTimeout(() => item.remove(), 250);
 		}, ms);
+	}
+
+	function escHtml(s) {
+		return String(s ?? '').replace(/[&<>"']/g, (c) =>
+			({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+		);
+	}
+
+	/** 备注标签国风色板：{bg 背景色, fg 建议文字色} */
+	const MARK_COLORS = [
+		{ bg: '#9E3E4F', fg: '#FFFFFF' }, // 胭脂
+		{ bg: '#C45A4C', fg: '#FFFFFF' }, // 朱砂
+		{ bg: '#D87A7A', fg: '#333333' }, // 海棠
+		{ bg: '#F2D0D0', fg: '#333333' }, // 桃夭
+		{ bg: '#6E9BB8', fg: '#FFFFFF' }, // 天青
+		{ bg: '#3E5266', fg: '#FFFFFF' }, // 黛蓝
+		{ bg: '#DCE4EC', fg: '#333333' }, // 月白
+		{ bg: '#A8B5C0', fg: '#333333' }, // 苍色
+		{ bg: '#4A8C7C', fg: '#FFFFFF' }, // 石绿
+		{ bg: '#B8CCB8', fg: '#333333' }, // 竹青
+		{ bg: '#D4D4A8', fg: '#333333' }, // 松花
+		{ bg: '#C87A3E', fg: '#FFFFFF' }, // 琥珀
+		{ bg: '#8C5C4A', fg: '#FFFFFF' }, // 檀棕
+		{ bg: '#D9B382', fg: '#333333' }, // 黄栌
+		{ bg: '#F2DC9E', fg: '#333333' }, // 缃色
+		{ bg: '#C9B37E', fg: '#333333' }, // 秋香
+		{ bg: '#D1B8D1', fg: '#333333' }, // 藕荷
+		{ bg: '#D0C0D8', fg: '#333333' }, // 丁香
+		{ bg: '#38464F', fg: '#FFFFFF' }, // 鸦青
+		{ bg: '#F5EDE0', fg: '#333333' }, // 瓷白
+	];
+	function randomMarkColor() {
+		const c = MARK_COLORS[Math.floor(Math.random() * MARK_COLORS.length)];
+		return c ? c.bg : '#6E9BB8';
+	}
+	/** 根据背景色取可读文字色（浅底深字/深底白字） */
+	function contrastFg(bg) {
+		const hex = String(bg || '').replace('#', '');
+		if (hex.length < 6) return '#333333';
+		const r = parseInt(hex.slice(0, 2), 16);
+		const g = parseInt(hex.slice(2, 4), 16);
+		const b = parseInt(hex.slice(4, 6), 16);
+		const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+		return lum > 0.6 ? '#333333' : '#FFFFFF';
+	}
+	/** 色板内颜色返回建议文字色，自定义颜色按亮度推算 */
+	function markFgFor(bg) {
+		const hit = MARK_COLORS.find((c) => c.bg.toUpperCase() === String(bg || '').toUpperCase());
+		return hit ? hit.fg : contrastFg(bg);
+	}
+
+	/** 自定义输入对话框（替代原生 prompt/alert） */
+	function promptDialog({ title = '', fields = [], okText = '确定' } = {}) {
+		return new Promise((resolve) => {
+			$(`#${PREFIX}-dialog`)?.remove();
+			const dlg = document.createElement('div');
+			dlg.id = `${PREFIX}-dialog`;
+			dlg.innerHTML = `
+        <div class="${PREFIX}-dialog-card">
+          <h4 class="${PREFIX}-dialog-title">${escHtml(title)}</h4>
+          ${fields
+						.map(
+							(f) => `
+            <label>${escHtml(f.label || '')}
+              <input type="${f.type === 'color' ? 'color' : 'text'}" data-k="${escHtml(f.key)}"
+                value="${escHtml(f.value ?? '')}" placeholder="${escHtml(f.placeholder || '')}" ${f.type === 'color' ? 'title="选择颜色"' : ''} />
+            </label>`
+						)
+						.join('')}
+          <div class="${PREFIX}-dialog-actions">
+            <button type="button" class="${PREFIX}-btn" data-act="cancel">取消</button>
+            <button type="button" class="${PREFIX}-btn primary" data-act="ok">${escHtml(okText)}</button>
+          </div>
+        </div>`;
+			dlg.addEventListener('pointerdown', (e) => {
+				if (e.target === dlg) {
+					resolve(null);
+					dlg.remove();
+				}
+			});
+			dlg.addEventListener('click', (e) => {
+				const act = e.target.closest?.('[data-act]')?.getAttribute('data-act');
+				if (!act) return;
+				if (act === 'cancel') {
+					resolve(null);
+					dlg.remove();
+					return;
+				}
+				const out = {};
+				dlg.querySelectorAll('[data-k]').forEach((el) => {
+					out[el.getAttribute('data-k')] = el.value;
+				});
+				resolve(out);
+				dlg.remove();
+			});
+			dlg.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					dlg.querySelector('[data-act="ok"]')?.click();
+				}
+				if (e.key === 'Escape') {
+					resolve(null);
+					dlg.remove();
+				}
+			});
+			document.body.appendChild(dlg);
+			const first = dlg.querySelector('input[type="text"]');
+			if (first) first.focus();
+		});
 	}
 
 	function downloadText(filename, text) {
@@ -495,6 +605,102 @@ body.${PREFIX}-fab-left #${PREFIX}-fab {
   box-shadow: 0 4px 12px rgba(0,0,0,.2);
 }
 .${PREFIX}-toast.show { opacity: 1; transform: translateY(0); }
+
+/* 自定义输入对话框（替代 prompt/confirm） */
+#${PREFIX}-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 100010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.35);
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-card {
+  background: var(--secondary, #fff);
+  border-radius: 10px;
+  padding: 18px 20px;
+  min-width: 320px;
+  max-width: 440px;
+  box-shadow: 0 10px 36px rgba(0,0,0,.25);
+  animation: ${PREFIX}-zoom .15s ease;
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary, #222);
+}
+#${PREFIX}-dialog label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 13px;
+  color: var(--primary, #333);
+  white-space: nowrap;
+}
+#${PREFIX}-dialog input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--primary-low, #ddd);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--primary, #222);
+  background: var(--secondary, #fff);
+  outline: none;
+}
+#${PREFIX}-dialog input[type="text"]:focus {
+  border-color: var(--tertiary, #08c);
+  box-shadow: 0 0 0 2px rgba(8, 140, 204, .15);
+}
+#${PREFIX}-dialog input[type="color"] {
+  width: 48px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--primary-low, #ddd);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-actions .${PREFIX}-btn {
+  min-width: 76px;
+  padding: 7px 18px;
+  font-size: 13px;
+  line-height: 1.4;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--primary-low-mid, #d0d0d0);
+  background: var(--secondary, #fff);
+  color: var(--primary, #555);
+  box-shadow: none;
+  transition: background .15s ease, border-color .15s ease, filter .15s ease;
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-actions .${PREFIX}-btn:hover {
+  border-color: var(--primary-mid, #aaa);
+  background: var(--primary-low, #f2f2f2);
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-actions .${PREFIX}-btn:active {
+  transform: translateY(1px);
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-actions .${PREFIX}-btn.primary {
+  background: var(--tertiary, #08c);
+  border-color: var(--tertiary, #08c);
+  color: #fff;
+  font-weight: 600;
+}
+#${PREFIX}-dialog .${PREFIX}-dialog-actions .${PREFIX}-btn.primary:hover {
+  background: var(--tertiary-hover, #0a7ec8);
+  border-color: var(--tertiary-hover, #0a7ec8);
+  filter: brightness(1.05);
+}
 
 /* settings modal */
 #${PREFIX}-overlay {
@@ -1075,6 +1281,15 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
   width: 88px;
   padding-right: 6px;
 }
+/* 互斥设置：Excel 开启时置灰 */
+#${PREFIX}-panel label.${PREFIX}-exclusive-off {
+  opacity: 0.45;
+  transition: opacity .15s ease;
+}
+#${PREFIX}-panel label.${PREFIX}-exclusive-off input,
+#${PREFIX}-panel label.${PREFIX}-exclusive-off select {
+  pointer-events: none;
+}
 .${PREFIX}-user-actions {
   display: inline-flex;
   gap: 4px;
@@ -1623,10 +1838,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .breadcrumbs,
 body.${PREFIX}-excel.${PREFIX}-excel-hide-nav #navigation-bar,
 body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .nav-pills,
 body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .topic-category,
-body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .badge-category__wrapper,
-body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .discourse-tags,
-body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .topic-list .link-bottom-line,
-body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .topic-list .discourse-tag,
 body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .sidebar-wrapper,
 body.${PREFIX}-excel.${PREFIX}-excel-hide-nav #d-sidebar,
 body.${PREFIX}-excel.${PREFIX}-excel-hide-nav .sidebar-container,
@@ -3246,6 +3457,30 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					el.value = source[key] ?? '';
 				}
 			});
+			this.syncExclusiveUI();
+		}
+
+		/** 互斥项联动：Excel 开启时禁用并提示被接管的设置 */
+		syncExclusiveUI() {
+			const panel = $(`#${PREFIX}-panel`);
+			if (!panel) return;
+			const excelOn = !!this.normal.excelMode;
+			const rules = {
+				hideSidebar: 'Excel 开启时由「导航/侧栏」接管（快捷键 H）',
+				wideMode: 'Excel 已强制全宽，此项仅关闭 Excel 时生效',
+				compactMode: 'Excel 列表自带紧凑行高，此项仅关闭 Excel 时生效',
+			};
+			Object.entries(rules).forEach(([key, tip]) => {
+				const el = panel.querySelector(`[data-key="${key}"]`);
+				if (!el) return;
+				el.disabled = excelOn;
+				const label = el.closest('label');
+				if (label) {
+					if (!label.dataset.ldmyOrigTitle) label.dataset.ldmyOrigTitle = label.title || '';
+					label.title = excelOn ? tip : label.dataset.ldmyOrigTitle;
+					label.classList.toggle(`${PREFIX}-exclusive-off`, excelOn);
+				}
+			});
 		}
 
 		ensurePanel() {
@@ -3256,7 +3491,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				{ key: 'hideEmoji', label: '隐藏表情', tip: '快捷键 W' },
 				{ key: 'hideImage', label: '隐藏楼内图片', tip: '快捷键 E' },
 				{ key: 'hideUserTitle', label: '隐藏用户标题' },
-				{ key: 'hideSidebar', label: '隐藏侧边栏', tip: '关闭 Excel 时生效；Excel 开启时请用「导航/侧栏」' },
+				{ key: 'hideSidebar', label: '隐藏侧边栏', tip: '快捷键 H；Excel 开启时由「导航/侧栏」接管' },
 				{ key: 'hideTopicMap', label: '隐藏话题地图' },
 				{ key: 'excelMode', label: 'Excel 摸鱼外观' },
 				{ key: 'compactMode', label: '紧凑列表', tip: '压缩话题行高；Excel 下更像表格' },
@@ -3327,7 +3562,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                           <option value="false">隐藏</option>
                         </select>
                       </label>
-                      <label class="${PREFIX}-field" title="Excel 专用：控制顶栏导航与左侧分类/tag/板块侧栏。开启 Excel 时优先于此项，显示优化里的「隐藏侧边栏」暂不生效">
+                      <label class="${PREFIX}-field" title="Excel 专用：控制顶栏导航与左侧分类/tag/板块侧栏。开启 Excel 时优先于此项（快捷键 H）">
                         <span>导航/侧栏</span>
                         <select data-type="advanced" data-key="excelHideNav">
                           <option value="true">隐藏</option>
@@ -3502,7 +3737,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					this.refreshPanelValues();
 					notify('配置导入成功');
 				} catch (err) {
-					alert('导入失败：' + err.message);
+					notify('导入失败：' + err.message, 3000);
 				} finally {
 					e.target.value = '';
 				}
@@ -3517,6 +3752,11 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			});
 
 			document.body.appendChild(overlay);
+
+			// Excel 开关实时联动互斥项
+			overlay.querySelector('[data-key="excelMode"]')?.addEventListener('change', () => {
+				this.syncExclusiveUI();
+			});
 		}
 
 		readPanelToMemory() {
@@ -3763,6 +4003,17 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					break;
 				case 'excelMode':
 					toggle('excelMode', 'Excel 摸鱼外观');
+					break;
+				case 'hideSidebar':
+					// Excel 开启时接管「导航/侧栏」，否则切常规隐藏侧边栏
+					if (this.normal.excelMode) {
+						this.advanced.excelHideNav = !this.advanced.excelHideNav;
+						this.saveSettings();
+						this.applyAll();
+						notify(`${this.advanced.excelHideNav ? '已隐藏' : '已显示'}导航/侧栏（快捷键 H）`);
+					} else {
+						toggle('hideSidebar', '隐藏侧边栏');
+					}
 					break;
 				case 'settingPanel':
 					if (this._panelOpen) this.closePanel();
@@ -4065,6 +4316,51 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			});
 			$$(`.${PREFIX}-user-actions, .${PREFIX}-mark-tags`).forEach((el) => el.remove());
 		},
+		/** 备注标签删除：document 级事件委托（capture 抢在页面 handler 前），renderPage 重建 DOM 也不丢监听 */
+		init(script) {
+			let lastHit = 0;
+			const deleteMark = (e) => {
+				const tag = e.target && e.target.closest ? e.target.closest(`.${PREFIX}-mark-tag`) : null;
+				if (!tag) return;
+				e.preventDefault();
+				e.stopPropagation();
+				const username = tag.dataset.ldmyMarkUser;
+				const text = tag.dataset.ldmyMarkText;
+				const color = tag.dataset.ldmyMarkColor;
+				if (!username) return;
+				const item = script.markList.find((m) => m.username === username);
+				if (!item || !Array.isArray(item.tags)) return;
+				const i = item.tags.findIndex(
+					(x) => x.text === text && (x.color || '#8e44ad') === (color || '#8e44ad')
+				);
+				if (i >= 0) item.tags.splice(i, 1);
+				if (!item.tags.length) {
+					script.markList = script.markList.filter((m) => m.username !== username);
+				}
+				script.saveLists();
+				notify(`已删除 @${username} 备注`);
+				script.renderPage();
+			};
+			// pointerdown 优先：抢在页面任何 click/选择逻辑之前，点击必触发
+			document.addEventListener(
+				'pointerdown',
+				(e) => {
+					if (!e.target || !e.target.closest || !e.target.closest(`.${PREFIX}-mark-tag`)) return;
+					lastHit = Date.now();
+					deleteMark(e);
+				},
+				true
+			);
+			// click 兜底（键盘激活等）；删除后 DOM 重建，防同一次点击连删
+			document.addEventListener(
+				'click',
+				(e) => {
+					if (Date.now() - lastHit < 400) return;
+					deleteMark(e);
+				},
+				true
+			);
+		},
 		isBanned(script, username) {
 			return script.banList.some((b) => b.username === username);
 		},
@@ -4114,21 +4410,31 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					actions.querySelector('.mark').addEventListener('click', (e) => {
 						e.preventDefault();
 						e.stopPropagation();
-						const text = prompt(`为 @${username} 添加备注标签：`, '关注');
-						if (!text) return;
-						const color = prompt('标签颜色 (#hex)：', '#8e44ad') || '#8e44ad';
-						let item = script.markList.find((m) => m.username === username);
-						if (!item) {
-							item = { username, tags: [], time: Date.now() };
-							script.markList.push(item);
-						}
-						item.tags.push({ text, color });
-						script.saveLists();
-						// force re-render marks
-						names.querySelector(`.${PREFIX}-mark-tags`)?.remove();
-						post.dataset.ldmyMarked = '';
-						script.renderPage();
-						notify(`已备注 @${username}`);
+						promptDialog({
+							title: `为 @${username} 添加备注`,
+							fields: [
+								{ key: 'text', label: '标签文字', value: '关注' },
+								{ key: 'color', label: '颜色', type: 'color', value: randomMarkColor() },
+							],
+							okText: '添加',
+						}).then((res) => {
+							if (!res || !res.text || !res.text.trim()) return;
+							const text = res.text.trim();
+							const color = res.color || '#6E9BB8';
+							const fg = markFgFor(color);
+							let item = script.markList.find((m) => m.username === username);
+							if (!item) {
+								item = { username, tags: [], time: Date.now() };
+								script.markList.push(item);
+							}
+							item.tags.push({ text, color, fg });
+							script.saveLists();
+							// force re-render marks
+							names.querySelector(`.${PREFIX}-mark-tags`)?.remove();
+							post.dataset.ldmyMarked = '';
+							script.renderPage();
+							notify(`已备注 @${username}`);
+						});
 					});
 					actions.querySelector('.ban').addEventListener('click', (e) => {
 						e.preventDefault();
@@ -4141,15 +4447,22 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 							script.renderPage();
 							return;
 						}
-						const reason = prompt(`拉黑 @${username} 的原因（可选）：`, '') || '';
-						if (BanAndMark.isBanned(script, username)) {
-							notify(`@${username} 已在黑名单中`);
-							return;
-						}
-						script.banList.push({ username, reason, time: Date.now() });
-						script.saveLists();
-						notify(`已拉黑 @${username}`);
-						script.renderPage();
+						promptDialog({
+							title: `拉黑 @${username}`,
+							fields: [{ key: 'reason', label: '原因（可选）' }],
+							okText: '拉黑',
+						}).then((res) => {
+							if (res === null) return;
+							const reason = (res.reason || '').trim();
+							if (BanAndMark.isBanned(script, username)) {
+								notify(`@${username} 已在黑名单中`);
+								return;
+							}
+							script.banList.push({ username, reason, time: Date.now() });
+							script.saveLists();
+							notify(`已拉黑 @${username}`);
+							script.renderPage();
+						});
 					});
 					names.appendChild(actions);
 				}
@@ -4174,34 +4487,17 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					names.querySelector(`.${PREFIX}-mark-tags`)?.remove();
 					const wrap = document.createElement('span');
 					wrap.className = `${PREFIX}-mark-tags`;
-					(mark.tags || []).forEach((tagItem, tagIndex) => {
+					(mark.tags || []).forEach((tagItem) => {
 						const tag = document.createElement('span');
 						tag.className = `${PREFIX}-mark-tag`;
 						tag.title = '点击删除此备注';
-						tag.style.background = tagItem.color || '#8e44ad';
+						tag.style.background = tagItem.color || '#6E9BB8';
+						tag.style.color = tagItem.fg || markFgFor(tagItem.color);
+						tag.dataset.ldmyMarkUser = username;
+						tag.dataset.ldmyMarkText = tagItem.text || '';
+						tag.dataset.ldmyMarkColor = tagItem.color || '#8e44ad';
 						tag.innerHTML = `<span>${tagItem.text || ''}</span><span class="${PREFIX}-mark-x" aria-hidden="true">×</span>`;
-						tag.addEventListener('click', (e) => {
-							e.preventDefault();
-							e.stopPropagation();
-							if (!confirm(`删除 @${username} 的备注「${tagItem.text || ''}」？`)) return;
-							const item = script.markList.find((m) => m.username === username);
-							if (!item || !Array.isArray(item.tags)) return;
-							// 按当前索引删；若结构已变则按文本+颜色匹配第一条
-							if (item.tags[tagIndex] && item.tags[tagIndex].text === tagItem.text) {
-								item.tags.splice(tagIndex, 1);
-							} else {
-								const i = item.tags.findIndex(
-									(x) => x.text === tagItem.text && x.color === tagItem.color
-								);
-								if (i >= 0) item.tags.splice(i, 1);
-							}
-							if (!item.tags.length) {
-								script.markList = script.markList.filter((m) => m.username !== username);
-							}
-							script.saveLists();
-							notify(`已删除 @${username} 备注`);
-							script.renderPage();
-						});
+						// 删除逻辑在 init() 的 document 事件委托里，点击即删 + toast
 						wrap.appendChild(tag);
 					});
 					names.appendChild(wrap);
