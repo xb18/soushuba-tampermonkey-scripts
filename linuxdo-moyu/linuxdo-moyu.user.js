@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.4.0
-// @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、护眼/暗黑、高亮楼主、黑名单、关键字屏蔽、图片预览
+// @version      1.5.0
+// @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
 // @match        https://linux.do/*
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.4.0';
+	const SCRIPT_VERSION = '1.5.0';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -43,7 +43,6 @@
 		hideUserTitle: true,
 		hideSidebar: false, // Excel 开时会自行隐藏侧栏；关 Excel 时保留导航
 		hideTopicMap: true,
-		eyeCare: false, // 与 Excel 外观冲突，按需开
 		excelMode: true, // 核心卖点，默认开；快捷键 X 可关
 		compactMode: false,
 		wideMode: true,
@@ -66,7 +65,6 @@
 		imageMaxWidth: 280,
 		foldQuoteHeight: 120,
 		authorMarkColor: '#e74c3c',
-		eyeCareBg: '#c7edcc',
 		banMode: 'hide', // hide | remove
 		keywordsMatchTitle: true,
 		keywordsMatchContent: true,
@@ -85,7 +83,6 @@
 		hideImage: 'KeyE',
 		onlyOP: 'KeyR',
 		settingPanel: 'KeyS',
-		eyeCare: 'KeyT',
 		excelMode: 'KeyX',
 	};
 
@@ -337,7 +334,6 @@
 				[`${PREFIX}-hide-user-title`]: this.normal.hideUserTitle,
 				[`${PREFIX}-hide-sidebar`]: excelOn ? false : this.normal.hideSidebar,
 				[`${PREFIX}-hide-topic-map`]: this.normal.hideTopicMap,
-				[`${PREFIX}-eye-care`]: this.normal.eyeCare,
 				[`${PREFIX}-compact`]: this.normal.compactMode,
 				[`${PREFIX}-excel`]: excelOn,
 				// Excel 已强制全宽，宽屏 class 仅非 Excel 时生效，避免互相覆盖
@@ -380,10 +376,6 @@
 			document.documentElement.style.setProperty(
 				`--${PREFIX}-author-color`,
 				this.advanced.authorMarkColor || '#e74c3c'
-			);
-			document.documentElement.style.setProperty(
-				`--${PREFIX}-eyecare-bg`,
-				this.advanced.eyeCareBg || '#c7edcc'
 			);
 			document.documentElement.style.setProperty(
 				`--${PREFIX}-img-max`,
@@ -805,20 +797,6 @@ body.${PREFIX}-hide-topic-map .topic-map,
 body.${PREFIX}-hide-topic-map .topic-map.--op,
 body.${PREFIX}-hide-topic-map .toggle-summary {
   display: none !important;
-}
-
-/* eye care */
-body.${PREFIX}-eye-care,
-body.${PREFIX}-eye-care #main-outlet,
-body.${PREFIX}-eye-care .topic-body,
-body.${PREFIX}-eye-care .topic-list,
-body.${PREFIX}-eye-care .d-header {
-  background-color: var(--${PREFIX}-eyecare-bg, #c7edcc) !important;
-}
-body.${PREFIX}-eye-care .topic-post,
-body.${PREFIX}-eye-care .topic-list-item,
-body.${PREFIX}-eye-care .cooked {
-  background-color: transparent !important;
 }
 
 /* compact topic list（Excel 下同样生效，压缩行高更像表格） */
@@ -3280,7 +3258,6 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				{ key: 'hideUserTitle', label: '隐藏用户标题' },
 				{ key: 'hideSidebar', label: '隐藏侧边栏', tip: '关闭 Excel 时生效；Excel 开启时请用「导航/侧栏」' },
 				{ key: 'hideTopicMap', label: '隐藏话题地图' },
-				{ key: 'eyeCare', label: '护眼模式', tip: '快捷键 T' },
 				{ key: 'excelMode', label: 'Excel 摸鱼外观' },
 				{ key: 'compactMode', label: '紧凑列表', tip: '压缩话题行高；Excel 下更像表格' },
 				{ key: 'wideMode', label: '宽屏模式', tip: '仅关闭 Excel 时生效；Excel 已强制全宽' },
@@ -3425,10 +3402,6 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                 <label class="${PREFIX}-field">
                   <span>楼主高亮颜色</span>
                   <input type="color" data-type="advanced" data-key="authorMarkColor" />
-                </label>
-                <label class="${PREFIX}-field">
-                  <span>护眼背景色</span>
-                  <input type="color" data-type="advanced" data-key="eyeCareBg" />
                 </label>
                 <label class="${PREFIX}-field">
                   <span>浮动按钮位置</span>
@@ -3787,9 +3760,6 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					break;
 				case 'onlyOP':
 					toggle('onlyOP', '只看楼主');
-					break;
-				case 'eyeCare':
-					toggle('eyeCare', '护眼模式');
 					break;
 				case 'excelMode':
 					toggle('excelMode', 'Excel 摸鱼外观');
