@@ -17,6 +17,7 @@
 | [Gemini Helper](./gemini-helper/README.md) | ![](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork) | Enhance Gemini with outlines, session management, widescreen & more | ![](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) |
 | [Coomer Picks](./coomer/README.md) | ![](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork) | Enhance Coomer with modern UI, video player & batch download | ![](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
 | [Soushu Bypass](./soushu-bypass/README.md) | ![](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork) | One-click free download for Soushu attachments | ![](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
+| [LINUX DO Moyu Enhancer](./linuxdo-moyu/README.md) | v1.2.1 | Discourse/LINUX DO reading enhancer (Excel disguise / Tencent Docs theme, hide avatar/images, highlight OP, etc.) | - | - | Install from repo |
 
 ### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
 
@@ -83,6 +84,15 @@
 **Latest Version**: v1.0.0
 
 [Docs](./soushu-bypass/README.md) | [Install](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)
+
+
+### 🐟 LINUX DO Moyu Enhancer
+
+> Display optimization and power features for Discourse / LINUX DO.
+
+**Latest**: v1.2.1
+
+[Docs](./linuxdo-moyu/README.md) | [Script](./linuxdo-moyu/linuxdo-moyu.user.js)
 
 ## 🐛 Feedback
 
