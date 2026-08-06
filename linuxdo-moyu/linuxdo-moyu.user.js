@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.3.2
+// @version      1.3.4
 // @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、护眼/暗黑、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.3.2';
+	const SCRIPT_VERSION = '1.3.4';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -77,6 +77,7 @@
 		excelTitle: '工作簿1',
 		excelShowRowIndex: true,
 		excelHideNav: true, // 隐藏顶栏导航 + 左侧侧栏（分类/tag/板块）
+		excelMetaCol: false, // Default/Moyu 经典列表：分类/标签单独一列（false=留在标题下方）
 	};
 
 	const DEFAULT_SHORTCUTS = {
@@ -363,6 +364,10 @@
 			document.body.classList.toggle(
 				`${PREFIX}-excel-hide-nav`,
 				excelOn && this.advanced.excelHideNav !== false
+			);
+			document.body.classList.toggle(
+				`${PREFIX}-excel-meta-col`,
+				excelOn && !!this.advanced.excelMetaCol
 			);
 			// Horizon 主题 / 深色模式（Excel 专用 class）
 			const isHorizon =
@@ -863,9 +868,8 @@ body.${PREFIX}-compact .topic-list .topic-list-data.posters {
 body.${PREFIX}-compact .topic-list .main-link .title,
 body.${PREFIX}-compact .topic-list a.title,
 body.${PREFIX}-compact .topic-list a.raw-topic-link {
-  /* compact 只压缩行距，不缩小字号（Excel 下尤其容易发糊） */
-  font-size: inherit !important;
-  line-height: 1.35 !important;
+  font-size: 13px !important;
+  line-height: 1.3 !important;
 }
 body.${PREFIX}-compact.${PREFIX}-excel .topic-list td,
 body.${PREFIX}-compact.${PREFIX}-excel .topic-list .topic-list-data {
@@ -1111,6 +1115,10 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
 .${PREFIX}-excel-inline-opts select[data-key="excelShowRowIndex"],
 .${PREFIX}-excel-inline-opts select[data-key="excelHideNav"] {
   width: 72px;
+  max-width: none;
+}
+.${PREFIX}-excel-inline-opts select[data-key="excelMetaCol"] {
+  width: 96px;
   max-width: none;
 }
 .${PREFIX}-excel-inline-opts input[type="text"] {
@@ -2014,8 +2022,8 @@ body.${PREFIX}-excel .topic-list th {
   color: #555 !important;
   font-family: inherit !important;
   font-weight: 500 !important;
-  font-size: inherit !important;
-  height: 26px !important;
+  font-size: 12px !important;
+  height: 24px !important;
   padding: 2px 6px !important;
   -webkit-font-smoothing: antialiased;
 }
@@ -2023,27 +2031,70 @@ body.${PREFIX}-excel .topic-list tr:hover td,
 body.${PREFIX}-excel .topic-list .topic-list-item:hover .topic-list-data {
   background: #eef5ff !important;
 }
-body.${PREFIX}-excel .topic-list .link-bottom-line,
-body.${PREFIX}-excel .topic-list .topic-excerpt,
-body.${PREFIX}-excel .topic-list .topic-statuses,
-body.${PREFIX}-excel .topic-list .posters,
-body.${PREFIX}-excel .topic-list .donottopic-btn {
-  /* keep views etc */
-}
 body.${PREFIX}-excel .topic-list .topic-excerpt,
 body.${PREFIX}-excel .topic-list .topic-statuses,
 body.${PREFIX}-excel .topic-list .posters,
 body.${PREFIX}-excel .topic-list .donottopic-btn {
   display: none !important;
 }
+/* Default / Moyu：标题下分类与标签弱化，避免喧宾夺主 */
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .link-bottom-line {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-top: 1px !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  opacity: 0.66 !important;
+  line-height: 1.2 !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .badge-category__wrapper,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .badge-category {
+  font-size: 11px !important;
+  line-height: 16px !important;
+  height: 16px !important;
+  padding: 0 4px !important;
+  border-radius: 2px !important;
+  max-width: 9em !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  opacity: 0.85 !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tag,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tags .discourse-tag {
+  font-size: 11px !important;
+  line-height: 16px !important;
+  height: 16px !important;
+  padding: 0 4px !important;
+  margin: 0 2px 0 0 !important;
+  border-radius: 2px !important;
+  background: #f0f0f0 !important;
+  color: #888 !important;
+  border: 1px solid #e4e4e4 !important;
+  box-shadow: none !important;
+  max-width: 7em !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  opacity: 0.8 !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tags {
+  display: inline-flex !important;
+  flex-wrap: nowrap !important;
+  gap: 2px !important;
+  max-width: 50% !important;
+  overflow: hidden !important;
+}
 body.${PREFIX}-excel .topic-list .main-link .title {
   font-family: inherit !important;
-  font-size: inherit !important;
+  font-size: 13px !important;
   font-weight: 400 !important;
-  color: var(--primary, #222) !important;
+  color: #1a3959 !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 body.${PREFIX}-excel .topic-list .badge-notification { transform: scale(.85); }
 body.${PREFIX}-excel .${PREFIX}-excel-rownum,
@@ -2064,6 +2115,90 @@ body.${PREFIX}-excel .topic-list-item.${PREFIX}-excel-row-active .topic-list-dat
   outline: 1px solid var(--${PREFIX}-excel-accent, #1e6fff);
   outline-offset: -1px;
 }
+/* Default/Moyu 经典列表：标题撑满，右侧回复/浏览/活动贴右且窄 */
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) table.topic-list {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .main-link,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.default,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th[data-sort-order="default"] {
+  width: auto !important;
+  min-width: 0 !important;
+  padding-right: 8px !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.posts,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.posts,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .posts-map,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.num.posts,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.num.posts {
+  width: 64px !important;
+  min-width: 56px !important;
+  max-width: 72px !important;
+  text-align: right !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.views,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.views,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.num.views,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.num.views {
+  width: 72px !important;
+  min-width: 64px !important;
+  max-width: 84px !important;
+  text-align: right !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.activity,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.activity,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.num.activity,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.num.activity,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.age,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list td.age {
+  width: 72px !important;
+  min-width: 64px !important;
+  max-width: 88px !important;
+  text-align: right !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .posters,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list th.posters {
+  display: none !important;
+  width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+/* Default/Moyu：分类/标签独立列（设置 excelMetaCol 开启） */
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) table.topic-list {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list th.${PREFIX}-excel-meta-head,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell {
+  width: 200px !important;
+  min-width: 170px !important;
+  max-width: 220px !important;
+  padding: 2px 6px !important;
+  overflow: hidden !important;
+  vertical-align: middle !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell .link-bottom-line {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  opacity: 0.8 !important;
+  line-height: 1.2 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell .discourse-tags {
+  display: inline-flex !important;
+  flex-wrap: nowrap !important;
+  gap: 2px !important;
+  max-width: 60% !important;
+  overflow: hidden !important;
+}
+
+
 /* 帖内楼层：行号 | 作者信息 | 正文（对齐 NGA 表格感） */
 body.${PREFIX}-excel .topic-post {
   display: grid !important;
@@ -2449,9 +2584,9 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list thead th.sr-only {
   color: #555 !important;
   font-family: inherit !important;
   font-weight: 500 !important;
-  font-size: inherit !important;
-  height: 26px !important;
-  min-height: 26px !important;
+  font-size: 12px !important;
+  height: 24px !important;
+  min-height: 24px !important;
   text-align: left !important;
   -webkit-font-smoothing: antialiased;
   /* 禁止 sf-hidden / 无障碍隐藏把表头列从表格布局里拿掉，否则会整列错位 */
@@ -2486,26 +2621,26 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list thead th.${PREFIX}
 /* 列宽：JS 重排后 DOM 顺序 = # 标题 分类 回复 活动 状态
  * 标题列吃剩余宽度；右侧元数据列尽量窄，避免标题被挤到右侧错位
  */
-body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-rownum { width: 48px; }
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-rownum { width: 44px; }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-title { width: auto; }
-body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-category { width: 120px; }
-body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-replies { width: 72px; }
-body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-activity { width: 148px; }
-body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-status { width: 48px; }
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-category { width: 200px; }
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-replies { width: 56px; }
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-activity { width: 110px; }
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-status { width: 38px; }
 
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .${PREFIX}-excel-rownum,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.${PREFIX}-excel-rownum,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.${PREFIX}-excel-rownum,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="ldmy-excel-rownum"] {
-  width: 48px !important;
-  min-width: 48px !important;
-  max-width: 56px !important;
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 48px !important;
   text-align: center !important;
   padding-left: 2px !important;
   padding-right: 2px !important;
   background: #e8e8e8 !important;
   color: #555 !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -2515,31 +2650,31 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.main-link,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.main-link,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="main-link"],
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.default {
-  /* 标题列吃剩余；右侧固定宽吃掉尾部空白 */
-  width: auto !important;
-  min-width: 240px !important;
+  /* fixed 下大百分比让标题吸收几乎全部剩余宽度，右侧列贴右 */
+  width: 70% !important;
+  min-width: 0 !important;
   max-width: none !important;
+  padding-right: 8px !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .main-link .title,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list a.raw-topic-link,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list a.title,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .link-top-line,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .main-link a.title {
-  /* 沿用原站字体族与字号，避免自定义缩小导致发糊 */
+  /* Excel 风：略小字号更像表格 */
   font-family: inherit !important;
-  font-size: inherit !important;
+  font-size: 13px !important;
   font-weight: 400 !important;
-  color: var(--primary, #222) !important;
+  color: #1a3959 !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   display: inline !important;
   max-width: 100% !important;
   grid-area: unset !important;
-  line-height: 1.35 !important;
+  line-height: 1.3 !important;
   word-break: normal !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -2568,22 +2703,21 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-category-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-category-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.topic-category-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="topic-category-data"] {
-  width: 120px !important;
-  min-width: 100px !important;
-  max-width: 140px !important;
+  width: 200px !important;
+  min-width: 170px !important;
+  max-width: 220px !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-likes-replies-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.topic-likes-replies-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="topic-likes-replies-data"] {
-  width: 72px !important;
-  min-width: 64px !important;
-  max-width: 80px !important;
+  width: 56px !important;
+  min-width: 48px !important;
+  max-width: 64px !important;
   text-align: right !important;
   color: #c45c26 !important;
-  font-size: inherit !important;
+  font-size: 12px !important;
   font-variant-numeric: tabular-nums;
-  -webkit-font-smoothing: antialiased;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data .topic-replies,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies {
@@ -2594,17 +2728,17 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies {
   gap: 2px !important;
   height: auto !important;
   color: #c45c26 !important;
-  font-size: inherit !important;
+  font-size: 12px !important;
   white-space: nowrap !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-activity-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-activity-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.topic-activity-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="topic-activity-data"] {
-  width: 148px !important;
-  min-width: 120px !important;
-  max-width: 168px !important;
-  font-size: inherit !important;
+  width: 110px !important;
+  min-width: 92px !important;
+  max-width: 124px !important;
+  font-size: 12px !important;
   color: #666 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-activity {
@@ -2613,15 +2747,16 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-activity {
   gap: 4px !important;
   max-width: 100% !important;
   overflow: hidden !important;
-  font-size: inherit !important;
+  font-size: 12px !important;
   color: #666 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-activity__username {
   color: #1a3959 !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  max-width: 72px !important;
+  max-width: 48px !important;
   margin-left: 0 !important;
+  font-size: 12px !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-status-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-status-data,
@@ -2631,9 +2766,9 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context) .topic-status-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-status-card .topic-status-data {
   display: table-cell !important;
-  width: 48px !important;
-  min-width: 44px !important;
-  max-width: 56px !important;
+  width: 38px !important;
+  min-width: 34px !important;
+  max-width: 44px !important;
   text-align: center !important;
   padding: 2px 2px !important;
   vertical-align: middle !important;
@@ -2688,6 +2823,7 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-status-data.${
 /* 创建者列隐藏 */
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-creator-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-creator-data,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.topic-creator-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-creator-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-creator-data.${PREFIX}-excel-col-empty {
   display: none !important;
@@ -2697,6 +2833,14 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-creator-data.${P
   padding: 0 !important;
   border: none !important;
   margin: 0 !important;
+  visibility: collapse !important;
+}
+/* colgroup 显式声明列组，防止固定布局留出尾部空白列 */
+body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list colgroup.${PREFIX}-excel-cols {
+  display: table-column-group !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list col {
+  display: table-column !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .badge-category,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .badge-category__wrapper {
@@ -3247,6 +3391,13 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                         <select data-type="advanced" data-key="excelHideNav">
                           <option value="true">隐藏</option>
                           <option value="false">显示</option>
+                        </select>
+                      </label>
+                      <label class="${PREFIX}-field" title="Default/Moyu 主题：把标题下方的分类/标签拆成独立一列，标题列更干净更像表格；Horizon 主题自动忽略">
+                        <span>分类列</span>
+                        <select data-type="advanced" data-key="excelMetaCol">
+                          <option value="false">标题下方</option>
+                          <option value="true">单独一列</option>
                         </select>
                       </label>
                     </div>
@@ -4765,6 +4916,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			this.syncChrome(script);
 			this.applyRowNums(script);
 			this.compactHorizonCols(script);
+			this.splitClassicMeta(script);
 		},
 
 		handleChromeAction(act, script) {
@@ -4845,193 +4997,234 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			this.syncChrome(script);
 			this.applyRowNums(script);
 			this.compactHorizonCols(script);
+			this.splitClassicMeta(script);
 		},
 
 		/** Horizon 列顺序（视觉）：# | 标题 | 分类 | 回复 | 活动 | 状态 */
-			HORIZON_COLS: [
-				{ cls: 'ldmy-excel-rownum', label: '#', colClass: `${PREFIX}-excel-col-rownum` },
-				{ cls: 'main-link', label: '话题', colClass: `${PREFIX}-excel-col-title` },
-				{ cls: 'topic-category-data', label: '类别', colClass: `${PREFIX}-excel-col-category` },
-				{ cls: 'topic-likes-replies-data', label: '回复', colClass: `${PREFIX}-excel-col-replies` },
-				{ cls: 'topic-activity-data', label: '活动', colClass: `${PREFIX}-excel-col-activity` },
-				{ cls: 'topic-status-data', label: '状态', colClass: `${PREFIX}-excel-col-status` },
-			],
+		HORIZON_COLS: [
+			{ cls: 'ldmy-excel-rownum', label: '#', colClass: `${PREFIX}-excel-col-rownum` },
+			{ cls: 'main-link', label: '话题', colClass: `${PREFIX}-excel-col-title` },
+			{ cls: 'topic-category-data', label: '类别', colClass: `${PREFIX}-excel-col-category` },
+			{ cls: 'topic-likes-replies-data', label: '回复', colClass: `${PREFIX}-excel-col-replies` },
+			{ cls: 'topic-activity-data', label: '活动', colClass: `${PREFIX}-excel-col-activity` },
+			{ cls: 'topic-status-data', label: '状态', colClass: `${PREFIX}-excel-col-status` },
+		],
 
-			/**
-			 * Horizon 表头补齐：table-layout:fixed 按首行列数分配宽度，
-			 * 而 Horizon 原生 thead 只有「行号 + 话题」两格，会把后面几列挤爆。
-			 * 同时注入 <colgroup>，让标题列稳定占主宽。
-			 */
-			syncHorizonHeader(script) {
-				if (!document.body.classList.contains(`${PREFIX}-excel-horizon`)) return;
-				const table = $('table.topic-list');
-				if (!table) return;
-				const headRow = table.querySelector('thead tr, .topic-list-header tr');
-				if (!headRow) return;
+		/**
+		 * Horizon 表头补齐：table-layout:fixed 按首行列数分配宽度，
+		 * 而 Horizon 原生 thead 只有「行号 + 话题」两格，会把后面几列挤爆。
+		 * 同时注入 <colgroup>，让标题列稳定占主宽。
+		 */
+		syncHorizonHeader(script) {
+			if (!document.body.classList.contains(`${PREFIX}-excel-horizon`)) return;
+			const table = $('table.topic-list');
+			if (!table) return;
+			const headRow = table.querySelector('thead tr, .topic-list-header tr');
+			if (!headRow) return;
 
-				// 1) colgroup：fixed 布局下最稳的列宽来源
-				let colgroup = table.querySelector(`colgroup.${PREFIX}-excel-cols`);
-				if (!colgroup) {
-					colgroup = document.createElement('colgroup');
-					colgroup.className = `${PREFIX}-excel-cols`;
-					table.insertBefore(colgroup, table.firstChild);
-				}
-				const wantedCols = this.HORIZON_COLS.map((c) => c.colClass);
-				const currentCols = Array.from(colgroup.children).map((c) => c.className);
-				if (currentCols.join('|') !== wantedCols.join('|')) {
-					colgroup.innerHTML = '';
-					this.HORIZON_COLS.forEach((col) => {
-						const c = document.createElement('col');
-						c.className = col.colClass;
-						colgroup.appendChild(c);
-					});
-				}
-
-				// 2) 表头：保证与数据列一一对应（含行号 / 标题）
-				const ensureTh = (col) => {
-					if (col.cls === 'ldmy-excel-rownum') {
-						return headRow.querySelector(`th.${PREFIX}-excel-rownum`);
-					}
-					if (col.cls === 'main-link') {
-						return (
-							headRow.querySelector('th.main-link, th.default, th[data-sort-order="default"]') ||
-							headRow.querySelector(`th[data-ldmy-col="main-link"]`)
-						);
-					}
-					return headRow.querySelector(`th[data-ldmy-col="${col.cls}"]`);
-				};
-				const orderedThs = [];
+			// 1) colgroup：fixed 布局下最稳的列宽来源
+			let colgroup = table.querySelector(`colgroup.${PREFIX}-excel-cols`);
+			if (!colgroup) {
+				colgroup = document.createElement('colgroup');
+				colgroup.className = `${PREFIX}-excel-cols`;
+				table.insertBefore(colgroup, table.firstChild);
+			}
+			const wantedCols = this.HORIZON_COLS.map((c) => c.colClass);
+			const currentCols = Array.from(colgroup.children).map((c) => c.className);
+			if (currentCols.join('|') !== wantedCols.join('|')) {
+				colgroup.innerHTML = '';
 				this.HORIZON_COLS.forEach((col) => {
-					let th = ensureTh(col);
-					if (!th) {
-						th = document.createElement('th');
-						th.scope = 'col';
-						th.dataset.ldmyCol = col.cls;
-						if (col.cls === 'ldmy-excel-rownum') {
-							th.className = `${PREFIX}-excel-rownum topic-list-data`;
-							th.innerHTML = '<span class="sr-only">#</span>';
-						} else if (col.cls === 'main-link') {
-							th.className = 'topic-list-data main-link default';
-							th.dataset.sortOrder = 'default';
-							th.textContent = col.label;
-						} else {
-							th.className = `topic-list-data ${col.cls}`;
-							th.textContent = col.label;
-						}
+					const c = document.createElement('col');
+					c.className = col.colClass;
+					colgroup.appendChild(c);
+				});
+			}
+
+			// 2) 表头：保证与数据列一一对应（含行号 / 标题）
+			const ensureTh = (col) => {
+				if (col.cls === 'ldmy-excel-rownum') {
+					return headRow.querySelector(`th.${PREFIX}-excel-rownum`);
+				}
+				if (col.cls === 'main-link') {
+					return (
+						headRow.querySelector('th.main-link, th.default, th[data-sort-order="default"]') ||
+						headRow.querySelector(`th[data-ldmy-col="main-link"]`)
+					);
+				}
+				return headRow.querySelector(`th[data-ldmy-col="${col.cls}"]`);
+			};
+			const orderedThs = [];
+			this.HORIZON_COLS.forEach((col) => {
+				let th = ensureTh(col);
+				if (!th) {
+					th = document.createElement('th');
+					th.scope = 'col';
+					th.dataset.ldmyCol = col.cls;
+					if (col.cls === 'ldmy-excel-rownum') {
+						th.className = `${PREFIX}-excel-rownum topic-list-data`;
+						th.innerHTML = '<span class="sr-only">#</span>';
+					} else if (col.cls === 'main-link') {
+						th.className = 'topic-list-data main-link default';
+						th.dataset.sortOrder = 'default';
+						th.textContent = col.label;
 					} else {
-						// 标记 data-ldmy-col，方便 CSS / 重排识别
-						if (!th.dataset.ldmyCol) th.dataset.ldmyCol = col.cls;
-						if (col.cls !== 'ldmy-excel-rownum' && col.cls !== 'main-link') {
-							if (!th.classList.contains(col.cls)) th.classList.add(col.cls);
-							if (!th.textContent.trim()) th.textContent = col.label;
-						} else if (col.cls === 'main-link') {
-							// Horizon 原生「话题」常被隐藏，Excel 下强制显示表头文字
-							th.classList.add('main-link', 'default');
-							th.classList.remove('sf-hidden', 'sr-only');
-							th.querySelectorAll('.sr-only, .sf-hidden').forEach((el) => {
-								el.classList.remove('sr-only', 'sf-hidden');
-							});
-							const visibleText = (th.textContent || '').replace(/\s+/g, ' ').trim();
-							if (!visibleText || visibleText === '#' || !/话题|Topic/i.test(visibleText)) {
-								let label = th.querySelector('.' + PREFIX + '-excel-th-label');
-								if (!label) {
-									label = document.createElement('span');
-									label.className = PREFIX + '-excel-th-label';
-									th.appendChild(label);
-								}
-								label.textContent = col.label || '话题';
-							}
-							th.dataset.ldmyTitleFixed = '1';
-						}
+						th.className = `topic-list-data ${col.cls}`;
+						th.textContent = col.label;
 					}
-					orderedThs.push(th);
-				});
-				// 按目标顺序重挂，去掉多余 th（创建者等）
-				orderedThs.forEach((th) => headRow.appendChild(th));
-				Array.from(headRow.children).forEach((th) => {
-					if (!orderedThs.includes(th)) th.remove();
-				});
-				// 关键：任何 sf-hidden/sr-only 作用在 th 上都会让 fixed 表格少一列，标题与表头错位
-				orderedThs.forEach((th) => {
-					th.classList.remove('sf-hidden', 'sr-only');
-					th.removeAttribute('hidden');
-					th.style.removeProperty('display');
-					th.style.removeProperty('width');
-					th.style.removeProperty('height');
-					th.style.removeProperty('position');
-					th.style.removeProperty('clip');
-					th.style.removeProperty('clip-path');
-					// 表头内部若仅有 .sf-hidden/.sr-only 包裹的文字，解除隐藏
-					th.querySelectorAll('.sf-hidden, .sr-only').forEach((el) => {
-						el.classList.remove('sf-hidden', 'sr-only');
-					});
-				});
-				// 标题列表头强制有「话题」字样
-				const titleTh = orderedThs.find((th) =>
-					th.dataset.ldmyCol === 'main-link' ||
-					th.classList.contains('main-link') ||
-					th.classList.contains('default')
-				);
-				if (titleTh) {
-					const txt = (titleTh.textContent || '').replace(/\s+/g, ' ').trim();
-					if (!txt || !/话题|Topic/i.test(txt)) {
-						let label = titleTh.querySelector('.' + PREFIX + '-excel-th-label');
-						if (!label) {
-							label = document.createElement('span');
-							label.className = PREFIX + '-excel-th-label';
-							titleTh.appendChild(label);
+				} else {
+					// 标记 data-ldmy-col，方便 CSS / 重排识别
+					if (!th.dataset.ldmyCol) th.dataset.ldmyCol = col.cls;
+					if (col.cls !== 'ldmy-excel-rownum' && col.cls !== 'main-link') {
+						if (!th.classList.contains(col.cls)) th.classList.add(col.cls);
+						if (!th.textContent.trim()) th.textContent = col.label;
+					} else if (col.cls === 'main-link') {
+						// Horizon 原生「话题」常被隐藏，Excel 下强制显示表头文字
+						th.classList.add('main-link', 'default');
+						th.classList.remove('sf-hidden', 'sr-only');
+						th.querySelectorAll('.sr-only, .sf-hidden').forEach((el) => {
+							el.classList.remove('sr-only', 'sf-hidden');
+						});
+						const visibleText = (th.textContent || '').replace(/\s+/g, ' ').trim();
+						if (!visibleText || visibleText === '#' || !/话题|Topic/i.test(visibleText)) {
+							let label = th.querySelector('.' + PREFIX + '-excel-th-label');
+							if (!label) {
+								label = document.createElement('span');
+								label.className = PREFIX + '-excel-th-label';
+								th.appendChild(label);
+							}
+							label.textContent = col.label || '话题';
 						}
-						label.textContent = '话题';
+						th.dataset.ldmyTitleFixed = '1';
 					}
 				}
-			},
-
-			clearHorizonHeader() {
-				$$(`table.topic-list colgroup.${PREFIX}-excel-cols`).forEach((el) => el.remove());
-				$$('table.topic-list th[data-ldmy-col]').forEach((th) => th.remove());
-				$$(`table.topic-list th .${PREFIX}-excel-th-label`).forEach((el) => el.remove());
-			},
-
-			/** Horizon：按 HORIZON_COLS 重排单元格，隐藏创建者列 */
-			compactHorizonCols(script) {
-				if (!script.normal.excelMode) return;
-				if (!document.body.classList.contains(`${PREFIX}-excel-horizon`)) return;
-				this.syncHorizonHeader(script);
-				const wanted = this.HORIZON_COLS.map((c) => c.cls);
-				$$('table.topic-list .topic-list-item').forEach((row) => {
-					const pick = (cls) =>
-						Array.from(row.children).find((c) => c.classList?.contains(cls));
-					const ordered = wanted.map(pick).filter(Boolean);
-					// 先把目标列按顺序挂到末尾，再把非目标列（创建者等）挪到最后并隐藏
-					ordered.forEach((node) => row.appendChild(node));
-					Array.from(row.children).forEach((cell) => {
-						const isWanted = wanted.some((cls) => cell.classList?.contains(cls));
-						if (!isWanted) row.appendChild(cell);
-					});
-					// 创建者列：只加标记类，交给 CSS 隐藏（不动 Ember 管理的节点）
-					pick('topic-creator-data')?.classList.add(`${PREFIX}-excel-col-empty`);
-					const status = pick('topic-status-data');
-					if (status) {
-						status.classList.toggle(
-							`${PREFIX}-excel-col-empty`,
-							!status.querySelector('.topic-status-card')
-						);
-					}
-					// 标题单元格：去掉可能把内容挤没的 colspan / 残留 grid 样式
-					const main = pick('main-link');
-					if (main) {
-						if (main.getAttribute('colspan')) main.removeAttribute('colspan');
-						main.style.removeProperty('display');
-						main.style.removeProperty('width');
-						main.style.removeProperty('max-width');
-						main.style.removeProperty('grid-area');
-					}
+				orderedThs.push(th);
+			});
+			// 按目标顺序重挂，去掉多余 th（创建者等）
+			orderedThs.forEach((th) => headRow.appendChild(th));
+			Array.from(headRow.children).forEach((th) => {
+				if (!orderedThs.includes(th)) th.remove();
+			});
+			// 关键：任何 sf-hidden/sr-only 作用在 th 上都会让 fixed 表格少一列，标题与表头错位
+			orderedThs.forEach((th) => {
+				th.classList.remove('sf-hidden', 'sr-only');
+				th.removeAttribute('hidden');
+				th.style.removeProperty('display');
+				th.style.removeProperty('width');
+				th.style.removeProperty('height');
+				th.style.removeProperty('position');
+				th.style.removeProperty('clip');
+				th.style.removeProperty('clip-path');
+				// 表头内部若仅有 .sf-hidden/.sr-only 包裹的文字，解除隐藏
+				th.querySelectorAll('.sf-hidden, .sr-only').forEach((el) => {
+					el.classList.remove('sf-hidden', 'sr-only');
 				});
-			},
+			});
+			// 标题列表头强制有「话题」字样
+			const titleTh = orderedThs.find((th) =>
+				th.dataset.ldmyCol === 'main-link' ||
+				th.classList.contains('main-link') ||
+				th.classList.contains('default')
+			);
+			if (titleTh) {
+				const txt = (titleTh.textContent || '').replace(/\s+/g, ' ').trim();
+				if (!txt || !/话题|Topic/i.test(txt)) {
+					let label = titleTh.querySelector('.' + PREFIX + '-excel-th-label');
+					if (!label) {
+						label = document.createElement('span');
+						label.className = PREFIX + '-excel-th-label';
+						titleTh.appendChild(label);
+					}
+					label.textContent = '话题';
+				}
+			}
+		},
 
-			teardown(script) {
+		clearHorizonHeader() {
+			$$(`table.topic-list colgroup.${PREFIX}-excel-cols`).forEach((el) => el.remove());
+			$$('table.topic-list th[data-ldmy-col]').forEach((th) => th.remove());
+			$$(`table.topic-list th .${PREFIX}-excel-th-label`).forEach((el) => el.remove());
+		},
+
+		/** Horizon：按 HORIZON_COLS 重排单元格，隐藏创建者列 */
+		compactHorizonCols(script) {
+			if (!script.normal.excelMode) return;
+			if (!document.body.classList.contains(`${PREFIX}-excel-horizon`)) return;
+			this.syncHorizonHeader(script);
+			const wanted = this.HORIZON_COLS.map((c) => c.cls);
+			$$('table.topic-list .topic-list-item').forEach((row) => {
+				const pick = (cls) =>
+					Array.from(row.children).find((c) => c.classList?.contains(cls));
+				const ordered = wanted.map(pick).filter(Boolean);
+				// 先把目标列按顺序挂到末尾，再把非目标列（创建者等）挪到最后并隐藏
+				ordered.forEach((node) => row.appendChild(node));
+				Array.from(row.children).forEach((cell) => {
+					const isWanted = wanted.some((cls) => cell.classList?.contains(cls));
+					if (!isWanted) row.appendChild(cell);
+				});
+				// 创建者列：只加标记类，交给 CSS 隐藏（不动 Ember 管理的节点）
+				pick('topic-creator-data')?.classList.add(`${PREFIX}-excel-col-empty`);
+				const status = pick('topic-status-data');
+				if (status) {
+					status.classList.toggle(
+						`${PREFIX}-excel-col-empty`,
+						!status.querySelector('.topic-status-card')
+					);
+				}
+				// 标题单元格：去掉可能把内容挤没的 colspan / 残留 grid 样式
+				const main = pick('main-link');
+				if (main) {
+					if (main.getAttribute('colspan')) main.removeAttribute('colspan');
+					main.style.removeProperty('display');
+					main.style.removeProperty('width');
+					main.style.removeProperty('max-width');
+					main.style.removeProperty('grid-area');
+				}
+			});
+		},
+
+		/** Default/Moyu 经典列表：分类/标签单独一列（excelMetaCol 开启时） */
+		splitClassicMeta(script) {
+			if (!script.normal.excelMode) return;
+			if (document.body.classList.contains(`${PREFIX}-excel-horizon`)) return;
+			const on = !!script.advanced.excelMetaCol;
+			// 幂等：先拆回原状（把 link-bottom-line 放回标题 td，删掉临时 td/th）
+			$$(`td.${PREFIX}-excel-meta-cell`).forEach((td) => {
+				const lb = td.querySelector('.link-bottom-line');
+				const main = td.closest('.topic-list-item')?.querySelector('.main-link');
+				if (lb && main) main.appendChild(lb);
+				td.remove();
+			});
+			$$(`th.${PREFIX}-excel-meta-head`).forEach((th) => th.remove());
+			if (!on) return;
+			const table = $('table.topic-list');
+			if (!table) return;
+			const headRow = table.querySelector('thead tr, .topic-list-header tr');
+			const mainTh =
+				headRow &&
+				headRow.querySelector('th.main-link, th.default, th[data-sort-order="default"]');
+			if (mainTh && !headRow.querySelector(`th.${PREFIX}-excel-meta-head`)) {
+				const th = document.createElement('th');
+				th.className = `topic-list-data ${PREFIX}-excel-meta-head`;
+				th.scope = 'col';
+				th.textContent = '分类';
+				mainTh.after(th);
+			}
+			$$('table.topic-list .topic-list-item').forEach((row) => {
+				const main = row.querySelector('td.main-link');
+				if (!main) return;
+				const lb = main.querySelector('.link-bottom-line');
+				if (!lb) return;
+				const td = document.createElement('td');
+				td.className = `topic-list-data ${PREFIX}-excel-meta-cell`;
+				td.appendChild(lb);
+				main.after(td);
+			});
+		},
+
+		teardown(script) {
 			this.clearRowNums();
 			this.clearHorizonHeader();
+			this.splitClassicMeta({ normal: { excelMode: false } });
 			$$('.topic-list-item').forEach((r) => r.classList.remove(`${PREFIX}-excel-row-active`));
 			this.stopTitleGuard();
 			if (this._origTitle != null) {
