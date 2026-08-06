@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.6.2
+// @version      1.6.5
 // @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.6.2';
+	const SCRIPT_VERSION = '1.6.5';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -1281,15 +1281,7 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
   width: 88px;
   padding-right: 6px;
 }
-/* 互斥设置：Excel 开启时置灰 */
-#${PREFIX}-panel label.${PREFIX}-exclusive-off {
-  opacity: 0.45;
-  transition: opacity .15s ease;
-}
-#${PREFIX}-panel label.${PREFIX}-exclusive-off input,
-#${PREFIX}-panel label.${PREFIX}-exclusive-off select {
-  pointer-events: none;
-}
+
 .${PREFIX}-user-actions {
   display: inline-flex;
   gap: 4px;
@@ -1326,9 +1318,10 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
 /* floor jump */
 .${PREFIX}-floor-bar {
   position: fixed;
-  right: 20px;
+  /* 水平避开 FAB 按钮组（顶部/楼层/设置），显示在按钮左侧 */
+  right: 76px;
   bottom: 150px;
-  z-index: 99980;
+  z-index: 99982; /* 盖过 Excel 固定头/尾（99981），避免被遮住 */
   display: none;
   flex-direction: column;
   gap: 6px;
@@ -1340,7 +1333,7 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
 }
 body.${PREFIX}-fab-left .${PREFIX}-floor-bar {
   right: auto;
-  left: 20px;
+  left: 76px;
 }
 .${PREFIX}-floor-bar.open { display: flex; }
 .${PREFIX}-floor-bar input {
@@ -3377,7 +3370,15 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				if (action === 'top') window.scrollTo({ top: 0, behavior: 'smooth' });
 				if (action === 'floor') {
 					const bar = $(`.${PREFIX}-floor-bar`);
-					if (bar) bar.classList.toggle('open');
+					if (!bar) return;
+					const willOpen = !bar.classList.contains('open');
+					bar.classList.toggle('open', willOpen);
+					if (willOpen) {
+						// 展开即聚焦，方便直接输入楼层号
+						const input = bar.querySelector('input');
+						input?.focus();
+						input?.select();
+					}
 				}
 			});
 			document.body.appendChild(fab);
@@ -3408,6 +3409,16 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 						} else {
 							notify('未找到该楼层');
 						}
+					}
+				});
+				// 输入框：回车跳转 / Esc 收起
+				bar.querySelector('input').addEventListener('keydown', (e) => {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						bar.querySelector('button').click();
+					} else if (e.key === 'Escape') {
+						bar.classList.remove('open');
+						bar.querySelector('input').blur();
 					}
 				});
 				document.body.appendChild(bar);
@@ -3457,30 +3468,6 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					el.value = source[key] ?? '';
 				}
 			});
-			this.syncExclusiveUI();
-		}
-
-		/** 互斥项联动：Excel 开启时禁用并提示被接管的设置 */
-		syncExclusiveUI() {
-			const panel = $(`#${PREFIX}-panel`);
-			if (!panel) return;
-			const excelOn = !!this.normal.excelMode;
-			const rules = {
-				hideSidebar: 'Excel 开启时由「导航/侧栏」接管（快捷键 H）',
-				wideMode: 'Excel 已强制全宽，此项仅关闭 Excel 时生效',
-				compactMode: 'Excel 列表自带紧凑行高，此项仅关闭 Excel 时生效',
-			};
-			Object.entries(rules).forEach(([key, tip]) => {
-				const el = panel.querySelector(`[data-key="${key}"]`);
-				if (!el) return;
-				el.disabled = excelOn;
-				const label = el.closest('label');
-				if (label) {
-					if (!label.dataset.ldmyOrigTitle) label.dataset.ldmyOrigTitle = label.title || '';
-					label.title = excelOn ? tip : label.dataset.ldmyOrigTitle;
-					label.classList.toggle(`${PREFIX}-exclusive-off`, excelOn);
-				}
-			});
 		}
 
 		ensurePanel() {
@@ -3494,7 +3481,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				{ key: 'hideSidebar', label: '隐藏侧边栏', tip: '快捷键 H；Excel 开启时由「导航/侧栏」接管' },
 				{ key: 'hideTopicMap', label: '隐藏话题地图' },
 				{ key: 'excelMode', label: 'Excel 摸鱼外观' },
-				{ key: 'compactMode', label: '紧凑列表', tip: '压缩话题行高；Excel 下更像表格' },
+				{ key: 'compactMode', label: '紧凑列表', tip: '压缩话题行高；Excel 下同样生效' },
 				{ key: 'wideMode', label: '宽屏模式', tip: '仅关闭 Excel 时生效；Excel 已强制全宽' },
 			];
 			const normalRight = [
@@ -3753,9 +3740,21 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 
 			document.body.appendChild(overlay);
 
-			// Excel 开关实时联动互斥项
-			overlay.querySelector('[data-key="excelMode"]')?.addEventListener('change', () => {
-				this.syncExclusiveUI();
+			// 被接管项：Excel 开启时勾选给出 toast 提示（不挡交互，面板不加小字）
+			[
+				{
+					key: 'hideSidebar',
+					msg: 'Excel 开启时暂不生效：由「导航/侧栏」接管（快捷键 H）',
+				},
+				{
+					key: 'wideMode',
+					msg: 'Excel 开启时暂不生效：已强制全宽，关闭 Excel 后生效',
+				},
+			].forEach(({ key, msg }) => {
+				overlay.querySelector(`[data-key="${key}"]`)?.addEventListener('change', (e) => {
+					if (!this.normal.excelMode) return;
+					if (e.target.checked) notify(msg);
+				});
 			});
 		}
 
@@ -4971,7 +4970,9 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					parts.push(`<span>${this.esc(ctx.topicTitle)}</span>`);
 				}
 			}
-			fxEl.innerHTML = parts.join('') || 'A1';
+			const html = parts.join('') || 'A1';
+			// 幂等：内容没变不重建，避免 renderPage 频繁替换链接导致点击失效
+			if (fxEl.innerHTML !== html) fxEl.innerHTML = html;
 		},
 
 		ensureRoot(script) {
@@ -4981,6 +4982,14 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				root.id = `${PREFIX}-excel-root`;
 				document.body.appendChild(root);
 				root.addEventListener('click', (e) => {
+					// A1 公式栏导航链接（分类/话题）→ 跳转（委托处理，链接重建也不丢点击）
+					const navLink = e.target.closest(`.${PREFIX}-excel-nav-link`);
+					if (navLink) {
+						e.preventDefault();
+						e.stopPropagation();
+						location.assign(navLink.getAttribute('href') || '');
+						return;
+					}
 					// 工作簿标题 → 首页
 					const book = e.target.closest(
 						`.${PREFIX}-excel-titlebar-title, .${PREFIX}-excel-h1-title`
