@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.6.5
+// @version      1.7.0
 // @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.6.5';
+	const SCRIPT_VERSION = '1.7.0';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -1535,15 +1535,16 @@ body.${PREFIX}-excel-tencent #${PREFIX}-excel-root .${PREFIX}-excel-fish {
   width: 28px;
   height: 28px;
   border-radius: 4px;
-  background: #e9e9e9;
+  background: transparent;
   text-align: center;
   line-height: 28px;
   margin-right: 12px;
   cursor: pointer;
   font-size: 14px;
   pointer-events: auto;
+  transition: background .15s ease;
 }
-body.${PREFIX}-excel-tencent #${PREFIX}-excel-root .${PREFIX}-excel-fish:hover { background: #dedede; }
+body.${PREFIX}-excel-tencent #${PREFIX}-excel-root .${PREFIX}-excel-fish:hover { background: #e8eef8; }
 body.${PREFIX}-excel-tencent #${PREFIX}-excel-root .${PREFIX}-excel-toolbar {
   height: 44px;
   display: flex;
@@ -3099,22 +3100,43 @@ body.${PREFIX}-excel .topic-list-container {
   display: flex; align-items: center; gap: 6px; margin-right: 8px; pointer-events: auto; flex-shrink: 0;
 }
 #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  height: 28px; min-width: 28px; padding: 0 10px; border: 1px solid #d0d0d0; border-radius: 2px;
-  background: #f5f5f5; color: #333; font-size: 12px; line-height: 1; cursor: pointer; user-select: none; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0; border: none; border-radius: 4px;
+  background: transparent; color: #555; cursor: pointer; user-select: none;
+  transition: background .15s ease, color .15s ease;
+}
+#${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn svg {
+  width: 15px; height: 15px; display: block;
 }
 #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn:hover {
-  background: #e8eef8; border-color: #8eb6e8; color: #1a3959;
+  background: #e8eef8; color: #1a3959;
 }
 #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"] {
-  background: #1e6fff; border-color: #1e6fff; color: #fff; border-radius: 14px; min-width: 32px; padding: 0 12px; font-weight: 600;
+  position: relative;
+  background: transparent; color: #555; border-radius: 4px;
 }
-#${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"]:hover { filter: brightness(1.05); color: #fff; }
+#${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"]:hover { background: #e8eef8; color: #1a3959; }
+/* hover 气泡显示用户名 */
+#${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"]:hover::after {
+  content: attr(data-user);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: rgba(20,20,20,.9);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 99995;
+  pointer-events: none;
+}
 body.${PREFIX}-excel-office #${PREFIX}-excel-root .${PREFIX}-excel-chrome-actions {
   position: absolute; right: 12px; top: 8px; z-index: 5;
 }
-body.${PREFIX}-excel-office #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"] {
-  background: #217346; border-color: #217346;
+body.${PREFIX}-excel-office #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"]:hover {
+  background: #e8f2ea; color: #1a5c38;
 }
 
 /* ===================== Excel 深色模式 ===================== */
@@ -3147,13 +3169,16 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-fish { background: #3a3a3a !important; color: #eee !important; }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn {
-  background: #3a3a3a; border-color: #555; color: #e6e6e6;
+  background: transparent; color: #c9d4e0;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn:hover {
-  background: #2f3b4d; border-color: #4ea1ff; color: #dcecff;
+  background: #2f3b4d; color: #dcecff;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"] {
-  background: #3b82f6; border-color: #3b82f6; color: #fff;
+body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"]:hover {
+  background: #2f3b4d; color: #dcecff;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[data-act="me"]:hover::after {
+  background: rgba(30,30,35,.95);
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-sheet-tab { color: #4ea1ff !important; }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-sheet-tab::after { background: #4ea1ff !important; }
@@ -3250,6 +3275,30 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .title-wrapper {
 body.${PREFIX}-excel.${PREFIX}-excel-dark .fancy-title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names a,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names .first { color: #8ec7ff !important; }
+
+/* Excel 模式下把页面弹层提到 Excel 固定头（99981）之上，避免弹窗看不见 */
+/* 属性选择器宽覆盖：class 含关键词的容器一律提升，不依赖精确 class 名 */
+body.${PREFIX}-excel [class*="search-menu"],
+body.${PREFIX}-excel [class*="search-banner"],
+body.${PREFIX}-excel [class*="user-menu"],
+body.${PREFIX}-excel [class*="fk-d-menu"],
+body.${PREFIX}-excel [class*="menu-panel"],
+body.${PREFIX}-excel [class*="dropdown-menu"],
+body.${PREFIX}-excel [class*="select-kit"],
+body.${PREFIX}-excel [class*="tooltip"],
+body.${PREFIX}-excel .d-modal,
+body.${PREFIX}-excel .modal-inner-container,
+body.${PREFIX}-excel .panel,
+body.${PREFIX}-excel .d-menu-panel {
+  z-index: 99990 !important;
+}
+/* 双保险：弹层打开时（搜索框聚焦 / 语言菜单展开 / 用户菜单展开）临时把 Excel 头降到弹层之下 */
+body.${PREFIX}-excel:has([class*="search-menu"] .search-term__input:focus) #${PREFIX}-excel-root .${PREFIX}-excel-header,
+body.${PREFIX}-excel:has([class*="fk-d-menu"][aria-expanded="true"]) #${PREFIX}-excel-root .${PREFIX}-excel-header,
+body.${PREFIX}-excel:has([class*="user-menu"].open) #${PREFIX}-excel-root .${PREFIX}-excel-header,
+body.${PREFIX}-excel:has([class*="user-menu"]:not([hidden])) #${PREFIX}-excel-root .${PREFIX}-excel-header {
+  z-index: 99970 !important;
+}
 
 /* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置 */
 body.${PREFIX}-excel #${PREFIX}-fab {
@@ -4794,9 +4843,9 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
             <div class="${PREFIX}-excel-grow"></div>
             ${this.vsep(24, '0 12px')}
             <div class="${PREFIX}-excel-chrome-actions" data-ldmy-chrome="1">
-              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="search" title="搜索">🔍 搜索</button>
-              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="lang" title="语言 / 主题切换">语言</button>
-              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="me" title="我的">我的</button>
+              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="search" title="搜索"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg></button>
+              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="lang" title="语言 / 主题切换"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 3 2.5 15 0 18"/><path d="M12 3c-2.5 3-2.5 15 0 18"/></svg></button>
+              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="me" data-user="${this.esc(this.currentUsername())}" title="我的"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
             </div>
             <div class="${PREFIX}-excel-fish" title="打开摸鱼设置" role="button">🐟</div>
           </div>
@@ -4852,9 +4901,9 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
             ${this.slice(t, 'H_L_1', 'l')}
             ${this.slice(t, 'H_R_1', 'r')}
             <div class="${PREFIX}-excel-chrome-actions" data-ldmy-chrome="1">
-              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="search" title="搜索">搜索</button>
-              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="lang" title="语言 / 主题切换">语言</button>
-              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="me" title="我的">我的</button>
+              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="search" title="搜索"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg></button>
+              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="lang" title="语言 / 主题切换"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 3 2.5 15 0 18"/><path d="M12 3c-2.5 3-2.5 15 0 18"/></svg></button>
+              <button type="button" class="${PREFIX}-excel-chrome-btn" data-act="me" data-user="${this.esc(this.currentUsername())}" title="我的"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
             </div>
           </div>
           <div class="${PREFIX}-excel-h2">
@@ -4900,6 +4949,11 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				.replace(/</g, '&lt;')
 				.replace(/>/g, '&gt;')
 				.replace(/"/g, '&quot;');
+		},
+
+		currentUsername() {
+			const el = $('[data-user-card]');
+			return el ? el.getAttribute('data-user-card') || '' : '';
 		},
 
 		/** 当前页板块 / 标题，供公式栏 A1 区域展示 */
@@ -5159,67 +5213,125 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 		},
 
 		handleChromeAction(act, script) {
-			const clickFirst = (sels) => {
+			// JS 兜底：触发后定时把页面 fixed/absolute 弹层（非脚本自身元素）提到 Excel 头之上
+			const boostPopups = () => {
+				const candidates = [...$$('body > *'), ...$$('#main > *, main > *')];
+				candidates.forEach((n) => {
+					if (n.closest && n.closest(`#${PREFIX}-excel-root`)) return;
+					const cs = getComputedStyle(n);
+					if (cs.position !== 'fixed' && cs.position !== 'absolute') return;
+					const z = parseInt(cs.zIndex, 10);
+					if (Number.isNaN(z) || z >= 99990) return;
+					n.style.setProperty('z-index', '99990', 'important');
+				});
+			};
+			[200, 600, 1200].forEach((ms) => setTimeout(boostPopups, ms));
+
+			const clickFirst = (sels, opts = {}) => {
 				for (const sel of sels) {
 					const el = document.querySelector(sel);
 					if (!el) continue;
-					const wrap = el.closest('.d-header, .d-header-wrap, .header-buttons, .panel, .sidebar-footer-wrapper');
 					const restore = [];
-					[el, wrap].filter(Boolean).forEach((node) => {
-						restore.push([node, node.getAttribute('style')]);
-						node.style.setProperty('display', 'block', 'important');
-						node.style.setProperty('visibility', 'visible', 'important');
-						node.style.setProperty('pointer-events', 'auto', 'important');
-						node.style.setProperty('opacity', '0', 'important');
-						node.style.setProperty('position', 'fixed', 'important');
-						node.style.setProperty('left', '-9999px', 'important');
-					});
-					try { el.click(); } catch (_) { }
-					setTimeout(() => {
+					// 祖先链上所有被隐藏的节点临时显示（Excel 下 banner / d-header 为 display:none，
+					// 只改元素自身无法让 focus/click 生效）
+					let node = el;
+					while (node && node !== document.body) {
+						const cs = getComputedStyle(node);
+						if (cs.display === 'none' || cs.visibility === 'hidden') {
+							restore.push([node, node.getAttribute('style')]);
+							node.style.setProperty('display', 'block', 'important');
+							node.style.setProperty('visibility', 'visible', 'important');
+							node.style.setProperty('pointer-events', 'auto', 'important');
+							node.style.setProperty('opacity', '1', 'important');
+						}
+						node = node.parentElement;
+					}
+					// 元素本身也强制可交互
+					restore.push([el, el.getAttribute('style')]);
+					el.style.setProperty('display', 'block', 'important');
+					el.style.setProperty('visibility', 'visible', 'important');
+					el.style.setProperty('pointer-events', 'auto', 'important');
+					el.style.setProperty('opacity', '1', 'important');
+					try {
+						if (opts.focus && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+							el.focus();
+						} else {
+							el.click();
+						}
+					} catch (_) { }
+					const restoreAll = () => {
 						restore.forEach(([node, style]) => {
 							if (style == null) node.removeAttribute('style');
 							else node.setAttribute('style', style);
 						});
-					}, 50);
+					};
+					if (opts.watchSel) {
+						// 弹层打开期间保持 trigger 可见（否则菜单会随 trigger 隐藏而关闭/错位），
+						// 弹层消失或 8s 兜底后再恢复
+						const t0 = Date.now();
+						const iv = setInterval(() => {
+							if (Date.now() - t0 > 8000 || !document.querySelector(opts.watchSel)) {
+								clearInterval(iv);
+								restoreAll();
+							}
+						}, 200);
+					} else {
+						setTimeout(restoreAll, 120);
+					}
 					return true;
 				}
 				return false;
 			};
 			if (act === 'search') {
-				if (clickFirst([
-					'#search-button',
-					'button.search-dropdown',
-					'.header-dropdown-toggle.search-dropdown',
-					'.search-dropdown button',
-					'button[aria-label*="搜索"]',
-					'button[title*="搜索"]',
-					'.d-header .search-menu button',
-				])) return;
-				location.assign(location.origin + '/search');
+				// 真实搜索按钮 #search-button；弹层保持打开直到用户关闭
+				if (
+					clickFirst(
+						[
+							'#search-button',
+							'.header-dropdown-toggle.search-dropdown button',
+							'button.search-dropdown',
+							'#welcome-banner-search-input',
+							'.search-term__input',
+							'button[aria-label*="搜索"]',
+							'button[title*="搜索"]',
+						],
+						{ watchSel: '.search-menu' }
+					)
+				) return;
+				location.assign(location.origin + '/search?expanded=true');
 				return;
 			}
 			if (act === 'lang') {
-				if (clickFirst([
-					'.sidebar-theme-toggle-dropdown .select-kit-header',
-					'.sidebar-theme-toggle__wrapper .select-kit-header',
-					'.sidebar-theme-toggle-dropdown summary',
-					'.sidebar-footer-actions .select-kit-header',
-					'button[aria-label*="语言"]',
-					'button[title*="语言"]',
-				])) return;
+				if (clickFirst(
+					[
+						'button.language-switcher-trigger',
+						'.language-switcher-trigger',
+						'.fk-d-menu__trigger[data-identifier="language-switcher"]',
+						'.sidebar-theme-toggle-dropdown .select-kit-header',
+						'.sidebar-theme-toggle__wrapper .select-kit-header',
+						'.sidebar-footer-actions .select-kit-header',
+						'button[aria-label*="语言"]',
+						'button[title*="语言"]',
+					],
+					{ watchSel: '.fk-d-menu' }
+				)) return;
 				location.assign(location.origin + '/my/preferences/interface');
 				return;
 			}
 			if (act === 'me') {
-				if (clickFirst([
-					'#current-user',
-					'#toggle-current-user',
-					'.header-dropdown-toggle.current-user',
-					'button.current-user',
-					'.d-header .current-user button',
-					'button[aria-label*="用户"]',
-					'a[href*="/u/"][data-user-card]',
-				])) return;
+				// 真实入口是右上角头像按钮 #toggle-current-user（弹「通知和帐户」菜单）
+				if (clickFirst(
+					[
+						'#toggle-current-user',
+						'#current-user',
+						'.header-dropdown-toggle.current-user',
+						'button.current-user',
+						'.d-header .current-user button',
+						'button[aria-label*="用户"]',
+						'a[href*="/u/"][data-user-card]',
+					],
+					{ watchSel: '.user-menu-panel' }
+				)) return;
 				location.assign(location.origin + '/my/summary');
 			}
 		},
