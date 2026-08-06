@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.3.4
+// @version      1.4.0
 // @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、护眼/暗黑、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.3.4';
+	const SCRIPT_VERSION = '1.4.0';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -44,7 +44,6 @@
 		hideSidebar: false, // Excel 开时会自行隐藏侧栏；关 Excel 时保留导航
 		hideTopicMap: true,
 		eyeCare: false, // 与 Excel 外观冲突，按需开
-		darkEnhance: false,
 		excelMode: true, // 核心卖点，默认开；快捷键 X 可关
 		compactMode: false,
 		wideMode: true,
@@ -339,7 +338,6 @@
 				[`${PREFIX}-hide-sidebar`]: excelOn ? false : this.normal.hideSidebar,
 				[`${PREFIX}-hide-topic-map`]: this.normal.hideTopicMap,
 				[`${PREFIX}-eye-care`]: this.normal.eyeCare,
-				[`${PREFIX}-dark-enhance`]: this.normal.darkEnhance,
 				[`${PREFIX}-compact`]: this.normal.compactMode,
 				[`${PREFIX}-excel`]: excelOn,
 				// Excel 已强制全宽，宽屏 class 仅非 Excel 时生效，避免互相覆盖
@@ -407,7 +405,6 @@
 		}
 
 		detectDarkMode() {
-			if (this.normal.darkEnhance) return true;
 			try {
 				const root = getComputedStyle(document.documentElement);
 				const schemeType = (root.getPropertyValue('--scheme-type') || '').trim().toLowerCase();
@@ -823,31 +820,6 @@ body.${PREFIX}-eye-care .topic-list-item,
 body.${PREFIX}-eye-care .cooked {
   background-color: transparent !important;
 }
-
-/* dark enhance */
-body.${PREFIX}-dark-enhance {
-  filter: none;
-}
-html.${PREFIX}-force-dark {
-  color-scheme: dark;
-}
-body.${PREFIX}-dark-enhance {
-  background: #1a1b1e !important;
-  color: #e6e6e6 !important;
-}
-body.${PREFIX}-dark-enhance #main-outlet,
-body.${PREFIX}-dark-enhance .topic-body,
-body.${PREFIX}-dark-enhance .d-header,
-body.${PREFIX}-dark-enhance .sidebar-wrapper,
-body.${PREFIX}-dark-enhance .topic-list,
-body.${PREFIX}-dark-enhance .modal-inner-container,
-body.${PREFIX}-dark-enhance #${PREFIX}-panel {
-  background: #1e1f22 !important;
-  color: #e8e8e8 !important;
-  border-color: #333 !important;
-}
-body.${PREFIX}-dark-enhance a { color: #6cb2eb; }
-body.${PREFIX}-dark-enhance .cooked { color: #ddd; }
 
 /* compact topic list（Excel 下同样生效，压缩行高更像表格） */
 body.${PREFIX}-compact .topic-list .topic-list-item {
@@ -3096,13 +3068,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .title-wrapper {
 body.${PREFIX}-excel.${PREFIX}-excel-dark .fancy-title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names a,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names .first { color: #8ec7ff !important; }
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-dark-enhance,
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-dark-enhance #main-outlet,
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-dark-enhance .topic-body,
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-dark-enhance .topic-list,
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-dark-enhance .sidebar-wrapper {
-  background: #1e1e1e !important; color: #e6e6e6 !important;
-}
 
 /* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置 */
 body.${PREFIX}-excel #${PREFIX}-fab {
@@ -3316,7 +3281,6 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				{ key: 'hideSidebar', label: '隐藏侧边栏', tip: '关闭 Excel 时生效；Excel 开启时请用「导航/侧栏」' },
 				{ key: 'hideTopicMap', label: '隐藏话题地图' },
 				{ key: 'eyeCare', label: '护眼模式', tip: '快捷键 T' },
-				{ key: 'darkEnhance', label: '暗黑增强' },
 				{ key: 'excelMode', label: 'Excel 摸鱼外观' },
 				{ key: 'compactMode', label: '紧凑列表', tip: '压缩话题行高；Excel 下更像表格' },
 				{ key: 'wideMode', label: '宽屏模式', tip: '仅关闭 Excel 时生效；Excel 已强制全宽' },
