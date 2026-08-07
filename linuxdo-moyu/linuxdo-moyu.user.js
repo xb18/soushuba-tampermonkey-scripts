@@ -7,7 +7,7 @@
 // @license      MIT
 // @match        https://linux.do/*
 // @match        https://idcflare.com/*
-// @icon         https://linux.do/favicon.ico
+// @icon         https://www.google.com/s2/favicons?domain=linux.do
 // @grant        GM_registerMenuCommand
 // @grant        GM_setValue
 // @grant        GM_getValue
