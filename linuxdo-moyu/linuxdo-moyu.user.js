@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.0.0
+// @version      1.0.1
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -26,8 +26,8 @@
 	// ============================================================
 	// 常量
 	// ============================================================
-	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.0.0';
+	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
+	const SCRIPT_VERSION = '1.0.1';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -4516,7 +4516,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					if (act === 'save') this.saveFromPanel();
 					if (act === 'export') {
 						const data = JSON.stringify(this.exportAll(), null, 2);
-						downloadText(`linuxdo-moyu-config-${Date.now()}.json`, data);
+						downloadText(`LINUXDO-config-${Date.now()}.json`, data);
 						if (typeof GM_setClipboard === 'function') {
 							try {
 								GM_setClipboard(data);
@@ -4867,7 +4867,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				GM_registerMenuCommand('打开摸鱼设置', () => this.openPanel());
 				GM_registerMenuCommand('导出配置', () => {
 					const data = JSON.stringify(this.exportAll(), null, 2);
-					downloadText(`linuxdo-moyu-config-${Date.now()}.json`, data);
+					downloadText(`LINUXDO-config-${Date.now()}.json`, data);
 					notify('已导出配置');
 				});
 			} catch {
