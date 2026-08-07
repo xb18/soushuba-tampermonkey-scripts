@@ -1,9 +1,15 @@
-# LINUX DO 摸鱼增强
+# LINUX DO 优化摸鱼体验
+
+[![GitHub stars](https://img.shields.io/github/stars/urzeye/tampermonkey-scripts?style=flat-square)](https://github.com/urzeye/tampermonkey-scripts)
+[![GitHub issues](https://img.shields.io/github/issues/urzeye/tampermonkey-scripts?style=flat-square)](https://github.com/urzeye/tampermonkey-scripts/issues)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Repo](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
 
 > Discourse / [LINUX DO](https://linux.do) 论坛显示优化与功能增强，装完即摸鱼。
 
-**最新版本**: v1.0.0
+**最新版本**: v1.0.1
 **脚本文件**: [`linuxdo-moyu.user.js`](./linuxdo-moyu.user.js)
+**仓库地址**: [urzeye/tampermonkey-scripts](https://github.com/urzeye/tampermonkey-scripts)
 **适配站点**: [linux.do](https://linux.do) · [idcflare.com](https://idcflare.com)（同架构 Discourse）
 
 灵感来自 [NGA 优化摸鱼体验](https://github.com/kisshang1993/NGA-BBS-Script)，针对 Discourse 重写；Excel 主题资源沿用其 MIT 授权素材。
