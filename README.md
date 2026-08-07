@@ -17,7 +17,7 @@
 | [Gemini Helper](./gemini-helper/README.md) | ![](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork) | Gemini 体验增强（大纲、会话管理、宽屏等） | ![](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) |
 | [Coomer 佬友严选](./coomer/README.md) | ![](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork) | Coomer 体验增强（极简 UI、视频播放器、批量下载） | ![](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
 | [搜书吧免积分下载](./soushu-bypass/README.md) | ![](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork) | 搜书吧附件免积分下载 | ![](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
-| [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md) | v1.2.1 | Discourse/LINUX DO 摸鱼增强（Excel高仿外观（腾讯文档/Excel）、隐藏头像/图片、高亮楼主、黑名单等） | - | - | 仓库内安装 |
+| [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md) | v1.0.0 | Discourse/LINUX DO 摸鱼增强（Excel 高仿、[图]占位、黑名单/关键字、楼层表格化等） | - | - | 仓库内安装 |
 
 ### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
 
@@ -90,15 +90,22 @@
 
 ### 🐟 LINUX DO 摸鱼增强
 
-> Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。
+> Discourse / [LINUX DO](https://linux.do) 论坛显示优化与功能增强，装完即摸鱼。高仿 Excel 外观、楼层扁平化、隐藏图 `[图]` 占位、黑名单/关键字、图片预览等。
 
-**最新版本**: v1.2.1
+**最新版本**: v1.0.0
 
 [文档 Docs](./linuxdo-moyu/README.md) | [脚本 Script](./linuxdo-moyu/linuxdo-moyu.user.js)
 
 ## 🐛 反馈问题
 
 如有问题或建议，请在 [GitHub Issues](https://github.com/urzeye/tampermonkey-scripts/issues) 反馈
+
+
+## 🔗 友情链接
+
+| 站点 | 简介 |
+| --- | --- |
+| [LINUX DO](https://linux.do) | 新一代的技术社区，连接每一位探索者 |
 
 ## ⭐ Star History
 

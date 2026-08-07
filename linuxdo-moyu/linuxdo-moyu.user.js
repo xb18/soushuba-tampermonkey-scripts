@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.8.2
-// @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
+// @version      1.0.0
+// @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
 // @match        https://linux.do/*
@@ -14,6 +14,8 @@
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
 // @grant        GM_setClipboard
+// @grant        GM_xmlhttpRequest
+// @connect      raw.githubusercontent.com
 // @grant        window.onurlchange
 // @run-at       document-idle
 // ==/UserScript==
@@ -25,8 +27,11 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.8.2';
+	const SCRIPT_VERSION = '1.0.0';
 	const PREFIX = 'ldmy';
+	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
+	const SUPPORT_WECHAT_IMG =
+		'https://raw.githubusercontent.com/urzeye/ophel/refs/heads/release/docs/media/support/wechat-pay.jpg';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
 		BAN_LIST: `${PREFIX}_ban_list`,
@@ -907,6 +912,117 @@ body.${PREFIX}-fab-left #${PREFIX}-fab {
 }
 #${PREFIX}-panel .${PREFIX}-btn.primary:hover { filter: brightness(1.05); color: #fff; }
 #${PREFIX}-panel .${PREFIX}-btn.danger { color: #c0392b; border-color: #e0b4b0; }
+#${PREFIX}-panel .${PREFIX}-panel-ft-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 4px;
+}
+#${PREFIX}-panel .${PREFIX}-ft-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--primary-low, #ddd);
+  background: var(--secondary, #fff);
+  color: var(--primary-medium, #666);
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color .15s, color .15s, background .15s;
+  padding: 0;
+  font: inherit;
+}
+#${PREFIX}-panel .${PREFIX}-ft-link:hover,
+#${PREFIX}-panel .${PREFIX}-ft-link.is-open {
+  border-color: var(--tertiary, #08c);
+  color: var(--tertiary, #08c);
+  background: color-mix(in srgb, var(--tertiary, #08c) 8%, #fff);
+}
+#${PREFIX}-panel .${PREFIX}-ft-link svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+}
+/* GitHub 入口：默认近黑，避免次要灰发虚 */
+#${PREFIX}-panel a.${PREFIX}-ft-link {
+  color: #1f2328;
+  border-color: #c9cdd3;
+  background: #f6f8fa;
+}
+#${PREFIX}-panel a.${PREFIX}-ft-link:hover {
+  color: #fff;
+  border-color: #1f2328;
+  background: #1f2328;
+}
+#${PREFIX}-panel .${PREFIX}-ft-link.${PREFIX}-support-tip {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: #c0392b;
+}
+#${PREFIX}-panel .${PREFIX}-ft-link.${PREFIX}-support-tip:hover,
+#${PREFIX}-panel .${PREFIX}-ft-link.${PREFIX}-support-tip.is-open {
+  border-color: #e0b4b0;
+  color: #a93226;
+  background: #fff5f4;
+}
+#${PREFIX}-panel .${PREFIX}-support-pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(4px);
+  width: 196px;
+  padding: 10px 10px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--primary-low, #ddd);
+  background: var(--secondary, #fff);
+  box-shadow: 0 10px 28px rgba(0,0,0,.16);
+  color: var(--primary, #333);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease, visibility .15s;
+  z-index: 20;
+  text-align: center;
+}
+#${PREFIX}-panel .${PREFIX}-support-pop::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  margin-left: -6px;
+  border: 6px solid transparent;
+  border-top-color: var(--secondary, #fff);
+  filter: drop-shadow(0 1px 0 var(--primary-low, #ddd));
+}
+#${PREFIX}-panel .${PREFIX}-ft-link.${PREFIX}-support-tip:hover .${PREFIX}-support-pop,
+#${PREFIX}-panel .${PREFIX}-ft-link.${PREFIX}-support-tip.is-open .${PREFIX}-support-pop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+#${PREFIX}-panel .${PREFIX}-support-pop img {
+  display: block;
+  width: 176px;
+  height: 176px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #fff;
+}
+#${PREFIX}-panel .${PREFIX}-support-pop .tip {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary-medium, #666);
+  line-height: 1.3;
+}
 
 /* sub panels */
 .${PREFIX}-subpanel {
@@ -1462,7 +1578,7 @@ body.${PREFIX}-fab-left .${PREFIX}-floor-bar {
 }
 body.${PREFIX}-only-op #${PREFIX}-only-op-tip { display: inline-flex; gap: 6px; align-items: center; }
 
-/* ========== Excel 摸鱼外观（高仿 NGA 结构：腾讯文档矢量 / Office 切图） ========== */
+/* ========== Excel 摸鱼外观 ========== */
 #${PREFIX}-excel-root {
   display: none;
   position: fixed;
@@ -1749,7 +1865,7 @@ body.${PREFIX}-excel-tencent #${PREFIX}-excel-root .${PREFIX}-excel-zoom {
   color: #666;
 }
 
-/* ===================== Microsoft Excel（切图拼接，对齐 NGA） ===================== */
+/* ===================== Microsoft Excel ===================== */
 body.${PREFIX}-excel-office {
   --${PREFIX}-excel-header-h: 221px;
   --${PREFIX}-excel-footer-h: 50px;
@@ -4314,10 +4430,22 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
             </details>
           </div>
           <div class="${PREFIX}-panel-ft">
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
               <button type="button" class="${PREFIX}-btn" data-act="export">导出配置</button>
               <button type="button" class="${PREFIX}-btn" data-act="import">导入配置</button>
               <button type="button" class="${PREFIX}-btn danger" data-act="reset">恢复默认</button>
+              <div class="${PREFIX}-panel-ft-links">
+                <a class="${PREFIX}-ft-link" href="${PROJECT_URL}" target="_blank" rel="noopener noreferrer" title="GitHub 项目主页" aria-label="GitHub 项目主页">
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+                </a>
+                <button type="button" class="${PREFIX}-ft-link ${PREFIX}-support-tip" title="微信赞赏" aria-label="微信赞赏" aria-expanded="false">
+                  赏
+                  <span class="${PREFIX}-support-pop" role="tooltip">
+                    <img class="${PREFIX}-support-img" alt="微信赞赏码" width="176" height="176" referrerpolicy="no-referrer" />
+                    <span class="tip">微信扫码赞赏</span>
+                  </span>
+                </button>
+              </div>
             </div>
             <div style="display:flex;gap:8px">
               <button type="button" class="${PREFIX}-btn" data-act="close">取消</button>
@@ -4333,6 +4461,53 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			});
 
 			overlay.querySelector(`.${PREFIX}-close`).addEventListener('click', () => this.closePanel());
+
+			const supportTip = overlay.querySelector(`.${PREFIX}-support-tip`);
+			if (supportTip) {
+				const supportImg = supportTip.querySelector(`.${PREFIX}-support-img`);
+				let supportImgLoaded = false;
+				const ensureSupportImg = () => {
+					if (!supportImg || supportImgLoaded) return;
+					supportImgLoaded = true;
+					const applyUrl = (url) => {
+						supportImg.src = url;
+					};
+					if (typeof GM_xmlhttpRequest === 'function') {
+						GM_xmlhttpRequest({
+							method: 'GET',
+							url: SUPPORT_WECHAT_IMG,
+							responseType: 'blob',
+							onload: (res) => {
+								if (res.status >= 200 && res.status < 300 && res.response) {
+									applyUrl(URL.createObjectURL(res.response));
+								} else {
+									applyUrl(SUPPORT_WECHAT_IMG);
+								}
+							},
+							onerror: () => applyUrl(SUPPORT_WECHAT_IMG),
+						});
+					} else {
+						applyUrl(SUPPORT_WECHAT_IMG);
+					}
+				};
+				const setOpen = (open) => {
+					supportTip.classList.toggle('is-open', open);
+					supportTip.setAttribute('aria-expanded', open ? 'true' : 'false');
+					if (open) ensureSupportImg();
+				};
+				supportTip.addEventListener('mouseenter', ensureSupportImg);
+				supportTip.addEventListener('click', (e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					setOpen(!supportTip.classList.contains('is-open'));
+				});
+				supportTip.addEventListener('keydown', (e) => {
+					if (e.key === 'Escape') setOpen(false);
+				});
+				overlay.addEventListener('click', (e) => {
+					if (!supportTip.contains(e.target)) setOpen(false);
+				});
+			}
 
 			overlay.querySelectorAll('[data-act]').forEach((btn) => {
 				btn.addEventListener('click', () => {
@@ -5348,7 +5523,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 		},
 	};
 
-	/** Excel 摸鱼外观：腾讯文档（矢量）/ Microsoft Excel（切图），结构对齐 NGA-BBS-Script */
+	/** Excel 摸鱼外观 */
 	const ExcelMode = {
 		name: 'ExcelMode',
 		_origTitle: null,
@@ -5382,7 +5557,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			const cols = this.columnLetters()
 				.map((c) => `<div class="${PREFIX}-excel-column">${c}</div>`)
 				.join('');
-			// 工具栏：对齐 NGA 腾讯文档图标序列
+			// 工具栏
 			const tb = [
 				[10, 11, 12, 13].map((i) => this.ico(t, `icon_${i}`, 20)).join(''),
 				this.vsep(16, '0 4px'),
