@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 摸鱼增强
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.7.0
+// @version      1.7.1
 // @description  Discourse / LINUX DO 论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -25,7 +25,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 摸鱼增强';
-	const SCRIPT_VERSION = '1.7.0';
+	const SCRIPT_VERSION = '1.7.1';
 	const PREFIX = 'ldmy';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
@@ -1762,7 +1762,8 @@ body.${PREFIX}-excel-office #${PREFIX}-excel-root .${PREFIX}-excel-f1 img.${PREF
 /* ===================== 页面内容网格化（Discourse） ===================== */
 body.${PREFIX}-excel {
   background: #fff !important;
-  --header-offset: 0px !important;
+  /* sticky 导航/表头贴在 Excel 固定头下方，归零会导致上滚穿模进工具栏 */
+  --header-offset: var(--${PREFIX}-excel-header-h) !important;
   --d-max-width: 100% !important;
   --topic-body-width: 100% !important;
   --topic-body-width-padding: 12px !important;
@@ -2030,6 +2031,17 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-topics {
   border-radius: 0 !important;
   box-shadow: none !important;
   min-height: 0 !important;
+}
+/* 只让最外层导航条 sticky，避免父子同时 sticky 叠层穿模 */
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls {
+  position: sticky !important;
+  top: var(--${PREFIX}-excel-header-h) !important;
+  z-index: 40 !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-topics {
+  position: static !important;
+  top: auto !important;
 }
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .navigation-container,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .nav-pills,
@@ -3276,28 +3288,71 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .fancy-title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names a,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names .first { color: #8ec7ff !important; }
 
-/* Excel 模式下把页面弹层提到 Excel 固定头（99981）之上，避免弹窗看不见 */
-/* 属性选择器宽覆盖：class 含关键词的容器一律提升，不依赖精确 class 名 */
+/* Excel 模式下的 Discourse 弹层：搜索/用户/语言等常挂在 d-header 栈内。
+ * excel-root 本身 z-index=99980，只抬弹层自身不够——必须整棵 root 降层，并把 d-header 抬上来。 */
 body.${PREFIX}-excel [class*="search-menu"],
 body.${PREFIX}-excel [class*="search-banner"],
 body.${PREFIX}-excel [class*="user-menu"],
 body.${PREFIX}-excel [class*="fk-d-menu"],
 body.${PREFIX}-excel [class*="menu-panel"],
 body.${PREFIX}-excel [class*="dropdown-menu"],
-body.${PREFIX}-excel [class*="select-kit"],
+body.${PREFIX}-excel [class*="select-kit-body"],
 body.${PREFIX}-excel [class*="tooltip"],
 body.${PREFIX}-excel .d-modal,
 body.${PREFIX}-excel .modal-inner-container,
-body.${PREFIX}-excel .panel,
 body.${PREFIX}-excel .d-menu-panel {
-  z-index: 99990 !important;
+  z-index: 100020 !important;
 }
-/* 双保险：弹层打开时（搜索框聚焦 / 语言菜单展开 / 用户菜单展开）临时把 Excel 头降到弹层之下 */
-body.${PREFIX}-excel:has([class*="search-menu"] .search-term__input:focus) #${PREFIX}-excel-root .${PREFIX}-excel-header,
-body.${PREFIX}-excel:has([class*="fk-d-menu"][aria-expanded="true"]) #${PREFIX}-excel-root .${PREFIX}-excel-header,
-body.${PREFIX}-excel:has([class*="user-menu"].open) #${PREFIX}-excel-root .${PREFIX}-excel-header,
-body.${PREFIX}-excel:has([class*="user-menu"]:not([hidden])) #${PREFIX}-excel-root .${PREFIX}-excel-header {
-  z-index: 99970 !important;
+/* 以 JS class 为主；:has 只匹配明确「打开/聚焦」态，避免 DOM 常驻节点把 root 永久压低 */
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open #${PREFIX}-excel-root,
+body.${PREFIX}-excel:has(.search-menu .search-term__input:focus) #${PREFIX}-excel-root,
+body.${PREFIX}-excel:has(.search-menu .search-input:focus) #${PREFIX}-excel-root,
+body.${PREFIX}-excel:has(.fk-d-menu[data-expanded="true"]) #${PREFIX}-excel-root,
+body.${PREFIX}-excel:has(.fk-d-menu__trigger[aria-expanded="true"]) #${PREFIX}-excel-root,
+body.${PREFIX}-excel:has(.header-dropdown-toggle.active) #${PREFIX}-excel-root,
+body.${PREFIX}-excel:has(.header-dropdown-toggle .active) #${PREFIX}-excel-root {
+  z-index: 99940 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header-wrap,
+body.${PREFIX}-excel:has(.search-menu .search-term__input:focus) .d-header,
+body.${PREFIX}-excel:has(.search-menu .search-term__input:focus) .d-header-wrap,
+body.${PREFIX}-excel:has(.search-menu .search-input:focus) .d-header,
+body.${PREFIX}-excel:has(.search-menu .search-input:focus) .d-header-wrap,
+body.${PREFIX}-excel:has(.fk-d-menu[data-expanded="true"]) .d-header,
+body.${PREFIX}-excel:has(.fk-d-menu[data-expanded="true"]) .d-header-wrap,
+body.${PREFIX}-excel:has(.fk-d-menu__trigger[aria-expanded="true"]) .d-header,
+body.${PREFIX}-excel:has(.fk-d-menu__trigger[aria-expanded="true"]) .d-header-wrap,
+body.${PREFIX}-excel:has(.header-dropdown-toggle.active) .d-header,
+body.${PREFIX}-excel:has(.header-dropdown-toggle.active) .d-header-wrap {
+  z-index: 100010 !important;
+}
+/* 弹层打开时：d-header 只作挂载点，尽量不露原生顶栏 */
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header-wrap {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  pointer-events: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="search-menu"],
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="user-menu"],
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="menu-panel"],
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .fk-d-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header button,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header input,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header a {
+  pointer-events: auto !important;
+}
+/* 弹层打开时隐藏原生顶栏里的普通 chrome，只留面板/输入 */
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .title,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .header-buttons > *:not(.search-dropdown):not(.current-user):not(.header-dropdown-toggle),
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .extra-info-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .home-logo-wrapper {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置 */
@@ -5222,11 +5277,23 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					if (cs.position !== 'fixed' && cs.position !== 'absolute') return;
 					const z = parseInt(cs.zIndex, 10);
 					if (Number.isNaN(z) || z >= 99990) return;
-					n.style.setProperty('z-index', '99990', 'important');
+					n.style.setProperty('z-index', '100020', 'important');
 				});
 			};
 			[200, 600, 1200].forEach((ms) => setTimeout(boostPopups, ms));
 
+			const popupClass = `${PREFIX}-excel-popup-open`;
+			const isPanelVisible = (sel) => {
+				if (!sel) return false;
+				const nodes = document.querySelectorAll(sel);
+				for (const n of nodes) {
+					const cs = getComputedStyle(n);
+					if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0) continue;
+					const r = n.getBoundingClientRect();
+					if (r.width > 2 && r.height > 2) return true;
+				}
+				return false;
+			};
 			const clickFirst = (sels, opts = {}) => {
 				for (const sel of sels) {
 					const el = document.querySelector(sel);
@@ -5239,10 +5306,24 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 						const cs = getComputedStyle(node);
 						if (cs.display === 'none' || cs.visibility === 'hidden') {
 							restore.push([node, node.getAttribute('style')]);
+							const isHeaderChrome =
+								node.classList?.contains('d-header') ||
+								node.classList?.contains('d-header-wrap') ||
+								node.id === 'd-header';
 							node.style.setProperty('display', 'block', 'important');
 							node.style.setProperty('visibility', 'visible', 'important');
-							node.style.setProperty('pointer-events', 'auto', 'important');
-							node.style.setProperty('opacity', '1', 'important');
+							// d-header 仅作弹层挂载点：保留布局尺寸（避免浮层锚点错位），弱化原生顶栏外观
+							if (isHeaderChrome) {
+								node.style.setProperty('pointer-events', 'none', 'important');
+								node.style.setProperty('opacity', '1', 'important');
+								node.style.setProperty('background', 'transparent', 'important');
+								node.style.setProperty('box-shadow', 'none', 'important');
+								node.style.setProperty('border', 'none', 'important');
+								node.style.setProperty('overflow', 'visible', 'important');
+							} else {
+								node.style.setProperty('pointer-events', 'auto', 'important');
+								node.style.setProperty('opacity', '1', 'important');
+							}
 						}
 						node = node.parentElement;
 					}
@@ -5252,6 +5333,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					el.style.setProperty('visibility', 'visible', 'important');
 					el.style.setProperty('pointer-events', 'auto', 'important');
 					el.style.setProperty('opacity', '1', 'important');
+					document.body.classList.add(popupClass);
 					try {
 						if (opts.focus && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
 							el.focus();
@@ -5260,6 +5342,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 						}
 					} catch (_) { }
 					const restoreAll = () => {
+						document.body.classList.remove(popupClass);
 						restore.forEach(([node, style]) => {
 							if (style == null) node.removeAttribute('style');
 							else node.setAttribute('style', style);
@@ -5267,10 +5350,13 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					};
 					if (opts.watchSel) {
 						// 弹层打开期间保持 trigger 可见（否则菜单会随 trigger 隐藏而关闭/错位），
-						// 弹层消失或 8s 兜底后再恢复
+						// 以「可见」为准（DOM 常驻节点不能只靠 querySelector），弹层消失或 8s 兜底后再恢复
 						const t0 = Date.now();
+						let seen = false;
 						const iv = setInterval(() => {
-							if (Date.now() - t0 > 8000 || !document.querySelector(opts.watchSel)) {
+							const open = isPanelVisible(opts.watchSel);
+							if (open) seen = true;
+							if (Date.now() - t0 > 8000 || (seen && !open) || (!seen && Date.now() - t0 > 1500 && !open)) {
 								clearInterval(iv);
 								restoreAll();
 							}
@@ -5282,6 +5368,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				}
 				return false;
 			};
+
 			if (act === 'search') {
 				// 真实搜索按钮 #search-button；弹层保持打开直到用户关闭
 				if (
@@ -5295,7 +5382,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 							'button[aria-label*="搜索"]',
 							'button[title*="搜索"]',
 						],
-						{ watchSel: '.search-menu' }
+						{ watchSel: '.search-menu, .search-menu-container, [class*="search-menu"]' }
 					)
 				) return;
 				location.assign(location.origin + '/search?expanded=true');
@@ -5330,7 +5417,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 						'button[aria-label*="用户"]',
 						'a[href*="/u/"][data-user-card]',
 					],
-					{ watchSel: '.user-menu-panel' }
+					{ watchSel: '.user-menu-panel, .user-menu, .menu-panel.user-menu, [class*="user-menu"]' }
 				)) return;
 				location.assign(location.origin + '/my/summary');
 			}
