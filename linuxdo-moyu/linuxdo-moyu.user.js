@@ -499,15 +499,12 @@
 				`--${PREFIX}-img-max`,
 				`${this.advanced.imageMaxWidth || 280}px`
 			);
-			if (this.advanced.fontSize) {
-				document.documentElement.style.setProperty(
-					`--${PREFIX}-font-offset`,
-					`${this.advanced.fontSize}px`
-				);
-				document.body.classList.add(`${PREFIX}-font-resize`);
-			} else {
-				document.body.classList.remove(`${PREFIX}-font-resize`);
-			}
+			const fontOffset = Number(this.advanced.fontSize) || 0;
+			document.documentElement.style.setProperty(
+				`--${PREFIX}-font-offset`,
+				`${fontOffset}px`
+			);
+			document.body.classList.toggle(`${PREFIX}-font-resize`, fontOffset !== 0);
 		}
 
 		detectDarkMode() {
@@ -1235,7 +1232,7 @@ body.${PREFIX}-compact .topic-list .topic-list-data.posters {
 body.${PREFIX}-compact .topic-list .main-link .title,
 body.${PREFIX}-compact .topic-list a.title,
 body.${PREFIX}-compact .topic-list a.raw-topic-link {
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   line-height: 1.3 !important;
 }
 body.${PREFIX}-compact.${PREFIX}-excel .topic-list td,
@@ -1264,11 +1261,48 @@ body.${PREFIX}-wide .topic-body {
   max-width: none !important;
 }
 
-/* font resize */
+/* font resize：正文/列表/标题统一吃偏移；Excel 硬编码字号另用 calc(base + offset) */
 body.${PREFIX}-font-resize .cooked,
 body.${PREFIX}-font-resize .topic-list .title,
-body.${PREFIX}-font-resize .fancy-title {
+body.${PREFIX}-font-resize .topic-list a.title,
+body.${PREFIX}-font-resize .topic-list a.raw-topic-link,
+body.${PREFIX}-font-resize .fancy-title,
+body.${PREFIX}-font-resize .fps-result .topic-title,
+body.${PREFIX}-font-resize .fps-result .topic-title span,
+body.${PREFIX}-font-resize .fps-result .search-link,
+body.${PREFIX}-font-resize .topic-meta-data,
+body.${PREFIX}-font-resize .names,
+body.${PREFIX}-font-resize .post-date,
+body.${PREFIX}-font-resize .post-info,
+body.${PREFIX}-font-resize .discourse-boosts__cooked {
   font-size: calc(1em + var(--${PREFIX}-font-offset, 0px)) !important;
+}
+
+/* Excel/列表数值与元信息也跟随字体偏移 */
+body.${PREFIX}-excel .topic-list td,
+body.${PREFIX}-excel .topic-list .topic-list-data,
+body.${PREFIX}-excel .topic-list .posts-map,
+body.${PREFIX}-excel .topic-list .num,
+body.${PREFIX}-excel .topic-list .badge-category,
+body.${PREFIX}-excel .topic-list .discourse-tag,
+body.${PREFIX}-excel .topic-list .link-bottom-line,
+body.${PREFIX}-excel .fps-result .blurb,
+body.${PREFIX}-excel .fps-result .discourse-tag,
+body.${PREFIX}-excel .topic-meta-data,
+body.${PREFIX}-excel .names,
+body.${PREFIX}-excel .post-date,
+body.${PREFIX}-excel .post-info,
+body.${PREFIX}-excel .discourse-boosts__cooked,
+body.${PREFIX}-excel .discourse-boosts__add-btn,
+body.${PREFIX}-excel .post-menu-area .btn,
+body.${PREFIX}-excel .post__menu-area .btn,
+body.${PREFIX}-excel .post-controls .btn {
+  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
+}
+body.${PREFIX}-excel .topic-list .main-link .title,
+body.${PREFIX}-excel .topic-list a.raw-topic-link,
+body.${PREFIX}-excel .topic-list a.title {
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
 
 /* highlight OP */
@@ -1680,7 +1714,7 @@ body.${PREFIX}-excel #${PREFIX}-excel-root { display: block; }
   color: #444;
   font-family: sans-serif;
   font-weight: 400;
-  font-size: 13px;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px));
   background: #f3f3f3;
 }
 
@@ -2452,7 +2486,7 @@ body.${PREFIX}-excel .topic-list th {
   color: #555 !important;
   font-family: inherit !important;
   font-weight: 500 !important;
-  font-size: 12px !important;
+  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
   height: 24px !important;
   padding: 2px 6px !important;
   -webkit-font-smoothing: antialiased;
@@ -2520,7 +2554,7 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tags {
 }
 body.${PREFIX}-excel .topic-list .main-link .title {
   font-family: inherit !important;
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-weight: 400 !important;
   color: #1a3959 !important;
   -webkit-font-smoothing: antialiased;
@@ -2534,7 +2568,7 @@ body.${PREFIX}-excel th.${PREFIX}-excel-rownum {
   max-width: 56px !important;
   text-align: center !important;
   color: #777 !important;
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   background: #e8e8e8 !important;
   font-variant-numeric: tabular-nums;
   padding-left: 2px !important;
@@ -2662,7 +2696,7 @@ body.${PREFIX}-excel .search-page-heading h1,
 body.${PREFIX}-excel .result-count {
   margin: 0 0 6px !important;
   padding: 0 !important;
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-weight: 600 !important;
   line-height: 1.35 !important;
   color: #1a3959 !important;
@@ -2692,7 +2726,7 @@ body.${PREFIX}-excel .search-bar input[type="search"] {
   border-radius: 0 !important;
   background: #fff !important;
   box-shadow: none !important;
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   color: #222 !important;
 }
 body.${PREFIX}-excel .search-bar .select-kit .select-kit-header,
@@ -2790,7 +2824,7 @@ body.${PREFIX}-excel.${PREFIX}-excel-rows .fps-result::before {
   min-width: 48px;
   max-width: 56px;
   color: #777;
-  font-size: 13px;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px));
   font-variant-numeric: tabular-nums;
   background: #e8e8e8;
   border-right: 1px solid #bbb;
@@ -2820,7 +2854,7 @@ body.${PREFIX}-excel .fps-result .search-link,
 body.${PREFIX}-excel .fps-result .topic-title,
 body.${PREFIX}-excel .fps-result .topic-title span {
   font-family: inherit !important;
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-weight: 400 !important;
   line-height: 1.35 !important;
   color: #1a3959 !important;
@@ -3118,7 +3152,7 @@ body.${PREFIX}-excel .post__contents .cooked {
   margin: 0 !important;
 }
 body.${PREFIX}-excel .cooked {
-  font-size: 14px !important;
+  font-size: calc(14px + var(--${PREFIX}-font-offset, 0px)) !important;
   line-height: 1.35 !important;
   color: #222 !important;
   max-width: none !important;
@@ -3232,7 +3266,7 @@ body.${PREFIX}-compact.${PREFIX}-excel .post__body > section.post-menu-area {
   padding: 0 4px 0 !important;
 }
 body.${PREFIX}-compact.${PREFIX}-excel .cooked {
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   line-height: 1.3 !important;
 }
 body.${PREFIX}-compact.${PREFIX}-excel .cooked p {
@@ -3492,7 +3526,7 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .link-t
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .main-link a.title {
   /* Excel 风：略小字号更像表格 */
   font-family: inherit !important;
-  font-size: 13px !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-weight: 400 !important;
   color: #1a3959 !important;
   -webkit-font-smoothing: antialiased;
