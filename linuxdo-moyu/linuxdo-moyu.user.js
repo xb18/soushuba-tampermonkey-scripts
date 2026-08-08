@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.2
+// @version      1.1.3
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.2';
+	const SCRIPT_VERSION = '1.1.3';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -3508,6 +3508,41 @@ body.${PREFIX}-excel .small-action {
 body.${PREFIX}-excel .topic-post .read-state {
   display: none !important;
 }
+/* Horizon 空 post-actions 会在 topic-body grid 里多占一行，暗色下表现为楼层间白带 */
+body.${PREFIX}-excel .topic-body > section.post__actions:not(:has(*)),
+body.${PREFIX}-excel .topic-body > section.post-actions:not(:has(*)),
+body.${PREFIX}-excel .post__body > section.post__actions:not(:has(*)),
+body.${PREFIX}-excel .post__body > section.post-actions:not(:has(*)),
+body.${PREFIX}-excel .topic-post > article > section.post__actions:not(:has(*)),
+body.${PREFIX}-excel .topic-post > article > section.post-actions:not(:has(*)) {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+}
+/* 有内容时放进正文列，避免破坏作者/正文双列 */
+body.${PREFIX}-excel .topic-body > section.post__actions,
+body.${PREFIX}-excel .topic-body > section.post-actions,
+body.${PREFIX}-excel .post__body > section.post__actions,
+body.${PREFIX}-excel .post__body > section.post-actions {
+  grid-column: 2;
+  grid-row: 3;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 6px 2px !important;
+  min-height: 0 !important;
+  background: #fff !important;
+  border: none !important;
+  border-top: 1px solid #eee !important;
+  box-sizing: border-box !important;
+}
 /* Excel + 紧凑：详情楼层再压一档 */
 body.${PREFIX}-compact.${PREFIX}-excel.${PREFIX}-excel-rows .topic-post {
   grid-template-columns: 26px minmax(0, 1fr) !important;
@@ -4427,6 +4462,9 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-list-emoji,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-actions-button-shim,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .actions-summary,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark section.post__actions,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .extra-info-wrapper,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .who-liked,
@@ -4444,6 +4482,38 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls {
   border-top-color: #3f3f46 !important;
+}
+/* 楼层分隔线 / 空 actions 残留：禁止 #bbb/#eee 白边 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post {
+  border: none !important;
+  border-bottom: 1px solid #3f3f46 !important;
+  background: #1e1e1e !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body.clearfix {
+  border-right-color: #3f3f46 !important;
+  border-color: #3f3f46 !important;
+  background: #1e1e1e !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark section.post-actions {
+  background: #1e1e1e !important;
+  border: none !important;
+  border-top-color: #3f3f46 !important;
+  color: #bbb !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .gap,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .time-gap,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .small-action {
+  border-bottom: 1px solid #3f3f46 !important;
+  background: #252526 !important;
+  color: #bbb !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-counter .reactions-counter,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .reactions-counter,
