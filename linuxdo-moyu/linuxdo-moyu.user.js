@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.27
+// @version      1.1.28
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.27';
+	const SCRIPT_VERSION = '1.1.28';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -3675,6 +3675,17 @@ body.${PREFIX}-excel {
   --${PREFIX}-avatar-size: 32px;
   --${PREFIX}-avatar-left: 10px;
   --${PREFIX}-avatar-gap: 8px;
+  /* 帖内表格表面色：深色模式只改 token，避免再被高特异性浅色规则盖住 */
+  --${PREFIX}-surface: #fff;
+  --${PREFIX}-surface-muted: #fafafa;
+  --${PREFIX}-surface-soft: #f5f5f5;
+  --${PREFIX}-surface-row: #e8e8e8;
+  --${PREFIX}-surface-chip: #f7f9fc;
+  --${PREFIX}-border-soft: #bbb;
+  --${PREFIX}-border-faint: #eee;
+  --${PREFIX}-text-body: #222;
+  --${PREFIX}-text-dim: #777;
+  --${PREFIX}-text-link: #1a3959;
 }
 body.${PREFIX}-excel.${PREFIX}-compact {
   --${PREFIX}-floor-col: 36px;
@@ -3685,10 +3696,10 @@ body.${PREFIX}-excel .topic-post {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   border: none !important;
-  border-bottom: 1px solid #bbb !important;
+  border-bottom: 1px solid var(--${PREFIX}-border-soft, #bbb) !important;
   margin: 0 !important;
   padding: 0 !important;
-  background: #fff !important;
+  background: var(--${PREFIX}-surface, #fff) !important;
   box-shadow: none !important;
   border-radius: 0 !important;
 }
@@ -3708,11 +3719,11 @@ body.${PREFIX}-excel.${PREFIX}-excel-rows .topic-post::before {
   padding-top: 6px;
   width: var(--${PREFIX}-floor-col);
   min-width: var(--${PREFIX}-floor-col);
-  color: #777;
+  color: var(--${PREFIX}-text-dim, #777);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
-  background: #e8e8e8;
-  border-right: 1px solid #bbb;
+  background: var(--${PREFIX}-surface-row, #e8e8e8);
+  border-right: 1px solid var(--${PREFIX}-border-soft, #bbb);
   grid-row: 1 / -1;
   box-sizing: border-box;
 }
@@ -3845,8 +3856,8 @@ body.${PREFIX}-excel .topic-post > article > .post__body {
   padding: 0 !important;
   float: none !important;
   border: none !important;
-  border-right: 1px solid #bbb !important;
-  background: #fff !important;
+  border-right: 1px solid var(--${PREFIX}-border-soft, #bbb) !important;
+  background: var(--${PREFIX}-surface, #fff) !important;
   box-sizing: border-box !important;
   box-shadow: none !important;
   border-radius: 0 !important;
@@ -3870,13 +3881,14 @@ body.${PREFIX}-excel .topic-post > article > .post__body > .topic-meta-data {
   max-width: var(--${PREFIX}-user-col) !important;
   margin: 0 !important;
   padding: 8px 10px !important;
-  background: #fafafa !important;
-  border-right: 1px solid #bbb !important;
+  background: var(--${PREFIX}-surface-muted, #fafafa) !important;
+  border-right: 1px solid var(--${PREFIX}-border-soft, #bbb) !important;
   border-bottom: none !important;
   box-sizing: border-box !important;
   float: none !important;
   position: relative !important;
   overflow: hidden !important; /* 防长昵称撑破列 */
+  color: var(--${PREFIX}-text-dim, #777) !important;
 }
 /* 显示头像：左侧让出头像位，昵称与头像同一行起点，不再被遮挡 */
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .topic-body > .topic-meta-data,
@@ -3925,7 +3937,7 @@ body.${PREFIX}-excel .topic-post > article .names > .first a,
 body.${PREFIX}-excel .topic-post > article .names > span.first,
 body.${PREFIX}-excel .topic-post > article .names > span.first a {
   font-weight: 600 !important;
-  color: #1a3959 !important;
+  color: var(--${PREFIX}-text-link, #1a3959) !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
@@ -3935,7 +3947,7 @@ body.${PREFIX}-excel .topic-post > article .names > .second a,
 body.${PREFIX}-excel .topic-post > article .names > span.second,
 body.${PREFIX}-excel .topic-post > article .names > span.second a {
   font-weight: 400 !important;
-  color: #777 !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
@@ -3957,7 +3969,7 @@ body.${PREFIX}-excel .topic-post > article .names::before {
 body.${PREFIX}-excel .topic-post > article .names > .user-title {
   order: 5 !important;
   font-weight: 400 !important;
-  color: #777 !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
@@ -4002,7 +4014,7 @@ body.${PREFIX}-excel .topic-post > article .post-infos,
 body.${PREFIX}-excel .topic-post > article .post-info,
 body.${PREFIX}-excel .topic-post > article .post-date,
 body.${PREFIX}-excel .topic-post > article .topic-meta-data .post-info {
-  color: #777 !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
   margin: 0 !important;
   opacity: 1 !important;
   font-size: 12px !important;
@@ -4026,7 +4038,7 @@ body.${PREFIX}-excel .topic-post > article .topic-meta-data .reply-to-tab {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
-  color: #777 !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
   font-size: 12px !important;
 }
 /* 引用回复：彻底隐藏被引用楼层作者头像，只留箭头+名字，避免错位 */
@@ -4079,7 +4091,8 @@ body.${PREFIX}-excel .topic-post > article > .row > .post__body > .post__content
   padding: 6px 10px 2px !important;
   float: none !important;
   box-sizing: border-box !important;
-  background: #fff !important;
+  background: var(--${PREFIX}-surface, #fff) !important;
+  color: var(--${PREFIX}-text-body, #222) !important;
 }
 body.${PREFIX}-excel .topic-post > article > .post__row > .topic-body > .post-menu-area,
 body.${PREFIX}-excel .topic-post > article > .post__row > .topic-body > .post__menu-area,
@@ -4103,9 +4116,10 @@ body.${PREFIX}-excel .topic-post > article > .row > .post__body > section.post__
   max-width: none !important;
   margin: 0 !important;
   padding: 0 6px 2px !important;
-  background: #fff !important;
+  background: var(--${PREFIX}-surface, #fff) !important;
   border: none !important;
   box-sizing: border-box !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
 }
 body.${PREFIX}-excel .topic-body > .topic-meta-data .post__contents .cooked,
 body.${PREFIX}-excel .post__body > .topic-meta-data .post__contents .cooked,
@@ -4117,8 +4131,9 @@ body.${PREFIX}-excel .post__body > .contents .cooked {
 }
 body.${PREFIX}-excel .cooked {
   line-height: 1.35 !important;
-  color: #222 !important;
+  color: var(--${PREFIX}-text-body, #222) !important;
   max-width: none !important;
+  background: transparent !important;
 }
 body.${PREFIX}-excel .cooked p {
   margin: 0 0 0.28em !important;
@@ -4132,9 +4147,9 @@ body.${PREFIX}-excel .cooked img {
 }
 body.${PREFIX}-excel .cooked blockquote,
 body.${PREFIX}-excel .cooked aside.quote {
-  border: 1px solid #bbb !important;
+  border: 1px solid var(--${PREFIX}-border-soft, #bbb) !important;
   border-left: 3px solid #8eb6e8 !important;
-  background: #fafafa !important;
+  background: var(--${PREFIX}-surface-muted, #fafafa) !important;
   border-radius: 0 !important;
   margin: 3px 0 !important;
   padding: 3px 6px !important;
@@ -4154,22 +4169,24 @@ body.${PREFIX}-excel .post__menu-area .btn {
   padding: 2px 6px !important;
   background: transparent !important;
   border: 1px solid transparent !important;
-  color: #666 !important;
+  color: var(--${PREFIX}-text-dim, #666) !important;
 }
 body.${PREFIX}-excel .post-controls .btn:hover,
-body.${PREFIX}-excel .post-menu-area .btn:hover {
-  background: #eee !important;
-  border-color: #ccc !important;
+body.${PREFIX}-excel .post-menu-area .btn:hover,
+body.${PREFIX}-excel .post__menu-area .btn:hover {
+  background: var(--${PREFIX}-surface-soft, #eee) !important;
+  border-color: var(--${PREFIX}-border-soft, #ccc) !important;
 }
 /* 弱化楼层内其它论坛装饰 */
 body.${PREFIX}-excel .topic-post .gap,
 body.${PREFIX}-excel .time-gap,
 body.${PREFIX}-excel .small-action {
-  border-bottom: 1px solid #ddd !important;
-  background: #f5f5f5 !important;
+  border-bottom: 1px solid var(--${PREFIX}-border-soft, #ddd) !important;
+  background: var(--${PREFIX}-surface-soft, #f5f5f5) !important;
   margin: 0 !important;
   border-radius: 0 !important;
   padding: 4px 8px !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
 }
 body.${PREFIX}-excel .topic-post .read-state {
   display: none !important;
@@ -4211,10 +4228,11 @@ body.${PREFIX}-excel .topic-post > article > .row > .post__body > section.post-a
   margin: 0 !important;
   padding: 0 6px 2px !important;
   min-height: 0 !important;
-  background: #fff !important;
+  background: var(--${PREFIX}-surface, #fff) !important;
   border: none !important;
-  border-top: 1px solid #eee !important;
+  border-top: 1px solid var(--${PREFIX}-border-faint, #eee) !important;
   box-sizing: border-box !important;
+  color: var(--${PREFIX}-text-dim, #777) !important;
 }
 
 /* ========== 嵌套/引用展开 ==========
@@ -4230,13 +4248,14 @@ body.${PREFIX}-excel .topic-post > article .post__embedded-posts {
   width: auto !important;
   margin: 6px 8px 8px !important;
   padding: 8px 34px 8px 10px !important; /* 右侧给收起按钮留位 */
-  border: 1px solid #d0d0d0 !important;
+  border: 1px solid var(--${PREFIX}-border-soft, #d0d0d0) !important;
   border-left: 3px solid #8eb6e8 !important;
   border-radius: 0 !important;
-  background: #f7f9fc !important;
+  background: var(--${PREFIX}-surface-chip, #f7f9fc) !important;
   box-sizing: border-box !important;
   clear: both !important;
   float: none !important;
+  color: var(--${PREFIX}-text-body, #222) !important;
 }
 /* 点击「回复谁」展开的父帖：略收紧，更像引用条 */
 body.${PREFIX}-excel .topic-post > article .embedded-posts.top,
@@ -4244,7 +4263,7 @@ body.${PREFIX}-excel .topic-post > article .post__embedded-posts--top,
 body.${PREFIX}-excel .topic-post > article .embedded-posts.post__embedded-posts--top {
   margin: 6px 8px 4px !important;
   padding: 6px 34px 6px 10px !important;
-  background: #f5f7fa !important;
+  background: var(--${PREFIX}-surface-soft, #f5f7fa) !important;
   border-left-color: #6a9bd8 !important;
 }
 /* 若嵌在 article 下（不在 topic-body 网格内）：缩进对齐正文列，避免左侧空白断层 */
@@ -4410,8 +4429,8 @@ body.${PREFIX}-excel .topic-post > article .post__embedded-posts--top .names > .
   font-size: 11px !important;
   line-height: 16px !important;
   font-weight: 500 !important;
-  color: #5b7fa6 !important;
-  background: #e8eef6 !important;
+  color: var(--${PREFIX}-text-link, #5b7fa6) !important;
+  background: var(--${PREFIX}-surface-chip, #e8eef6) !important;
   vertical-align: middle !important;
 }
 body.${PREFIX}-excel .topic-post > article .embedded-posts .post-link-arrow,
@@ -4433,7 +4452,8 @@ body.${PREFIX}-excel .topic-post > article .embedded-posts .cooked,
 body.${PREFIX}-excel .topic-post > article .post__embedded-posts .cooked {
   margin: 0 !important;
   padding: 0 !important;
-  color: #222 !important;
+  color: var(--${PREFIX}-text-body, #222) !important;
+  background: transparent !important;
 }
 /* 收起按钮：不要绝对定位盖在用户名上 */
 body.${PREFIX}-excel .topic-post > article .embedded-posts .collapse-up,
@@ -4452,17 +4472,17 @@ body.${PREFIX}-excel .topic-post > article .post__embedded-posts .post__collapse
   margin: 0 !important;
   padding: 2px 6px !important;
   min-height: 24px !important;
-  border: 1px solid #ccc !important;
+  border: 1px solid var(--${PREFIX}-border-soft, #ccc) !important;
   border-radius: 0 !important;
-  background: #fff !important;
-  color: #666 !important;
+  background: var(--${PREFIX}-surface, #fff) !important;
+  color: var(--${PREFIX}-text-dim, #666) !important;
   box-shadow: none !important;
 }
 body.${PREFIX}-excel .topic-post > article .embedded-posts .collapse-up:hover,
 body.${PREFIX}-excel .topic-post > article .embedded-posts .post__collapse-button:hover {
-  background: #eee !important;
-  border-color: #aaa !important;
-  color: #333 !important;
+  background: var(--${PREFIX}-surface-soft, #eee) !important;
+  border-color: var(--${PREFIX}-border-soft, #aaa) !important;
+  color: var(--${PREFIX}-text-body, #333) !important;
 }
 
 /* Excel + 紧凑：只再压一点内边距，列宽走 CSS 变量 */
@@ -5097,6 +5117,17 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark {
   --${PREFIX}-excel-title-hover: #ffffff;
   --${PREFIX}-excel-title-unseen: #f3f5f7;
   --${PREFIX}-excel-link: #8ec7ff;
+  /* 与帖内表格表面 token 对齐，压过用户列等高特异性浅色 */
+  --${PREFIX}-surface: #1e1e1e;
+  --${PREFIX}-surface-muted: #252526;
+  --${PREFIX}-surface-soft: #2a2a2a;
+  --${PREFIX}-surface-row: #2a2a2a;
+  --${PREFIX}-surface-chip: #2a3340;
+  --${PREFIX}-border-soft: #3f3f46;
+  --${PREFIX}-border-faint: #3f3f46;
+  --${PREFIX}-text-body: #e6e6e6;
+  --${PREFIX}-text-dim: #9a9a9a;
+  --${PREFIX}-text-link: #8ec7ff;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-header,
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-footer,
@@ -5454,8 +5485,77 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .sideba
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .topic-meta-data,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__body > .topic-meta-data,
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-rows .topic-post::before {
-  background: #2a2a2a !important; border-color: #3f3f46 !important; color: #bbb !important;
+  background: var(--${PREFIX}-surface-muted, #252526) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  color: var(--${PREFIX}-text-dim, #bbb) !important;
+}
+/* 正文列包装层 / 底栏：对齐 surface，去掉白缝 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > section.post-actions {
+  background: var(--${PREFIX}-surface, #1e1e1e) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  color: var(--${PREFIX}-text-body, #e6e6e6) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .first,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .first a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.first,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.first a {
+  color: var(--${PREFIX}-excel-link, #8ec7ff) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .second,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .second a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.second,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.second a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .user-title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post-infos,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post-info,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post-date,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .topic-meta-data .post-info,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .topic-meta-data .reply-to-tab {
+  color: var(--${PREFIX}-text-dim, #9a9a9a) !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post__embedded-posts {
@@ -6031,6 +6131,132 @@ body.${PREFIX}-excel #${PREFIX}-fab {
 body.${PREFIX}-excel #${PREFIX}-fab:hover { opacity: 1; transform: none; }
 body.${PREFIX}-excel #${PREFIX}-panel,
 body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
+
+/* 深色模式兜底：用户列/内容列/横向空白条（改用户列布局后被浅色高特异性规则盖住） */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__body {
+  background: var(--${PREFIX}-surface, #1e1e1e) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  color: var(--${PREFIX}-text-body, #e6e6e6) !important;
+}
+/* 用户列单独用 muted，避免跟正文同色糊成一片 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .topic-meta-data {
+  background: var(--${PREFIX}-surface-muted, #252526) !important;
+  border-right-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  color: var(--${PREFIX}-text-dim, #bbb) !important;
+}
+/* 正文列内包装层 / 菜单 / 动作区：去掉白缝 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .topic-body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .topic-body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .post__row > .post__body > section.post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > section.post__actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article > .row > .post__body > section.post-actions {
+  background: var(--${PREFIX}-surface, #1e1e1e) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  color: var(--${PREFIX}-text-body, #e6e6e6) !important;
+}
+/* 引用/展开卡片、楼层间隙 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post__embedded-posts {
+  background: var(--${PREFIX}-surface-muted, #252526) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  border-left-color: #4a7ab0 !important;
+  color: var(--${PREFIX}-text-body, #e6e6e6) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts.top,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post__embedded-posts--top,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts.post__embedded-posts--top {
+  background: var(--${PREFIX}-surface-soft, #2a2a2a) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .gap,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .time-gap,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .small-action {
+  background: var(--${PREFIX}-surface-soft, #2a2a2a) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  color: var(--${PREFIX}-text-dim, #aaa) !important;
+}
+/* 用户列文字色 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .first,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .first a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.first,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.first a {
+  color: var(--${PREFIX}-excel-link, #8ec7ff) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .second,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .second a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.second,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > span.second a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .names > .user-title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post-infos,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post-info,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post-date,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .topic-meta-data .post-info,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .topic-meta-data .reply-to-tab {
+  color: var(--${PREFIX}-text-dim, #9a9a9a) !important;
+}
+/* 备注/拉黑按钮：深色下别亮边 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .${PREFIX}-user-actions button,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .${PREFIX}-mark-tags .${PREFIX}-mark-tag {
+  background: var(--${PREFIX}-surface-soft, #2a2a2a) !important;
+  border-color: var(--${PREFIX}-border-soft, #555) !important;
+  color: var(--${PREFIX}-text-dim, #bbb) !important;
+}
+/* 引用块/菜单按钮 hover */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked aside.quote,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked blockquote {
+  background: var(--${PREFIX}-surface-muted, #252526) !important;
+  border-color: var(--${PREFIX}-border-soft, #3f3f46) !important;
+  border-left-color: #4a7ab0 !important;
+  color: var(--${PREFIX}-text-body, #e6e6e6) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn:hover {
+  background: var(--${PREFIX}-surface-soft, #2a2a2a) !important;
+  border-color: var(--${PREFIX}-border-soft, #555) !important;
+  color: var(--${PREFIX}-text-body, #e6e6e6) !important;
+}
 
 `;
 			this._styleEl = GM_addStyle(css);
