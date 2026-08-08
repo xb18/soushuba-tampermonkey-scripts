@@ -4379,6 +4379,11 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
         <button class="${PREFIX}-fab-btn" data-action="top" title="返回顶部">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
         </button>
+        <button class="${PREFIX}-fab-btn" data-action="reply" title="快速回复">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>
+          </svg>
+        </button>
         <button class="${PREFIX}-fab-btn" data-action="floor" title="跳转楼层">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
         </button>
@@ -4395,6 +4400,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				const action = btn.getAttribute('data-action');
 				if (action === 'settings') this.openPanel();
 				if (action === 'top') window.scrollTo({ top: 0, behavior: 'smooth' });
+				if (action === 'reply') this.openQuickReply();
 				if (action === 'floor') {
 					const bar = $(`.${PREFIX}-floor-bar`);
 					if (!bar) return;
@@ -4871,9 +4877,83 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			const fab = $(`#${PREFIX}-fab`);
 			if (!fab) return;
 			const topBtn = fab.querySelector('[data-action="top"]');
+			const replyBtn = fab.querySelector('[data-action="reply"]');
 			const floorBtn = fab.querySelector('[data-action="floor"]');
 			if (topBtn) topBtn.style.display = this.normal.backToTop ? '' : 'none';
+			if (replyBtn) replyBtn.style.display = isTopicPage() ? '' : 'none';
 			if (floorBtn) floorBtn.style.display = this.normal.floorJump && isTopicPage() ? '' : 'none';
+		}
+
+		findNativeReplyButton() {
+			const selectors = [
+				'#topic-footer-buttons .btn-primary.create',
+				'#topic-footer-buttons .topic-footer-button.create',
+				'.topic-footer-main-buttons .btn-primary.create',
+				'.timeline-container .create.reply-to-post',
+				'button.create.reply-to-post',
+				'.post-action-menu__reply',
+				'button.reply.create',
+			];
+			for (const sel of selectors) {
+				const btn = $(sel);
+				if (btn && !btn.disabled && btn.offsetParent !== null) return btn;
+			}
+			// 兜底：有些按钮被 Excel CSS 藏了，仍可程序点击
+			for (const sel of selectors) {
+				const btn = $(sel);
+				if (btn && !btn.disabled) return btn;
+			}
+			return null;
+		}
+
+		focusComposerInput(attempt = 0) {
+			const input =
+				$('#reply-control textarea.d-editor-input') ||
+				$('#reply-control .d-editor-input') ||
+				$('#reply-control textarea') ||
+				$('.d-editor-input');
+			if (input) {
+				try {
+					input.focus({ preventScroll: false });
+					const len = input.value?.length ?? 0;
+					if (typeof input.setSelectionRange === 'function') input.setSelectionRange(len, len);
+				} catch (_) {
+					try { input.focus(); } catch (__) {}
+				}
+				return true;
+			}
+			if (attempt >= 12) return false;
+			setTimeout(() => this.focusComposerInput(attempt + 1), 80 + attempt * 20);
+			return false;
+		}
+
+		openQuickReply() {
+			if (!isTopicPage()) {
+				notify('仅帖内页可快速回复');
+				return;
+			}
+			const composer = $('#reply-control');
+			const alreadyOpen =
+				composer &&
+				!composer.classList.contains('closed') &&
+				(composer.classList.contains('open') ||
+					composer.classList.contains('edit-title') ||
+					composer.classList.contains('draft') ||
+					composer.classList.contains('private-message') ||
+					!!$('#reply-control .d-editor-input, #reply-control textarea'));
+			if (alreadyOpen && this.focusComposerInput()) return;
+
+			const nativeBtn = this.findNativeReplyButton();
+			if (!nativeBtn) {
+				notify('未找到回复入口');
+				return;
+			}
+			try {
+				nativeBtn.click();
+			} catch (_) {
+				nativeBtn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+			}
+			this.focusComposerInput(0);
 		}
 
 		openBanPanel() {
