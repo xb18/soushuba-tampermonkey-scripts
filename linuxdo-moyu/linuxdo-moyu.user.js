@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.4
+// @version      1.1.9
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.4';
+	const SCRIPT_VERSION = '1.1.9';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -583,11 +583,12 @@ body.${PREFIX}-fab-left #${PREFIX}-fab {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  transition: box-shadow .15s ease, opacity .15s ease;
   opacity: .92;
+  transform: none;
 }
 #${PREFIX}-fab .${PREFIX}-fab-btn:hover {
-  transform: translateY(-2px) scale(1.04);
+  transform: none;
   box-shadow: 0 6px 18px rgba(0,0,0,.28);
   opacity: 1;
 }
@@ -1212,8 +1213,29 @@ body.${PREFIX}-hide-sidebar #d-sidebar,
 body.${PREFIX}-hide-sidebar .d-header-sidebar-toggle {
   display: none !important;
 }
-body.${PREFIX}-hide-sidebar.has-sidebar-page #main-outlet-wrapper {
+/*
+ * Discourse 默认 grid-template-areas: "sidebar content"。
+ * 仅改 columns 为 1fr 时，named area 仍会隐式生成两列：
+ * 空的 sidebar 列吃掉 1fr，content 贴右 → 左侧大片空白。
+ */
+body.${PREFIX}-hide-sidebar.has-sidebar-page #main-outlet-wrapper,
+body.${PREFIX}-hide-sidebar #main-outlet-wrapper {
   grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas:
+    "content"
+    "below-content" !important;
+  gap: 0 !important;
+}
+/* has-sidebar-page 的 .wrap 默认 max-width 含侧栏宽度，隐藏后去掉 */
+body.${PREFIX}-hide-sidebar.has-sidebar-page .wrap,
+body.${PREFIX}-hide-sidebar.has-sidebar-page #main-outlet-wrapper.wrap {
+  max-width: var(--d-max-width, 1110px) !important;
+}
+body.${PREFIX}-hide-sidebar.${PREFIX}-wide.has-sidebar-page .wrap,
+body.${PREFIX}-hide-sidebar.${PREFIX}-wide.has-sidebar-page #main-outlet-wrapper,
+body.${PREFIX}-hide-sidebar.${PREFIX}-wide.has-sidebar-page #main-outlet-wrapper.wrap {
+  max-width: none !important;
+  width: 100% !important;
 }
 
 /* topic map */
@@ -2702,10 +2724,11 @@ body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) tabl
 }
 body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list th.${PREFIX}-excel-meta-head,
 body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell {
-  width: 200px !important;
-  min-width: 170px !important;
-  max-width: 220px !important;
-  padding: 2px 6px !important;
+  /* 略加宽分类列，标题列自动让出一点点（table-layout: fixed） */
+  width: 236px !important;
+  min-width: 200px !important;
+  max-width: 280px !important;
+  padding: 2px 8px !important;
   overflow: hidden !important;
   vertical-align: middle !important;
 }
@@ -2720,11 +2743,15 @@ body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .top
   opacity: 0.8 !important;
   line-height: 1.2 !important;
 }
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell .badge-category__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell .badge-category {
+  max-width: 11em !important;
+}
 body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .topic-list td.${PREFIX}-excel-meta-cell .discourse-tags {
   display: inline-flex !important;
   flex-wrap: nowrap !important;
   gap: 2px !important;
-  max-width: 60% !important;
+  max-width: 55% !important;
   overflow: hidden !important;
 }
 
@@ -3959,11 +3986,26 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies {
   flex-direction: row !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  gap: 2px !important;
+  gap: 0 !important;
   height: auto !important;
   color: #c45c26 !important;
   font-size: 12px !important;
   white-space: nowrap !important;
+}
+/* 回复列只留数字，去掉引用/回复箭头图标 */
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data svg,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies svg,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies::before,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data .badge-posts::before,
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data a::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-activity-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-activity-data,
@@ -4206,6 +4248,16 @@ body.${PREFIX}-excel-office #${PREFIX}-excel-root .${PREFIX}-excel-chrome-btn[da
 body.${PREFIX}-excel.${PREFIX}-excel-dark {
   background: #1e1e1e !important; color: #e6e6e6 !important; color-scheme: dark;
   --${PREFIX}-excel-accent: #4ea1ff;
+  /* 阅读语义 token：壳用 accent，列表正文用 title/text */
+  --${PREFIX}-excel-row: #252526;
+  --${PREFIX}-excel-row-hover: #2a3340;
+  --${PREFIX}-excel-border: #3f3f46;
+  --${PREFIX}-excel-text: #e6e6e6;
+  --${PREFIX}-excel-text-muted: #9a9a9a;
+  --${PREFIX}-excel-title: #e8eaed;
+  --${PREFIX}-excel-title-hover: #ffffff;
+  --${PREFIX}-excel-title-unseen: #f3f5f7;
+  --${PREFIX}-excel-link: #8ec7ff;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-header,
 body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-footer,
@@ -4277,9 +4329,186 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .${PREFIX}-excel-rownum,
 body.${PREFIX}-excel.${PREFIX}-excel-dark th.${PREFIX}-excel-rownum {
   background: #2d2d30 !important; color: #aaa !important;
 }
+/* 列表标题：正文色，不是超链接蓝；禁止全局 a 染蓝 */
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list .main-link .title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list a.raw-topic-link,
-body.${PREFIX}-excel.${PREFIX}-excel-dark a { color: #8ec7ff !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list a.title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list .main-link a.title span {
+  color: var(--${PREFIX}-excel-title, #e8eaed) !important;
+  text-decoration: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list .main-link:hover .title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list .main-link:hover a.raw-topic-link,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list .main-link:hover a.title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list a.raw-topic-link:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list a.title:hover {
+  color: var(--${PREFIX}-excel-title-hover, #ffffff) !important;
+}
+/* 未读/未见略提亮，便于扫列表 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list-item.unseen-topic .main-link .title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list-item.unseen-topic a.raw-topic-link,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list-item.unseen-topic a.title {
+  color: var(--${PREFIX}-excel-title-unseen, #f3f5f7) !important;
+  font-weight: 500 !important;
+}
+/* 仅真正的导航/控件链接保留 link 蓝 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark #${PREFIX}-excel-root a.${PREFIX}-excel-nav-link,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked a:not(.mention):not(.mention-group) {
+  color: var(--${PREFIX}-excel-link, #8ec7ff) !important;
+}
+/* Horizon 列表标题同样正文化（盖过 horizon 亮色 #1a3959） */
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .main-link .title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list a.raw-topic-link,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list a.title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .main-link a.title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .link-top-line a {
+  color: var(--${PREFIX}-excel-title, #e8eaed) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .main-link:hover .title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list a.raw-topic-link:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list a.title:hover {
+  color: var(--${PREFIX}-excel-title-hover, #ffffff) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-activity__username {
+  color: #c8c8c8 !important;
+}
+/* Horizon 深色：盖过 horizon 硬编码的 #fff / #f3f3f3 / 亮色边框（特异性必须带 excel-horizon） */
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list.--d-topic-cards,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .list-container,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon #list-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-container {
+  background: #1e1e1e !important;
+  color: #e6e6e6 !important;
+  border-color: #3f3f46 !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context),
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-replies,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-status-card,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list .topic-list-item,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list tr,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-header tr {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-color: #3f3f46 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item > td,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context) > td,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards td,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards th,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .main-link,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-status-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-category-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-likes-replies-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-creator-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-activity-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list td,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list th,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list .topic-list-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .${PREFIX}-excel-rownum,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list td.${PREFIX}-excel-rownum {
+  background: #252526 !important;
+  color: #e6e6e6 !important;
+  border-right: 1px solid #3f3f46 !important;
+  border-bottom: 1px solid #3f3f46 !important;
+  border-top: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-header th,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-header .topic-list-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list thead th,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list thead th.sf-hidden,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list thead th.sr-only,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list th.${PREFIX}-excel-rownum,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-header tr {
+  background: #2d2d30 !important;
+  color: #aaa !important;
+  border-right: 1px solid #3f3f46 !important;
+  border-bottom: 1px solid #3f3f46 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list thead th.main-link .${PREFIX}-excel-th-label,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list thead th[data-ldmy-col="main-link"] .${PREFIX}-excel-th-label,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon table.topic-list thead th.default .${PREFIX}-excel-th-label {
+  color: #aaa !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list td.topic-likes-replies-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data .topic-replies,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-replies,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data .number,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-replies .number {
+  color: #e0a070 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-activity-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list td.topic-activity-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list .topic-activity {
+  color: #9a9a9a !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-item:hover > td,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-item:hover .topic-list-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-item:hover .main-link,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-list-item:hover > td {
+  background: #2a3340 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-item.${PREFIX}-excel-row-active > td,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list-item.${PREFIX}-excel-row-active .topic-list-data {
+  background: #243447 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-status-card,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-list.--d-topic-cards .topic-status-card {
+  background: #2d2d30 !important;
+  border-color: #555 !important;
+  color: #ddd !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-status-card.--hot {
+  background: #3a2222 !important;
+  border-color: #8a4040 !important;
+  color: #ff8e8e !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-status-card.--pinned {
+  background: #2a2a2a !important;
+  border-color: #555 !important;
+  color: #bbb !important;
+}
+/* Horizon 侧栏「新建话题」组合按钮（含 drafts 下拉） */
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .sidebar-new-topic-button__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo.sidebar-new-topic-button__wrapper {
+  background: #2d2d30 !important;
+  border-bottom: 1px solid #3f3f46 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .sidebar-new-topic-button,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .sidebar-new-topic-button__wrapper .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo .d-combo-button-button,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo .d-combo-button-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-drafts-menu-trigger,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .list-controls .btn-primary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon #create-topic {
+  background: #2a3340 !important;
+  color: #dcecff !important;
+  border: 1px solid #4ea1ff !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .sidebar-new-topic-button .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon #create-topic .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-drafts-menu-trigger .d-icon {
+  color: #dcecff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .sidebar-new-topic-button:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .sidebar-new-topic-button__wrapper .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon .topic-create-button__combo .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-horizon #create-topic:hover {
+  background: #31465f !important;
+  border-color: #6bb0ff !important;
+  color: #ffffff !important;
+}
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list-item:hover > td,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list-item:hover .topic-list-data,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list-item:hover .main-link,
@@ -4393,9 +4622,16 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark #topic-title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .title-wrapper {
   background: #2d2d30 !important; border-bottom-color: #3f3f46 !important;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-dark .fancy-title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fancy-title {
+  color: var(--${PREFIX}-excel-title, #e8eaed) !important;
+}
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names a,
-body.${PREFIX}-excel.${PREFIX}-excel-dark .names .first { color: #8ec7ff !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .names .first {
+  color: #d5d5d5 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .names a:hover {
+  color: var(--${PREFIX}-excel-title-hover, #ffffff) !important;
+}
 
 
 /* 全页搜索 · 深色 */
@@ -4444,15 +4680,34 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-excel-rows .fps-result::befo
 body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .search-link,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .topic-title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .topic-title span {
-  color: #8ec7ff !important;
+  color: var(--${PREFIX}-excel-title, #e8eaed) !important;
+  text-decoration: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .search-link:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .search-link:hover .topic-title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .search-link:hover .topic-title span {
+  color: var(--${PREFIX}-excel-title-hover, #ffffff) !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .blurb {
   color: #aaa !important;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .discourse-tag {
-  background: #333 !important;
-  border-color: #444 !important;
-  color: #bbb !important;
+/* 搜索分类：透明底，保留色相图标 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .badge-category,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .badge-category__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .badge-category__name {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #b0b0b0 !important;
+}
+/* 搜索标签：行底 tint，无硬边 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .discourse-tag,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .discourse-tags .discourse-tag {
+  background: color-mix(in srgb, var(--color1, #888) 18%, var(--${PREFIX}-excel-row, #252526)) !important;
+  color: color-mix(in srgb, var(--color1, #ccc) 45%, #ddd) !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 0.88 !important;
 }
 
 
@@ -4743,14 +4998,65 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-number,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-built_in { color: #b5cea8 !important; }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-title,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-section { color: #dcdcaa !important; }
+/* 分类：透明底 + 弱化字色，保留原站色标/图标 */
 body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category,
-body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category__wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #b0b0b0 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category__name {
+  color: #b0b0b0 !important;
+}
+/* 标签：吃 --color1 tint，贴近行底；盖过亮色 #f0f0f0 chip */
 body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tag,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tags .discourse-tag,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tag,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tags .discourse-tag {
+  background: color-mix(in srgb, var(--color1, #888) 18%, var(--${PREFIX}-excel-row, #252526)) !important;
+  color: color-mix(in srgb, var(--color1, #ccc) 45%, #ddd) !important;
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  opacity: 0.88 !important;
+}
+/* 图标保留标签色相，文字仍弱化 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tag .tag-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tag .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tag svg {
+  color: var(--color1, currentColor) !important;
+  fill: currentColor !important;
+  opacity: 0.95 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category svg {
+  color: var(--category-badge-color, currentColor) !important;
+  opacity: 0.95 !important;
+}
+/* 无色变量时的兜底 chip */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tag:not([style]),
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tags .discourse-tag:not([style]) {
+  background: color-mix(in srgb, #fff 7%, var(--${PREFIX}-excel-row, #252526)) !important;
+  color: #b8b8b8 !important;
+}
 body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-notification {
   background: #333 !important;
   border-color: #4a4a4a !important;
   color: #ccc !important;
+}
+/* 列表 meta 行：再压一档，避免抢标题 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-horizon) .topic-list .link-bottom-line,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .search-category {
+  opacity: 0.78 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-horizon) .topic-list .badge-category__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-horizon) .topic-list .badge-category {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #b0b0b0 !important;
+  opacity: 0.9 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-meta-data,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .names,
@@ -4841,14 +5147,13 @@ body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .home-logo-wrapper {
   pointer-events: none !important;
 }
 
-/* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置 */
+/* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置（无放大动效） */
 body.${PREFIX}-excel #${PREFIX}-fab {
   bottom: 56px;
   opacity: 0.35;
-  transform: scale(0.85);
-  transform-origin: bottom right;
+  transform: none;
 }
-body.${PREFIX}-excel #${PREFIX}-fab:hover { opacity: 1; transform: scale(1); }
+body.${PREFIX}-excel #${PREFIX}-fab:hover { opacity: 1; transform: none; }
 body.${PREFIX}-excel #${PREFIX}-panel,
 body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 
