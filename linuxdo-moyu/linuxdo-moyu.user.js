@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.17
+// @version      1.1.20
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.17';
+	const SCRIPT_VERSION = '1.1.20';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -66,7 +66,7 @@
 
 	const DEFAULT_ADVANCED = {
 		dynamicEnable: true,
-		fontSize: 0, // 0 = 不调整, 相对偏移 px（滑块步进 0.5）
+		fontSize: -1, // 相对偏移 px；0=不调整（滑块步进 0.5，范围 -4~+4）
 		imageMaxWidth: 0, // 0=不限制（最大不超过正文列宽）；>0 时强制封顶
 		authorMarkColor: '#e74c3c',
 		banMode: 'hide', // hide | remove
@@ -536,7 +536,7 @@
 			}
 			const fontRaw = Number(this.advanced.fontSize);
 			const fontOffset = Number.isFinite(fontRaw)
-				? Math.max(-4, Math.min(8, Math.round(fontRaw * 10) / 10))
+				? Math.max(-4, Math.min(4, Math.round(fontRaw * 10) / 10))
 				: 0;
 			document.documentElement.style.setProperty(
 				`--${PREFIX}-font-offset`,
@@ -898,24 +898,12 @@ body.${PREFIX}-fab-left #${PREFIX}-fab {
   height: 16px;
   accent-color: var(--tertiary, #08c);
 }
-#${PREFIX}-panel .${PREFIX}-adv {
-  margin-top: 14px;
-  border-top: 1px solid var(--primary-low, #eee);
-  padding-top: 10px;
-}
-#${PREFIX}-panel .${PREFIX}-adv summary {
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 13px;
-  user-select: none;
-  list-style: none;
-}
-#${PREFIX}-panel .${PREFIX}-adv summary::-webkit-details-marker { display: none; }
 #${PREFIX}-panel .${PREFIX}-adv-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px 16px;
-  margin-top: 10px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 @media (max-width: 640px) {
   #${PREFIX}-panel .${PREFIX}-adv-grid { grid-template-columns: 1fr; }
@@ -1499,24 +1487,15 @@ body.${PREFIX}-font-resize aside.sidebar,
 /* 导航/面包屑 */
 body.${PREFIX}-font-resize .navigation-container,
 body.${PREFIX}-font-resize .category-breadcrumb,
-body.${PREFIX}-font-resize .nav-pills > li > a {
+body.${PREFIX}-font-resize .nav-pills > li > a,
+body.${PREFIX}-font-resize .post-menu-area .btn,
+body.${PREFIX}-font-resize .post__menu-area .btn,
+body.${PREFIX}-font-resize .post-controls .btn {
   font-size: calc(1em + var(--${PREFIX}-font-offset, 0px)) !important;
 }
 
-/* Excel：仅表格 chrome（数值列/标签/按钮）可略密，阅读字号跟站点 base */
-body.${PREFIX}-excel .topic-list .posts-map,
-body.${PREFIX}-excel .topic-list .num,
-body.${PREFIX}-excel .topic-list .badge-category,
-body.${PREFIX}-excel .topic-list .discourse-tag,
-body.${PREFIX}-excel .topic-list .link-bottom-line,
-body.${PREFIX}-excel .fps-result .blurb,
-body.${PREFIX}-excel .fps-result .discourse-tag,
-body.${PREFIX}-excel .discourse-boosts__add-btn,
-body.${PREFIX}-excel .post-menu-area .btn,
-body.${PREFIX}-excel .post__menu-area .btn,
-body.${PREFIX}-excel .post-controls .btn {
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
-}
+/* Excel 不再强制缩小列表数值/标签等原站元素字号；
+   表格感只靠边框/间距；字号跟站点，偏移由 font-resize 统一加 */
 
 /* highlight OP */
 body.${PREFIX}-highlight-op .topic-post.topic-owner .names::after,
@@ -2497,7 +2476,7 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-scroll-wrap {
   overflow: visible !important;
   background: #f8f9fb !important;
   color: #333 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
+  /* 不强制 12px：跟站点侧栏字号；偏移由 font-resize 容器统一加 */
   border: none !important;
   box-shadow: none !important;
   scrollbar-width: none !important;
@@ -2515,7 +2494,6 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-header-wrap
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-header-text {
   color: #666 !important;
   border-radius: 0 !important;
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-weight: 600 !important;
   letter-spacing: 0.02em !important;
   text-transform: none !important;
@@ -2527,9 +2505,8 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-link,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-link-wrapper {
   color: #333 !important;
   border-radius: 0 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 22px !important;
-  min-height: 24px !important;
+  line-height: 1.45 !important;
+  min-height: 28px !important;
   box-shadow: none !important;
   border: none !important;
   margin: 0 !important;
@@ -2552,14 +2529,12 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-link .sideb
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-link .sidebar-section-link-suffix,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-link .sidebar-section-link-content-badge {
   opacity: 0.7 !important;
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-footer-wrapper,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-custom-sections,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-section-message {
   border-color: #e6e6e6 !important;
   background: transparent !important;
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
   color: #888 !important;
 }
 body.${PREFIX}-excel #main-outlet,
@@ -2624,10 +2599,8 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .select
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .category-breadcrumb .select-kit-header {
   border-radius: 0 !important;
   box-shadow: none !important;
-  min-height: 24px !important;
+  min-height: 28px !important;
   height: auto !important;
-  line-height: 22px !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-weight: 400 !important;
   padding: 0 8px !important;
   margin: 0 !important;
@@ -2644,10 +2617,8 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a {
   border-radius: 0 !important;
   box-shadow: none !important;
   outline: none !important;
-  min-height: 24px !important;
+  min-height: 28px !important;
   height: auto !important;
-  line-height: 22px !important;
-  font-size: 12px !important;
   font-weight: 400 !important;
   padding: 0 8px !important;
   margin: 0 !important;
@@ -2668,10 +2639,8 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn {
   border-radius: 0 !important;
   box-shadow: none !important;
-  min-height: 24px !important;
+  min-height: 28px !important;
   height: auto !important;
-  line-height: 22px !important;
-  font-size: 12px !important;
   font-weight: 400 !important;
   padding: 0 8px !important;
   margin: 0 !important;
@@ -2759,7 +2728,6 @@ body.${PREFIX}-excel .title-wrapper h1 {
 body.${PREFIX}-excel #topic-title .topic-category,
 body.${PREFIX}-excel #topic-title .discourse-tags {
   margin-top: 2px !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
 /* 列表表格化 */
 body.${PREFIX}-excel .topic-list,
@@ -2790,9 +2758,10 @@ body.${PREFIX}-excel .topic-list th {
   color: #555 !important;
   font-family: inherit !important;
   font-weight: 500 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
-  height: 24px !important;
-  padding: 2px 6px !important;
+  /* 表头字号跟站点，不强制 12px */
+  height: auto !important;
+  min-height: 28px !important;
+  padding: 4px 8px !important;
   -webkit-font-smoothing: antialiased;
 }
 body.${PREFIX}-excel .topic-list tr:hover td,
@@ -2819,10 +2788,6 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .link-bottom-line
 }
 body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .badge-category__wrapper,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .badge-category {
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 16px !important;
-  height: 16px !important;
-  padding: 0 4px !important;
   border-radius: 2px !important;
   max-width: 9em !important;
   overflow: hidden !important;
@@ -2833,10 +2798,6 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .badge-category {
 }
 body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tag,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-horizon) .topic-list .discourse-tags .discourse-tag {
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 16px !important;
-  height: 16px !important;
-  padding: 0 4px !important;
   margin: 0 2px 0 0 !important;
   border-radius: 2px !important;
   background: #f0f0f0 !important;
@@ -3190,7 +3151,6 @@ body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn {
   border: none !important;
   background: transparent !important;
   color: #666 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn:hover {
   color: #c00000 !important;
@@ -3301,19 +3261,17 @@ body.${PREFIX}-excel .search-bar input[type="search"] {
   border-radius: 0 !important;
   background: #fff !important;
   box-shadow: none !important;
-  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
   color: #222 !important;
 }
 body.${PREFIX}-excel .search-bar .select-kit .select-kit-header,
 body.${PREFIX}-excel .search-bar .combo-box .select-kit-header,
 body.${PREFIX}-excel .search-info .select-kit .select-kit-header {
   min-height: 28px !important;
-  height: 28px !important;
+  height: auto !important;
   border-radius: 0 !important;
   border: 1px solid #c6c6c6 !important;
   background: #fff !important;
   box-shadow: none !important;
-  font-size: 12px !important;
   padding: 0 8px !important;
 }
 body.${PREFIX}-excel .search-bar .search-cta,
@@ -3321,16 +3279,14 @@ body.${PREFIX}-excel .search-bar .btn-primary.search-cta,
 body.${PREFIX}-excel .search-filters .btn,
 body.${PREFIX}-excel .advanced-filters__toggle {
   min-height: 28px !important;
-  height: 28px !important;
+  height: auto !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   border: 1px solid #8eb6e8 !important;
   background: #fff !important;
   color: #1a3959 !important;
-  font-size: 12px !important;
   font-weight: 400 !important;
   padding: 0 10px !important;
-  line-height: 26px !important;
 }
 body.${PREFIX}-excel .search-bar .search-cta:hover,
 body.${PREFIX}-excel .search-filters .btn:hover,
@@ -3348,7 +3304,6 @@ body.${PREFIX}-excel .advanced-filters {
 body.${PREFIX}-excel .semantic-search__container,
 body.${PREFIX}-excel .semantic-search__results,
 body.${PREFIX}-excel .semantic-search__searching {
-  font-size: 12px !important;
   color: #666 !important;
 }
 body.${PREFIX}-excel .search-info {
@@ -3359,7 +3314,6 @@ body.${PREFIX}-excel .search-info {
 }
 body.${PREFIX}-excel .search-info label {
   margin: 0 !important;
-  font-size: 12px !important;
   color: #555 !important;
 }
 body.${PREFIX}-excel .search-advanced {
@@ -3455,10 +3409,6 @@ body.${PREFIX}-excel .fps-result .search-category {
 }
 body.${PREFIX}-excel .fps-result .badge-category__wrapper,
 body.${PREFIX}-excel .fps-result .badge-category {
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 16px !important;
-  height: 16px !important;
-  padding: 0 4px !important;
   border-radius: 2px !important;
   max-width: 9em !important;
   overflow: hidden !important;
@@ -3478,10 +3428,6 @@ body.${PREFIX}-excel .fps-result .discourse-tags {
 }
 body.${PREFIX}-excel .fps-result .discourse-tag,
 body.${PREFIX}-excel .fps-result .discourse-tags .discourse-tag {
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 16px !important;
-  height: 16px !important;
-  padding: 0 4px !important;
   margin: 0 2px 0 0 !important;
   border-radius: 2px !important;
   background: #f0f0f0 !important;
@@ -3496,10 +3442,9 @@ body.${PREFIX}-excel .fps-result .discourse-tags .discourse-tag {
 body.${PREFIX}-excel .fps-result .blurb {
   margin: 0 !important;
   padding: 0 10px 6px !important;
-  font-size: 12px !important;
   line-height: 1.35 !important;
   color: #666 !important;
-  max-height: 2.7em !important;
+  max-height: 2.8em !important;
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
@@ -3757,10 +3702,10 @@ body.${PREFIX}-excel .post-menu-area .btn,
 body.${PREFIX}-excel .post__menu-area .btn {
   border-radius: 0 !important;
   box-shadow: none !important;
-  min-height: 20px !important;
+  /* 不强制 11px：爱心/链接/回复跟站点默认字号与图标尺寸 */
+  min-height: 28px !important;
   height: auto !important;
-  padding: 0 4px !important;
-  font-size: 11px !important;
+  padding: 2px 6px !important;
   background: transparent !important;
   border: 1px solid transparent !important;
   color: #666 !important;
@@ -3778,8 +3723,7 @@ body.${PREFIX}-excel .small-action {
   background: #f5f5f5 !important;
   margin: 0 !important;
   border-radius: 0 !important;
-  font-size: 12px !important;
-  padding: 3px 8px !important;
+  padding: 4px 8px !important;
 }
 body.${PREFIX}-excel .topic-post .read-state {
   display: none !important;
@@ -3876,9 +3820,9 @@ body.${PREFIX}-compact.${PREFIX}-excel .cooked p {
 body.${PREFIX}-compact.${PREFIX}-excel .post-controls .btn,
 body.${PREFIX}-compact.${PREFIX}-excel .post-menu-area .btn,
 body.${PREFIX}-compact.${PREFIX}-excel .post__menu-area .btn {
-  min-height: 18px !important;
-  font-size: 10px !important;
-  padding: 0 3px !important;
+  /* 紧凑只压 padding，不二次缩小图标/文字 */
+  min-height: 24px !important;
+  padding: 1px 4px !important;
 }
 /* 非 Excel 紧凑：详情也略压一点 */
 body.${PREFIX}-compact:not(.${PREFIX}-excel) .topic-post {
@@ -4047,9 +3991,8 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list thead th.sr-only {
   color: #555 !important;
   font-family: inherit !important;
   font-weight: 500 !important;
-  font-size: 12px !important;
-  height: 24px !important;
-  min-height: 24px !important;
+  height: auto !important;
+  min-height: 28px !important;
   text-align: left !important;
   -webkit-font-smoothing: antialiased;
   /* 禁止 sf-hidden / 无障碍隐藏把表头列从表格布局里拿掉，否则会整列错位 */
@@ -4087,7 +4030,7 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list thead th.${PREFIX}
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-rownum { width: 44px; }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-title { width: auto; }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-category { width: 200px; }
-body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-replies { width: 56px; }
+body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-replies { width: 64px; }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-activity { width: 110px; }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list col.${PREFIX}-excel-col-status { width: 38px; }
 
@@ -4173,12 +4116,11 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-da
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-likes-replies-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th.topic-likes-replies-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="topic-likes-replies-data"] {
-  width: 56px !important;
-  min-width: 48px !important;
-  max-width: 64px !important;
+  width: 64px !important;
+  min-width: 56px !important;
+  max-width: 72px !important;
   text-align: right !important;
   color: #c45c26 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
   font-variant-numeric: tabular-nums;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-likes-replies-data .topic-replies,
@@ -4190,7 +4132,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-replies {
   gap: 0 !important;
   height: auto !important;
   color: #c45c26 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
   white-space: nowrap !important;
 }
 /* 回复列只留数字，去掉引用/回复箭头图标 */
@@ -4215,7 +4156,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list th[data-ldmy-col="topic
   width: 110px !important;
   min-width: 92px !important;
   max-width: 124px !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
   color: #666 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-activity {
@@ -4224,7 +4164,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-activity {
   gap: 4px !important;
   max-width: 100% !important;
   overflow: hidden !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
   color: #666 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-activity__username {
@@ -4233,7 +4172,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-activity__username {
   text-overflow: ellipsis !important;
   max-width: 48px !important;
   margin-left: 0 !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list .topic-status-data,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-list td.topic-status-data,
@@ -4278,7 +4216,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list thead th[data-ldmy
 body.${PREFIX}-excel.${PREFIX}-excel-horizon table.topic-list thead th.default .${PREFIX}-excel-th-label {
   display: inline !important;
   color: #555 !important;
-  font-size: 12px !important;
   font-weight: 500 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-status-card .d-icon,
@@ -4323,10 +4260,6 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .badge-category,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .badge-category__wrapper {
   border-radius: 0 !important;
   box-shadow: none !important;
-  font-size: calc(11px + var(--${PREFIX}-font-offset, 0px)) !important;
-  padding: 0 4px !important;
-  line-height: 18px !important;
-  height: 18px !important;
   display: inline-flex !important;
   align-items: center !important;
   max-width: 100% !important;
@@ -4346,10 +4279,8 @@ body.${PREFIX}-excel.${PREFIX}-excel-horizon .topic-create-button__combo,
 body.${PREFIX}-excel.${PREFIX}-excel-horizon .list-controls .btn-primary {
   border-radius: 0 !important;
   box-shadow: none !important;
-  min-height: 26px !important;
-  height: 26px !important;
-  line-height: 24px !important;
-  font-size: 12px !important;
+  min-height: 28px !important;
+  height: auto !important;
   padding: 0 10px !important;
   background: #fff !important;
   color: #1a3959 !important;
@@ -4397,8 +4328,7 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-theme-toggle__wrapp
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-theme-toggle-dropdown,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .sidebar-theme-toggle-dropdown .select-kit-header {
   border-radius: 0 !important; border: 1px solid #c6c6c6 !important; background: #fff !important;
-  box-shadow: none !important; min-height: 24px !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
+  box-shadow: none !important; min-height: 28px !important;
 }
 
 /* 通用列表框线补强 */
@@ -5623,7 +5553,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			this.syncSliderUI(el);
 			if (key === 'fontSize') {
 				const offset = Number.isFinite(val)
-					? Math.max(-4, Math.min(8, Math.round(val * 10) / 10))
+					? Math.max(-4, Math.min(4, Math.round(val * 10) / 10))
 					: 0;
 				// 写入内存，避免 Excel render/applyBodyFlags 用旧值把预览冲掉
 				this.advanced.fontSize = offset;
@@ -5777,8 +5707,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					.join('')}
             </div>
 
-            <details class="${PREFIX}-adv">
-              <summary>高级设置</summary>
+            <div class="${PREFIX}-sec">高级设置</div>
               <div class="${PREFIX}-adv-grid">
                 <label class="${PREFIX}-field">
                   <span>动态快捷键（关闭项仍可热键切换）</span>
@@ -5797,12 +5726,12 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                 <label class="${PREFIX}-field ${PREFIX}-slider-field" data-slider="fontSize">
                   <div class="${PREFIX}-slider-head">
                     <span>字体大小偏移</span>
-                    <span class="${PREFIX}-slider-val" data-slider-val="fontSize">0</span>
+                    <span class="${PREFIX}-slider-val" data-slider-val="fontSize">-1.0 px</span>
                   </div>
                   <div class="${PREFIX}-slider-row">
                     <span class="${PREFIX}-slider-min">-4</span>
-                    <input type="range" data-type="advanced" data-key="fontSize" min="-4" max="8" step="0.5" />
-                    <span class="${PREFIX}-slider-max">+8</span>
+                    <input type="range" data-type="advanced" data-key="fontSize" min="-4" max="4" step="0.5" />
+                    <span class="${PREFIX}-slider-max">+4</span>
                   </div>
                 </label>
                 <label class="${PREFIX}-field ${PREFIX}-slider-field" data-slider="imageMaxWidth" title="限制楼内图片显示宽度。0=不限制（最大随正文列宽）；设得再大也不会超过当前列宽。">
@@ -5850,7 +5779,6 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                 </label>
 
               </div>
-            </details>
           </div>
           <div class="${PREFIX}-panel-ft">
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
