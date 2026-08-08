@@ -3989,6 +3989,194 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .fps-result .discourse-tag {
   color: #bbb !important;
 }
 
+
+/* ---- Excel 深色：帖内阅读路径补齐 ---- */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__post-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__list {
+  background: transparent !important;
+  color: #ddd !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__bubble {
+  background: #333 !important;
+  color: #e6e6e6 !important;
+  border: 1px solid #4a4a4a !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__bubble.--actionable:hover {
+  background: #3a4555 !important;
+  border-color: #5a6a80 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__cooked,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__cooked p,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__add-btn {
+  color: #ddd !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__add-btn:hover {
+  color: #8ec7ff !important;
+}
+
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area .actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area .actions {
+  background: transparent !important;
+  border-top-color: #3f3f46 !important;
+  color: #bbb !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu__reply,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu__like,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu__edit,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu__show-more,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu__boost,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts-trigger {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #bbb !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area .btn:hover {
+  background: #333 !important;
+  border-color: #555 !important;
+  color: #eee !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area .btn .d-icon {
+  color: #aaa !important;
+}
+
+/* composer / reply-control */
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .docked-composer,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .reply-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .composer-fields,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-container,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-textarea-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-preview-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .composer-popup {
+  background: #252526 !important;
+  color: #e6e6e6 !important;
+  border-color: #3f3f46 !important;
+  box-shadow: 0 -2px 16px rgba(0,0,0,.45) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .grippie,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .composer-controls,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .save-or-cancel,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-button-bar,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .composer-bottom {
+  background: #2d2d30 !important;
+  border-color: #3f3f46 !important;
+  color: #ddd !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control textarea,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-input,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control input,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control #reply-title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-preview {
+  background: #1e1e1e !important;
+  color: #e6e6e6 !important;
+  border-color: #444 !important;
+  caret-color: #8ec7ff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .btn-primary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .save-or-cancel .btn {
+  background: #3a3a3a !important;
+  border: 1px solid #555 !important;
+  color: #eee !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .btn-primary {
+  background: #1e4f8a !important;
+  border-color: #2b6cb0 !important;
+  color: #fff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .btn:hover {
+  background: #454545 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .d-editor-button-bar .btn .d-icon,
+body.${PREFIX}-excel.${PREFIX}-excel-dark #reply-control .composer-controls .d-icon {
+  color: #ccc !important;
+}
+
+/* cooked: onebox / quote / code / badges */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked a.mention,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked a.mention-group {
+  color: #8ec7ff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked blockquote,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked aside.quote,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .quote,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .quote .title {
+  background: #2a2a2a !important;
+  border-color: #4a4a4a !important;
+  color: #ddd !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked aside.quote {
+  border-left-color: #4ea1ff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .onebox,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked aside.onebox,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .onebox-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .onebox header {
+  background: #2a2a2a !important;
+  border-color: #4a4a4a !important;
+  color: #ddd !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked pre,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked code,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked pre code {
+  background: #1a1a1a !important;
+  color: #d4d4d4 !important;
+  border-color: #3f3f46 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-keyword,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-selector-tag,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-literal { color: #569cd6 !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-string,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-attr { color: #ce9178 !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-comment { color: #6a9955 !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-number,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-built_in { color: #b5cea8 !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-title,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked .hljs-section { color: #dcdcaa !important; }
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-category__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tag,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-tags .discourse-tag,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .badge-notification {
+  background: #333 !important;
+  border-color: #4a4a4a !important;
+  color: #ccc !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-meta-data,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .names,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-infos,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-date,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-info {
+  color: #bbb !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .small-action,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .time-gap,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .gap {
+  background: #2a2a2a !important;
+  border-color: #3f3f46 !important;
+  color: #aaa !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .timeline-container,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-timeline,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-navigation {
+  background: #252526 !important;
+  border-color: #3f3f46 !important;
+  color: #ccc !important;
+}
+
 /* Excel 模式下的 Discourse 弹层：搜索/用户/语言等常挂在 d-header 栈内。
  * excel-root 本身 z-index=99980，只抬弹层自身不够——必须整棵 root 降层，并把 d-header 抬上来。 */
 body.${PREFIX}-excel [class*="search-menu"],
