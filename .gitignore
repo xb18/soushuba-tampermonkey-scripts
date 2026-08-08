@@ -151,5 +151,5 @@ test_script.js
 linuxdo-moyu/test/node_modules/
 linuxdo-moyu/test/package-lock.json
 
-*.html
-*.htm
+# *.html
+# *.htm

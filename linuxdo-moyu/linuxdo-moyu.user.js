@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.9
+// @version      1.1.12
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,18 +27,21 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.9';
+	const SCRIPT_VERSION = '1.1.12';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
 		'https://raw.githubusercontent.com/urzeye/ophel/refs/heads/release/docs/media/support/wechat-pay.jpg';
 	const STORAGE = {
 		SETTINGS: `${PREFIX}_settings`,
+		SETTINGS_REV: `${PREFIX}_settings_rev`,
 		BAN_LIST: `${PREFIX}_ban_list`,
 		MARK_LIST: `${PREFIX}_mark_list`,
 		KEYWORDS: `${PREFIX}_keywords`,
 		SHORTCUTS: `${PREFIX}_shortcuts`,
 	};
+	// 设置结构修订号：升版本时把「仍等于旧默认」的项迁到新默认，不覆盖用户显式改过的值
+	const SETTINGS_REV = 2;
 
 	const DEFAULT_NORMAL = {
 		// 摸鱼向默认：装完即伪装 + 少露论坛特征；伤阅读的（藏图/藏表情）保持关
@@ -49,7 +52,7 @@
 		hideSidebar: false, // Excel 开时会自行隐藏侧栏；关 Excel 时保留导航
 		hideTopicMap: true,
 		excelMode: true, // 核心卖点，默认开；快捷键 X 可关
-		compactMode: false,
+		compactMode: true,
 		wideMode: true,
 		highlightOP: true,
 		onlyOP: false, // 模式型，不默认
@@ -64,7 +67,7 @@
 	const DEFAULT_ADVANCED = {
 		dynamicEnable: true,
 		fontSize: 0, // 0 = 不调整, 相对偏移 px
-		imageMaxWidth: 280,
+		imageMaxWidth: 0, // 0=不限制（最大不超过正文列宽）；>0 时强制封顶
 		authorMarkColor: '#e74c3c',
 		banMode: 'hide', // hide | remove
 		keywordsMatchTitle: true,
@@ -76,7 +79,7 @@
 		excelShowRowIndex: true,
 		excelHideNav: true, // 隐藏顶栏导航 + 左侧侧栏（分类/tag/板块）
 		excelMetaCol: false, // Default/Moyu 经典列表：分类/标签单独一列（false=留在标题下方）
-		excelMetaLeading: false, // 经典列表：把活动/浏览/回复挪到标题前（默认关）
+		excelMetaLeading: true, // 经典列表：把活动/浏览/回复挪到标题前
 		boostAsAnnotation: false, // 帖内 boost 收成批注样式（默认关）
 	};
 
@@ -402,6 +405,31 @@
 			this.banList = storageGet(STORAGE.BAN_LIST, []) || [];
 			this.markList = storageGet(STORAGE.MARK_LIST, []) || [];
 			this.keywords = storageGet(STORAGE.KEYWORDS, []) || [];
+			this.migrateSettingsRev();
+		}
+
+		/** 仅当某项仍等于「上一版默认」时才迁到新默认，避免覆盖用户自定义 */
+		migrateSettingsRev() {
+			const rev = Number(storageGet(STORAGE.SETTINGS_REV, 1)) || 1;
+			if (rev >= SETTINGS_REV) return;
+			let changed = false;
+			if (rev < 2) {
+				// 1.1.11：紧凑/元数据前置默认开；图片宽度 0=不限制（旧默认 280 太小）
+				if (this.normal.compactMode === false) {
+					this.normal.compactMode = true;
+					changed = true;
+				}
+				if (this.advanced.excelMetaLeading === false) {
+					this.advanced.excelMetaLeading = true;
+					changed = true;
+				}
+				if (this.advanced.imageMaxWidth === 280) {
+					this.advanced.imageMaxWidth = 0;
+					changed = true;
+				}
+			}
+			storageSet(STORAGE.SETTINGS_REV, SETTINGS_REV);
+			if (changed) this.saveSettings();
 		}
 
 		saveSettings() {
@@ -505,10 +533,17 @@
 				`--${PREFIX}-author-color`,
 				this.advanced.authorMarkColor || '#e74c3c'
 			);
-			document.documentElement.style.setProperty(
-				`--${PREFIX}-img-max`,
-				`${this.advanced.imageMaxWidth || 280}px`
-			);
+			const imgMax = Number(this.advanced.imageMaxWidth);
+			if (Number.isFinite(imgMax) && imgMax > 0) {
+				document.documentElement.style.setProperty(
+					`--${PREFIX}-img-max`,
+					`${imgMax}px`
+				);
+				document.body.classList.add(`${PREFIX}-img-cap`);
+			} else {
+				document.documentElement.style.removeProperty(`--${PREFIX}-img-max`);
+				document.body.classList.remove(`${PREFIX}-img-cap`);
+			}
 			const fontOffset = Number(this.advanced.fontSize) || 0;
 			document.documentElement.style.setProperty(
 				`--${PREFIX}-font-offset`,
@@ -891,6 +926,111 @@ body.${PREFIX}-fab-left #${PREFIX}-fab {
   background: var(--secondary, #fff);
   color: var(--primary, #222);
   font-size: 13px;
+}
+/* 滑块字段：占满一行，数值即时可见 */
+#${PREFIX}-panel .${PREFIX}-field.${PREFIX}-slider-field {
+  grid-column: 1 / -1;
+  gap: 6px;
+  padding: 4px 0 2px;
+}
+#${PREFIX}-panel .${PREFIX}-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+#${PREFIX}-panel .${PREFIX}-slider-head > span:first-child {
+  color: var(--primary-medium, #666);
+}
+#${PREFIX}-panel .${PREFIX}-slider-val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--tertiary, #08c);
+  background: color-mix(in srgb, var(--tertiary, #08c) 12%, transparent);
+  border-radius: 999px;
+  padding: 1px 8px;
+  min-width: 4.5em;
+  text-align: center;
+  white-space: nowrap;
+}
+#${PREFIX}-panel .${PREFIX}-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#${PREFIX}-panel .${PREFIX}-slider-row .${PREFIX}-slider-min,
+#${PREFIX}-panel .${PREFIX}-slider-row .${PREFIX}-slider-max {
+  font-size: 11px;
+  color: var(--primary-medium, #888);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 1.6em;
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  width: 100%;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]:focus {
+  outline: none;
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--tertiary, #08c) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--tertiary, #08c) 0% var(--${PREFIX}-slider-pct, 0%),
+    var(--primary-low, #ddd) var(--${PREFIX}-slider-pct, 0%) 100%
+  );
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--secondary, #fff);
+  border: 2px solid var(--tertiary, #08c);
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]:hover::-webkit-slider-thumb,
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,.22);
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--primary-low, #ddd);
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--tertiary, #08c);
+}
+#${PREFIX}-panel .${PREFIX}-field input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--secondary, #fff);
+  border: 2px solid var(--tertiary, #08c);
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
 }
 #${PREFIX}-panel .${PREFIX}-panel-ft {
   padding: 12px 20px 16px;
@@ -1362,11 +1502,23 @@ body.${PREFIX}-only-op .topic-post:not(.topic-owner):not(.post--topic-owner) {
   display: none !important;
 }
 
-/* image max size */
+/* image max size：默认不额外限制（随正文列宽）；开启封顶时再套 --img-max */
 body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
-  max-width: min(100%, var(--${PREFIX}-img-max, 280px)) !important;
+  max-width: 100% !important;
   height: auto !important;
   cursor: zoom-in;
+}
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked img:not(.emoji),
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked .lightbox-wrapper,
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked .image-wrapper,
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked a.lightbox {
+  max-width: min(100%, var(--${PREFIX}-img-max)) !important;
+}
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked .lightbox-wrapper img,
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked .image-wrapper img,
+body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked a.lightbox img {
+  max-width: 100% !important;
+  height: auto !important;
 }
 .${PREFIX}-img-viewer {
   position: fixed;
@@ -2085,6 +2237,30 @@ html:has(body.${PREFIX}-excel),
 html:has(body.${PREFIX}-excel) body {
   scrollbar-width: thin !important;
   scrollbar-color: #c4c4c4 transparent !important;
+}
+/* 深色模式滚动条：避免浅灰滑块在暗底上过亮 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark {
+  scrollbar-color: #555 #2a2a2a !important;
+}
+html:has(body.${PREFIX}-excel.${PREFIX}-excel-dark),
+html:has(body.${PREFIX}-excel.${PREFIX}-excel-dark) body {
+  scrollbar-color: #555 #2a2a2a !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark::-webkit-scrollbar-track,
+html:has(body.${PREFIX}-excel.${PREFIX}-excel-dark)::-webkit-scrollbar-track {
+  background: #2a2a2a !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark::-webkit-scrollbar-thumb,
+html:has(body.${PREFIX}-excel.${PREFIX}-excel-dark)::-webkit-scrollbar-thumb {
+  background: #555 !important;
+  border: 2px solid #2a2a2a !important;
+  background-clip: padding-box !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark::-webkit-scrollbar-thumb:hover,
+html:has(body.${PREFIX}-excel.${PREFIX}-excel-dark)::-webkit-scrollbar-thumb:hover {
+  background: #6a6a6a !important;
+  border: 2px solid #2a2a2a !important;
+  background-clip: padding-box !important;
 }
 /* 列表正文恢复站点字体，避免腾讯文档字体栈/缩小字号导致发糊 */
 body.${PREFIX}-excel #main-outlet,
@@ -5352,6 +5528,8 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			const overlay = $(`#${PREFIX}-overlay`);
 			if (overlay) overlay.classList.remove('open');
 			this._panelOpen = false;
+			// 取消时还原滑块即时预览（未点保存的改动不保留）
+			this.applyBodyFlags();
 			// remove subpanels
 			$$(`.${PREFIX}-subpanel`).forEach((el) => el.remove());
 		}
@@ -5368,7 +5546,60 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				} else {
 					el.value = source[key] ?? '';
 				}
+				if (el.type === 'range') this.syncSliderUI(el);
 			});
+		}
+
+		formatSliderValue(key, raw) {
+			const n = Number(raw);
+			if (!Number.isFinite(n)) return String(raw ?? '');
+			if (key === 'fontSize') {
+				if (n === 0) return '默认';
+				return n > 0 ? `+${n} px` : `${n} px`;
+			}
+			if (key === 'imageMaxWidth') {
+				if (n <= 0) return '不限制';
+				return `${n} px`;
+			}
+			return String(n);
+		}
+
+		syncSliderUI(el) {
+			if (!el || el.type !== 'range') return;
+			const key = el.getAttribute('data-key');
+			const min = Number(el.min);
+			const max = Number(el.max);
+			const val = Number(el.value);
+			const pct =
+				Number.isFinite(min) && Number.isFinite(max) && max > min
+					? ((val - min) / (max - min)) * 100
+					: 0;
+			el.style.setProperty(`--${PREFIX}-slider-pct`, `${Math.max(0, Math.min(100, pct))}%`);
+			const label = document.querySelector(`#${PREFIX}-panel [data-slider-val="${key}"]`);
+			if (label) label.textContent = this.formatSliderValue(key, val);
+		}
+
+		/** 拖动时即时预览，不写存储；取消/关闭会用已保存值还原 */
+		previewSlider(el) {
+			if (!el || el.type !== 'range') return;
+			const key = el.getAttribute('data-key');
+			const val = Number(el.value);
+			this.syncSliderUI(el);
+			if (key === 'fontSize') {
+				const offset = Number.isFinite(val) ? val : 0;
+				document.documentElement.style.setProperty(`--${PREFIX}-font-offset`, `${offset}px`);
+				document.body.classList.toggle(`${PREFIX}-font-resize`, offset !== 0);
+				return;
+			}
+			if (key === 'imageMaxWidth') {
+				if (Number.isFinite(val) && val > 0) {
+					document.documentElement.style.setProperty(`--${PREFIX}-img-max`, `${val}px`);
+					document.body.classList.add(`${PREFIX}-img-cap`);
+				} else {
+					document.documentElement.style.removeProperty(`--${PREFIX}-img-max`);
+					document.body.classList.remove(`${PREFIX}-img-cap`);
+				}
+			}
 		}
 
 		ensurePanel() {
@@ -5461,7 +5692,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                           <option value="true">单独一列</option>
                         </select>
                       </label>
-                      <label class="${PREFIX}-field" title="Default/Moyu 主题：把活动/浏览/回复挪到标题列前，扫一眼先看热度；默认关闭，关闭后恢复原列序；Horizon 主题自动忽略">
+                      <label class="${PREFIX}-field" title="Default/Moyu 主题：把活动/浏览/回复挪到标题列前，扫一眼先看热度；关闭后恢复原列序；Horizon 主题自动忽略">
                         <span>元数据前置</span>
                         <select data-type="advanced" data-key="excelMetaLeading">
                           <option value="false">关闭</option>
@@ -5521,13 +5752,27 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                     <option value="remove">直接移除</option>
                   </select>
                 </label>
-                <label class="${PREFIX}-field">
-                  <span>字体大小偏移 (px，0=默认)</span>
-                  <input type="number" data-type="advanced" data-key="fontSize" min="-4" max="12" step="1" />
+                <label class="${PREFIX}-field ${PREFIX}-slider-field" data-slider="fontSize">
+                  <div class="${PREFIX}-slider-head">
+                    <span>字体大小偏移</span>
+                    <span class="${PREFIX}-slider-val" data-slider-val="fontSize">0</span>
+                  </div>
+                  <div class="${PREFIX}-slider-row">
+                    <span class="${PREFIX}-slider-min">-4</span>
+                    <input type="range" data-type="advanced" data-key="fontSize" min="-4" max="12" step="1" />
+                    <span class="${PREFIX}-slider-max">+12</span>
+                  </div>
                 </label>
-                <label class="${PREFIX}-field">
-                  <span>楼内图片最大宽度 (px)</span>
-                  <input type="number" data-type="advanced" data-key="imageMaxWidth" min="100" max="1200" step="10" />
+                <label class="${PREFIX}-field ${PREFIX}-slider-field" data-slider="imageMaxWidth" title="限制楼内图片显示宽度。0=不限制（最大随正文列宽）；设得再大也不会超过当前列宽。">
+                  <div class="${PREFIX}-slider-head">
+                    <span>楼内图片最大宽度</span>
+                    <span class="${PREFIX}-slider-val" data-slider-val="imageMaxWidth">不限制</span>
+                  </div>
+                  <div class="${PREFIX}-slider-row">
+                    <span class="${PREFIX}-slider-min">0</span>
+                    <input type="range" data-type="advanced" data-key="imageMaxWidth" min="0" max="2000" step="20" />
+                    <span class="${PREFIX}-slider-max">2000</span>
+                  </div>
                 </label>
                 <label class="${PREFIX}-field">
                   <span>楼主高亮颜色</span>
@@ -5645,6 +5890,13 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 				});
 			}
 
+			// 字体/图片宽度滑块：拖动即时预览 + 更新数值标签
+			overlay.querySelectorAll('input[type="range"][data-key]').forEach((el) => {
+				const onInput = () => this.previewSlider(el);
+				el.addEventListener('input', onInput);
+				el.addEventListener('change', onInput);
+			});
+
 			overlay.querySelectorAll('[data-act]').forEach((btn) => {
 				btn.addEventListener('click', () => {
 					const act = btn.getAttribute('data-act');
@@ -5738,7 +5990,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 					else if (!Number.isNaN(Number(v)) && ['fontSize', 'imageMaxWidth'].includes(key)) {
 						target[key] = Number(v);
 					} else target[key] = v;
-				} else if (el.type === 'number') {
+				} else if (el.type === 'number' || el.type === 'range') {
 					target[key] = Number(el.value);
 				} else {
 					target[key] = el.value;
