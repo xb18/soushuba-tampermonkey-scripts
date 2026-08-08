@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.26
+// @version      1.1.27
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.26';
+	const SCRIPT_VERSION = '1.1.27';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -1915,6 +1915,9 @@ body.${PREFIX}-only-op #${PREFIX}-only-op-tip { display: inline-flex; gap: 6px; 
   inset: 0;
   z-index: 99980;
   pointer-events: none;
+  /* 独立合成层，避免帖内 emoji/boost 上滚时与固定头抢绘制顺序 */
+  isolation: isolate;
+  transform: translateZ(0);
 }
 body.${PREFIX}-excel #${PREFIX}-excel-root { display: block; }
 #${PREFIX}-excel-root .${PREFIX}-excel-header,
@@ -1925,12 +1928,21 @@ body.${PREFIX}-excel #${PREFIX}-excel-root { display: block; }
   pointer-events: auto;
   box-sizing: border-box;
   z-index: 99981;
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* 强制自成不透明合成层，避免滚动时被帖内 emoji/boost 穿透 */
+  will-change: transform;
 }
 #${PREFIX}-excel-root .${PREFIX}-excel-header {
   top: 0;
   background: #fff;
+  background-clip: padding-box;
   border-bottom: 1px solid #bbb;
   overflow: hidden;
+  /* 额外遮罩：即使子层有透明缝，也不让下层像素透上来 */
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.01), 0 1px 0 #bbb;
 }
 #${PREFIX}-excel-root .${PREFIX}-excel-footer {
   bottom: 0;
@@ -2483,6 +2495,80 @@ body.${PREFIX}-excel #main-outlet-wrapper.wrap {
   min-width: 0 !important;
   box-sizing: border-box !important;
 }
+
+/* 内容层锁在 Excel chrome 之下：子元素再高的 z-index 也逃不出这层，
+   避免状态表情 / boost 火箭上滚穿进工具栏与列头 */
+body.${PREFIX}-excel #main,
+body.${PREFIX}-excel #main-outlet,
+body.${PREFIX}-excel .main-outlet,
+body.${PREFIX}-excel #main-outlet-wrapper,
+body.${PREFIX}-excel.has-sidebar-page #main-outlet-wrapper,
+body.${PREFIX}-excel #main-outlet-wrapper.wrap,
+body.${PREFIX}-excel #list-area,
+body.${PREFIX}-excel .list-container,
+body.${PREFIX}-excel .post-stream,
+body.${PREFIX}-excel .topic-area,
+body.${PREFIX}-excel #topic,
+body.${PREFIX}-excel .container.posts,
+body.${PREFIX}-excel section.topic-area,
+body.${PREFIX}-excel .discourse-root,
+body.${PREFIX}-excel #ember-container {
+  position: relative !important;
+  z-index: 0 !important;
+  isolation: isolate !important;
+}
+/* 帖内容器不抬层 */
+body.${PREFIX}-excel .topic-post,
+body.${PREFIX}-excel .topic-list-item,
+body.${PREFIX}-excel .topic-post .names,
+body.${PREFIX}-excel .post-menu-area,
+body.${PREFIX}-excel .post__menu-area,
+body.${PREFIX}-excel .post-controls,
+body.${PREFIX}-excel .post-actions,
+body.${PREFIX}-excel .post__actions {
+  z-index: auto !important;
+}
+/* 状态表情 / boost 火箭：清掉可能制造穿模的定位与合成属性 */
+body.${PREFIX}-excel .topic-post .user-status,
+body.${PREFIX}-excel .topic-post .user-status-message-wrap,
+body.${PREFIX}-excel .topic-post .poster-icon-container,
+body.${PREFIX}-excel .topic-post img.emoji,
+body.${PREFIX}-excel .topic-post .emoji,
+body.${PREFIX}-excel .topic-post .emoji-images,
+body.${PREFIX}-excel .discourse-boosts,
+body.${PREFIX}-excel .discourse-boosts__list,
+body.${PREFIX}-excel .discourse-boosts__bubble,
+body.${PREFIX}-excel .discourse-boosts__add-btn,
+body.${PREFIX}-excel .discourse-boosts__post-menu,
+body.${PREFIX}-excel .reactions-actions-summary,
+body.${PREFIX}-excel .discourse-reactions-actions,
+body.${PREFIX}-excel .discourse-reactions-reaction-button,
+body.${PREFIX}-excel .discourse-reactions-counter {
+  position: relative !important;
+  top: auto !important;
+  bottom: auto !important;
+  z-index: 0 !important;
+  transform: none !important;
+  filter: none !important;
+  will-change: auto !important;
+  isolation: auto !important;
+}
+/* sticky 导航/侧栏只在内容层内叠放，绝不能高过 Excel 头 */
+body.${PREFIX}-excel .navigation-container,
+body.${PREFIX}-excel .list-controls,
+body.${PREFIX}-excel .topic-list-header,
+body.${PREFIX}-excel thead.topic-list-header,
+body.${PREFIX}-excel .sidebar-wrapper,
+body.${PREFIX}-excel #d-sidebar {
+  z-index: 5 !important;
+}
+/* sticky-avatar 帖子本身不要形成额外抬高层 */
+body.${PREFIX}-excel .post-stream .topic-post.sticky-avatar,
+body.${PREFIX}-excel .post-stream .topic-post.post--sticky-avatar {
+  z-index: 0 !important;
+  transform: none !important;
+}
+
 
 /* Excel 底栏会盖住 docked composer：抬升 #reply-control 并提高层级 */
 body.${PREFIX}-excel #reply-control,
@@ -5858,18 +5944,29 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-navigation {
   color: #ccc !important;
 }
 
-/* Excel 模式下的 Discourse 弹层：搜索/用户/语言等常挂在 d-header 栈内。
- * excel-root 本身 z-index=99980，只抬弹层自身不够——必须整棵 root 降层，并把 d-header 抬上来。 */
-body.${PREFIX}-excel [class*="search-menu"],
-body.${PREFIX}-excel [class*="search-banner"],
-body.${PREFIX}-excel [class*="user-menu"],
-body.${PREFIX}-excel [class*="fk-d-menu"],
-body.${PREFIX}-excel [class*="menu-panel"],
-body.${PREFIX}-excel [class*="dropdown-menu"],
-body.${PREFIX}-excel [class*="select-kit-body"],
-body.${PREFIX}-excel [class*="tooltip"],
+/* Excel 模式下的 Discourse 弹层：只抬真正的浮层，避免 [class*=tooltip] 等宽选择器
+ * 把帖内状态/boost 节点抬到 Excel 头之上造成穿模。 */
+body.${PREFIX}-excel .d-header [class*="search-menu"],
+body.${PREFIX}-excel .d-header [class*="user-menu"],
+body.${PREFIX}-excel .d-header [class*="menu-panel"],
+body.${PREFIX}-excel .d-header .fk-d-menu,
+body.${PREFIX}-excel .d-header-wrap [class*="search-menu"],
+body.${PREFIX}-excel .d-header-wrap [class*="user-menu"],
+body.${PREFIX}-excel > .fk-d-menu,
+body.${PREFIX}-excel > [data-content],
+body.${PREFIX}-excel > .menu-panel,
+body.${PREFIX}-excel > .lang-dropdown,
+body.${PREFIX}-excel > .d-modal,
+body.${PREFIX}-excel > .modal,
 body.${PREFIX}-excel .d-modal,
 body.${PREFIX}-excel .modal-inner-container,
+body.${PREFIX}-excel .d-modal-container,
+body.${PREFIX}-excel .fk-d-menu[data-expanded="true"],
+body.${PREFIX}-excel .tippy-box,
+body.${PREFIX}-excel .tippy-popover,
+body.${PREFIX}-excel [data-tippy-root],
+body.${PREFIX}-excel .select-kit-body,
+body.${PREFIX}-excel .select-kit-collection,
 body.${PREFIX}-excel .d-menu-panel {
   z-index: 100020 !important;
 }
@@ -8135,9 +8232,34 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 		handleChromeAction(act, script) {
 			// JS 兜底：触发后定时把页面 fixed/absolute 弹层（非脚本自身元素）提到 Excel 头之上
 			const boostPopups = () => {
-				const candidates = [...$$('body > *'), ...$$('#main > *, main > *')];
-				candidates.forEach((n) => {
+				// 只抬 body 直属浮层；绝不碰 #main / outlet 等页面内容容器，否则整页会盖过 Excel 头造成穿模
+				const skipId = new Set([
+					`${PREFIX}-excel-root`,
+					`${PREFIX}-fab`,
+					`${PREFIX}-overlay`,
+					`${PREFIX}-panel`,
+					`${PREFIX}-dialog`,
+					`${PREFIX}-toast-box`,
+					'main',
+					'main-outlet',
+					'main-outlet-wrapper',
+				]);
+				const skipClass = [
+					'main-outlet',
+					'main-outlet-wrapper',
+					'list-container',
+					'post-stream',
+					'topic-area',
+					'd-header',
+					'd-header-wrap',
+				];
+				$$('body > *').forEach((n) => {
+					if (!n || n.nodeType !== 1) return;
+					if (n.id && skipId.has(n.id)) return;
+					if (skipClass.some((c) => n.classList && n.classList.contains(c))) return;
 					if (n.closest && n.closest(`#${PREFIX}-excel-root`)) return;
+					// 含主内容树的大容器跳过
+					if (n.querySelector && n.querySelector('#main-outlet, #main-outlet-wrapper, .topic-post, .topic-list, .post-stream')) return;
 					const cs = getComputedStyle(n);
 					if (cs.position !== 'fixed' && cs.position !== 'absolute') return;
 					const z = parseInt(cs.zIndex, 10);
