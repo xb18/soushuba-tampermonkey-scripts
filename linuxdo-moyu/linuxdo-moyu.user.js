@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.28
+// @version      1.1.30
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.28';
+	const SCRIPT_VERSION = '1.1.30';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -2496,28 +2496,9 @@ body.${PREFIX}-excel #main-outlet-wrapper.wrap {
   box-sizing: border-box !important;
 }
 
-/* 内容层锁在 Excel chrome 之下：子元素再高的 z-index 也逃不出这层，
-   避免状态表情 / boost 火箭上滚穿进工具栏与列头 */
-body.${PREFIX}-excel #main,
-body.${PREFIX}-excel #main-outlet,
-body.${PREFIX}-excel .main-outlet,
-body.${PREFIX}-excel #main-outlet-wrapper,
-body.${PREFIX}-excel.has-sidebar-page #main-outlet-wrapper,
-body.${PREFIX}-excel #main-outlet-wrapper.wrap,
-body.${PREFIX}-excel #list-area,
-body.${PREFIX}-excel .list-container,
-body.${PREFIX}-excel .post-stream,
-body.${PREFIX}-excel .topic-area,
-body.${PREFIX}-excel #topic,
-body.${PREFIX}-excel .container.posts,
-body.${PREFIX}-excel section.topic-area,
-body.${PREFIX}-excel .discourse-root,
-body.${PREFIX}-excel #ember-container {
-  position: relative !important;
-  z-index: 0 !important;
-  isolation: isolate !important;
-}
-/* 帖内容器不抬层 */
+/* 防穿模（收窄版）：不要给 #main / .discourse-root / #ember-container 等大祖先
+   加 isolation + z-index:0，否则 d-header 搜索/用户/语言弹层会被锁在内容层，
+   永远盖不过 Excel 固定头（1.1.27 回归）。只压帖内状态/boost 与 sticky 相关节点。 */
 body.${PREFIX}-excel .topic-post,
 body.${PREFIX}-excel .topic-list-item,
 body.${PREFIX}-excel .topic-post .names,
@@ -2553,7 +2534,7 @@ body.${PREFIX}-excel .discourse-reactions-counter {
   will-change: auto !important;
   isolation: auto !important;
 }
-/* sticky 导航/侧栏只在内容层内叠放，绝不能高过 Excel 头 */
+/* sticky 导航/侧栏：压在内容内，仍远低于 Excel chrome(99981) */
 body.${PREFIX}-excel .navigation-container,
 body.${PREFIX}-excel .list-controls,
 body.${PREFIX}-excel .topic-list-header,
@@ -6070,56 +6051,104 @@ body.${PREFIX}-excel .select-kit-collection,
 body.${PREFIX}-excel .d-menu-panel {
   z-index: 100020 !important;
 }
-/* 以 JS class 为主；:has 只匹配明确「打开/聚焦」态，避免 DOM 常驻节点把 root 永久压低 */
+/* 仅在 JS 显式标记弹层打开时处理（禁止 :has(fk-d-menu) 之类宽规则：
+   侧栏主题切换等也会命中，导致原生 logo/标题整块冒出来） */
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open #${PREFIX}-excel-root,
-body.${PREFIX}-excel:has(.search-menu .search-term__input:focus) #${PREFIX}-excel-root,
-body.${PREFIX}-excel:has(.search-menu .search-input:focus) #${PREFIX}-excel-root,
-body.${PREFIX}-excel:has(.fk-d-menu[data-expanded="true"]) #${PREFIX}-excel-root,
-body.${PREFIX}-excel:has(.fk-d-menu__trigger[aria-expanded="true"]) #${PREFIX}-excel-root,
-body.${PREFIX}-excel:has(.header-dropdown-toggle.active) #${PREFIX}-excel-root,
-body.${PREFIX}-excel:has(.header-dropdown-toggle .active) #${PREFIX}-excel-root {
-  z-index: 99940 !important;
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open #${PREFIX}-excel-root .${PREFIX}-excel-header {
+  z-index: 1 !important;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header,
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header-wrap,
-body.${PREFIX}-excel:has(.search-menu .search-term__input:focus) .d-header,
-body.${PREFIX}-excel:has(.search-menu .search-term__input:focus) .d-header-wrap,
-body.${PREFIX}-excel:has(.search-menu .search-input:focus) .d-header,
-body.${PREFIX}-excel:has(.search-menu .search-input:focus) .d-header-wrap,
-body.${PREFIX}-excel:has(.fk-d-menu[data-expanded="true"]) .d-header,
-body.${PREFIX}-excel:has(.fk-d-menu[data-expanded="true"]) .d-header-wrap,
-body.${PREFIX}-excel:has(.fk-d-menu__trigger[aria-expanded="true"]) .d-header,
-body.${PREFIX}-excel:has(.fk-d-menu__trigger[aria-expanded="true"]) .d-header-wrap,
-body.${PREFIX}-excel:has(.header-dropdown-toggle.active) .d-header,
-body.${PREFIX}-excel:has(.header-dropdown-toggle.active) .d-header-wrap {
-  z-index: 100010 !important;
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .search-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .search-menu-container,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .user-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .user-menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open [class*="search-menu"],
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open [class*="user-menu"],
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .fk-d-menu {
+  z-index: 100020 !important;
 }
-/* 弹层打开时：d-header 只作挂载点，尽量不露原生顶栏 */
+/* d-header 只作挂载点：外壳透明，不给祖先设 opacity（子面板逃不出父级 opacity）。
+   用 visibility 隐藏 chrome：子面板可再 visibility:visible 露出来。 */
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header,
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header-wrap {
+  display: block !important;
+  visibility: visible !important;
+  z-index: 100010 !important;
   background: transparent !important;
+  background-color: transparent !important;
   box-shadow: none !important;
   border: none !important;
+  border-bottom: none !important;
   pointer-events: none !important;
+  overflow: visible !important;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .panel,
+/* 只藏原生 chrome 节点，不动 .panel/.contents 祖先（面板常挂在它们下面） */
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .title,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .home-logo-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .home-logo,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .extra-info-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .auth-buttons,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .d-header-icons,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .header-buttons,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .header-dropdown-toggle,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .search-dropdown,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .current-user,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .language-switcher,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .language-switcher-trigger,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header #search-button,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header #toggle-current-user,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .panel > ul,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .panel > .d-header-icons,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header::before,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header::after,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header-wrap::before,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header-wrap::after {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+/* 真正的下拉面板：visibility 可覆盖祖先 hidden；抬到 Excel 头之上。
+   选择器尽量收窄，避免把页面其它 [data-content]/fk-d-menu 全强制显示。 */
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .search-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .search-menu-container,
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="search-menu"],
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="user-menu"],
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="menu-panel"],
 body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .fk-d-menu,
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header button,
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header input,
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header a {
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .fk-d-menu__inner-content,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .d-menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open > .menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open > .fk-d-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open > [data-content],
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .search-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .search-menu-container,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .user-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .user-menu-panel,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .menu-panel.user-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .fk-d-menu[data-expanded="true"] {
+  visibility: visible !important;
+  opacity: 1 !important;
   pointer-events: auto !important;
+  z-index: 100020 !important;
 }
-/* 弹层打开时隐藏原生顶栏里的普通 chrome，只留面板/输入 */
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .title,
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .header-buttons > *:not(.search-dropdown):not(.current-user):not(.header-dropdown-toggle),
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .extra-info-wrapper,
-body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .home-logo-wrapper {
-  opacity: 0 !important;
-  pointer-events: none !important;
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .menu-panel *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .search-menu *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .search-menu-container *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="search-menu"] *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header [class*="user-menu"] *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .d-header .fk-d-menu *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open > .menu-panel *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open > .fk-d-menu *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open > [data-content] *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .search-menu *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .search-menu-container *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .user-menu *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .user-menu-panel *,
+body.${PREFIX}-excel.${PREFIX}-excel-popup-open .fk-d-menu[data-expanded="true"] * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置（无放大动效） */
@@ -8547,6 +8576,13 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn:hover {
 					el.style.setProperty('pointer-events', 'auto', 'important');
 					el.style.setProperty('opacity', '1', 'important');
 					document.body.classList.add(popupClass);
+					// 双保险：弹层期间把 Excel chrome 整棵压到内容之下，避免 CSS 特异性/合成层残留
+					const excelRoot = document.getElementById(`${PREFIX}-excel-root`);
+					let excelRootStyle = null;
+					if (excelRoot) {
+						excelRootStyle = excelRoot.getAttribute('style');
+						excelRoot.style.setProperty('z-index', '1', 'important');
+					}
 					try {
 						if (opts.focus && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
 							el.focus();
@@ -8554,21 +8590,74 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn:hover {
 							el.click();
 						}
 					} catch (_) { }
+					// 点完后再抬一次 body 浮层（搜索菜单可能异步挂载）
+					try { boostPopups(); } catch (_) { }
 					const restoreAll = () => {
 						document.body.classList.remove(popupClass);
+						if (excelRoot) {
+							if (excelRootStyle == null) excelRoot.removeAttribute('style');
+							else excelRoot.setAttribute('style', excelRootStyle);
+						}
 						restore.forEach(([node, style]) => {
 							if (style == null) node.removeAttribute('style');
 							else node.setAttribute('style', style);
 						});
 					};
 					if (opts.watchSel) {
-						// 弹层打开期间保持 trigger 可见（否则菜单会随 trigger 隐藏而关闭/错位），
-						// 以「可见」为准（DOM 常驻节点不能只靠 querySelector），弹层消失或 8s 兜底后再恢复
+						// 弹层打开期间保持 trigger 可定位；CSS 负责把 d-header chrome 视觉隐藏，
+						// 只留 menu/search 面板。若面板已传送到 body，进一步把 header 压成 0 高挂载点。
 						const t0 = Date.now();
 						let seen = false;
+						let collapsedHeader = false;
+						const collapseHeaderChrome = () => {
+							if (collapsedHeader) return;
+							const panel = document.querySelector(opts.watchSel);
+							if (!panel) return;
+							const inHeader = !!(panel.closest && panel.closest('.d-header, .d-header-wrap'));
+							// 无论面板是否在 header 内，都把 header 视觉壳压掉，避免 logo/图标露馅
+							['.d-header-wrap', '.d-header'].forEach((sel) => {
+								document.querySelectorAll(sel).forEach((node) => {
+									restore.push([node, node.getAttribute('style')]);
+									node.style.setProperty('background', 'transparent', 'important');
+									node.style.setProperty('box-shadow', 'none', 'important');
+									node.style.setProperty('border', 'none', 'important');
+									node.style.setProperty('pointer-events', 'none', 'important');
+									node.style.setProperty('overflow', 'visible', 'important');
+									if (!inHeader) {
+										// 面板已 portal 到 body：header 不再需要占位
+										node.style.setProperty('height', '0', 'important');
+										node.style.setProperty('min-height', '0', 'important');
+										node.style.setProperty('max-height', '0', 'important');
+										node.style.setProperty('opacity', '0', 'important');
+									}
+								});
+							});
+							// 额外藏掉 logo / 标题 / 图标壳
+							const hideSel = [
+								'.d-header .title',
+								'.d-header .home-logo-wrapper',
+								'.d-header .home-logo',
+								'.d-header .extra-info-wrapper',
+								'.d-header .d-header-icons',
+								'.d-header .header-buttons',
+								'.d-header .header-dropdown-toggle',
+								'.d-header .auth-buttons',
+							].join(',');
+							document.querySelectorAll(hideSel).forEach((node) => {
+								restore.push([node, node.getAttribute('style')]);
+								node.style.setProperty('opacity', '0', 'important');
+								node.style.setProperty('pointer-events', 'none', 'important');
+								node.style.setProperty('visibility', 'hidden', 'important');
+							});
+							collapsedHeader = true;
+						};
 						const iv = setInterval(() => {
 							const open = isPanelVisible(opts.watchSel);
-							if (open) seen = true;
+							if (open) {
+								seen = true;
+								try { collapseHeaderChrome(); } catch (_) { }
+								try { boostPopups(); } catch (_) { }
+							}
 							if (Date.now() - t0 > 8000 || (seen && !open) || (!seen && Date.now() - t0 > 1500 && !open)) {
 								clearInterval(iv);
 								restoreAll();
