@@ -76,6 +76,7 @@
 		excelShowRowIndex: true,
 		excelHideNav: true, // 隐藏顶栏导航 + 左侧侧栏（分类/tag/板块）
 		excelMetaCol: false, // Default/Moyu 经典列表：分类/标签单独一列（false=留在标题下方）
+		excelMetaLeading: false, // 经典列表：把活动/浏览/回复挪到标题前（默认关）
 	};
 
 	const DEFAULT_SHORTCUTS = {
@@ -480,6 +481,10 @@
 			document.body.classList.toggle(
 				`${PREFIX}-excel-meta-col`,
 				excelOn && !!this.advanced.excelMetaCol
+			);
+			document.body.classList.toggle(
+				`${PREFIX}-excel-meta-leading`,
+				excelOn && !!this.advanced.excelMetaLeading
 			);
 			// Horizon 主题 / 深色模式（Excel 专用 class）
 			const isHorizon =
@@ -1508,7 +1513,8 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
   min-width: 72px !important;
   max-width: none !important;
 }
-#${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="excelMetaCol"] {
+#${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="excelMetaCol"],
+#${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="excelMetaLeading"] {
   width: 100px !important;
   min-width: 100px !important;
   max-width: none !important;
@@ -2674,6 +2680,26 @@ body.${PREFIX}-excel.${PREFIX}-excel-meta-col:not(.${PREFIX}-excel-horizon) .top
   max-width: 60% !important;
   overflow: hidden !important;
 }
+
+/* 经典列表：元数据前置时，数字列靠左更紧凑，标题仍吃剩余宽度 */
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.posts,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.posts,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list .posts-map,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.num.posts,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.num.posts,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.views,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.views,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.num.views,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.num.views,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.activity,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.activity,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.num.activity,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.num.activity,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list th.age,
+body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) .topic-list td.age {
+  text-align: center !important;
+}
+
 
 
 
@@ -4606,6 +4632,13 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                           <option value="true">单独一列</option>
                         </select>
                       </label>
+                      <label class="${PREFIX}-field" title="Default/Moyu 主题：把活动/浏览/回复挪到标题列前，扫一眼先看热度；默认关闭，关闭后恢复原列序；Horizon 主题自动忽略">
+                        <span>元数据前置</span>
+                        <select data-type="advanced" data-key="excelMetaLeading">
+                          <option value="false">关闭</option>
+                          <option value="true">开启</option>
+                        </select>
+                      </label>
                     </div>
                   </div>
                 </div>`;
@@ -6381,6 +6414,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			this.applyRowNums(script);
 			this.compactHorizonCols(script);
 			this.splitClassicMeta(script);
+			this.reorderClassicMetaLeading(script);
 		},
 
 		handleChromeAction(act, script) {
@@ -6552,6 +6586,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			this.applyRowNums(script);
 			this.compactHorizonCols(script);
 			this.splitClassicMeta(script);
+			this.reorderClassicMetaLeading(script);
 		},
 
 		/** Horizon 列顺序（视觉）：# | 标题 | 分类 | 回复 | 活动 | 状态 */
@@ -6775,10 +6810,71 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			});
 		},
 
+		/**
+		 * Default/Moyu 经典列表：可选把 活动/浏览/回复 挪到标题前。
+		 * 开启顺序：# | 活动 | 浏览 | 回复 | 标题 | (分类可选) | posters...
+		 * 关闭/Excel 关闭时幂等恢复为：# | 标题 | (分类可选) | posters | 回复 | 浏览 | 活动
+		 */
+		reorderClassicMetaLeading(script) {
+			if (document.body.classList.contains(`${PREFIX}-excel-horizon`)) return;
+			const excelOn = !!script?.normal?.excelMode;
+			const on = excelOn && !!script?.advanced?.excelMetaLeading;
+			const isMetaCell = (el) =>
+				!!el &&
+				(el.classList.contains(`${PREFIX}-excel-meta-cell`) ||
+					el.classList.contains(`${PREFIX}-excel-meta-head`));
+			const isRownum = (el) => !!el && el.classList.contains(`${PREFIX}-excel-rownum`);
+			const isMain = (el) =>
+				!!el &&
+				(el.classList.contains('main-link') ||
+					el.classList.contains('default') ||
+					el.getAttribute?.('data-sort-order') === 'default');
+			const isPosts = (el) =>
+				!!el && (el.classList.contains('posts') || el.classList.contains('posts-map'));
+			const isViews = (el) => !!el && el.classList.contains('views');
+			const isActivity = (el) =>
+				!!el && (el.classList.contains('activity') || el.classList.contains('age'));
+			const isPosters = (el) => !!el && el.classList.contains('posters');
+			const pick = (cells, pred) => cells.find(pred) || null;
+			const reorderRow = (row) => {
+				if (!row) return;
+				const cells = Array.from(row.children);
+				if (!cells.length) return;
+				const rownum = pick(cells, isRownum);
+				const main = pick(cells, isMain);
+				if (!main) return;
+				const meta = pick(cells, isMetaCell);
+				const posts = pick(cells, isPosts);
+				const views = pick(cells, isViews);
+				const activity = pick(cells, isActivity);
+				const posters = pick(cells, isPosters);
+				const known = new Set(
+					[rownum, main, meta, posts, views, activity, posters].filter(Boolean)
+				);
+				const rest = cells.filter((c) => !known.has(c));
+				let ordered;
+				if (on) {
+					// # | 活动 | 浏览 | 回复 | 标题 | 分类 | posters | 其他
+					ordered = [rownum, activity, views, posts, main, meta, posters, ...rest].filter(Boolean);
+				} else {
+					// # | 标题 | 分类 | posters | 回复 | 浏览 | 活动 | 其他
+					ordered = [rownum, main, meta, posters, posts, views, activity, ...rest].filter(Boolean);
+				}
+				// 仅在顺序变化时重挂，减少无必要 DOM 抖动
+				const same =
+					ordered.length === cells.length && ordered.every((c, i) => c === cells[i]);
+				if (same) return;
+				ordered.forEach((node) => row.appendChild(node));
+			};
+			$$('table.topic-list thead tr, table.topic-list .topic-list-header tr').forEach(reorderRow);
+			$$('table.topic-list .topic-list-item').forEach(reorderRow);
+		},
+
 		teardown(script) {
 			this.clearRowNums();
 			this.clearHorizonHeader();
 			this.splitClassicMeta({ normal: { excelMode: false } });
+			this.reorderClassicMetaLeading({ normal: { excelMode: false }, advanced: {} });
 			$$(`.topic-list-item.${PREFIX}-excel-row-active, .fps-result.${PREFIX}-excel-row-active`).forEach((r) =>
 				r.classList.remove(`${PREFIX}-excel-row-active`)
 			);
