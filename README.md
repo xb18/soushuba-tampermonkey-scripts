@@ -17,7 +17,7 @@
 | [Gemini Helper](./gemini-helper/README.md) | ![](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork) | Gemini 体验增强（大纲、会话管理、宽屏等） | ![](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) |
 | [Coomer 佬友严选](./coomer/README.md) | ![](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork) | Coomer 体验增强（极简 UI、视频播放器、批量下载） | ![](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
 | [搜书吧免积分下载](./soushu-bypass/README.md) | ![](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork) | 搜书吧附件免积分下载 | ![](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
-| [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md) | v1.1.35 | Discourse/LINUX DO 摸鱼增强（Excel 高仿、元数据前置、Boost 批注、快捷回复、[图]占位、黑名单等） | - | - | 仓库内安装 |
+| [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md) | ![](https://img.shields.io/greasyfork/v/590271?style=flat-square&color=orange&label=V&logo=greasyfork) | Discourse/LINUX DO 摸鱼增强（Excel 高仿、元数据前置、Boost 批注、快捷回复、[图]占位、黑名单等） | ![](https://img.shields.io/greasyfork/dt/590271?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork) | ![](https://img.shields.io/greasyfork/rating-count/590271?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork) | [Greasy Fork](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) |
 
 ### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
 
@@ -94,7 +94,7 @@
 
 **最新版本**: v1.1.35
 
-[文档 Docs](./linuxdo-moyu/README.md) | [脚本 Script](./linuxdo-moyu/linuxdo-moyu.user.js)
+[文档 Docs](./linuxdo-moyu/README.md) | [安装 Install](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
 
 ## 🐛 反馈问题
 

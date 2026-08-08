@@ -4,11 +4,16 @@
 [![GitHub forks](https://img.shields.io/github/forks/urzeye/tampermonkey-scripts?style=flat-square)](https://github.com/urzeye/tampermonkey-scripts/network/members)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Repo](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
+[![Greasy Fork](https://img.shields.io/badge/GreasyFork-install-red?style=flat-square&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
+[![Version](https://img.shields.io/greasyfork/v/590271?style=flat-square&label=version)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
+[![Installs](https://img.shields.io/greasyfork/dt/590271?style=flat-square&label=installs)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
+[![Rating](https://img.shields.io/greasyfork/rating-count/590271?style=flat-square&label=rating)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
 
 > Discourse / [LINUX DO](https://linux.do) 论坛显示优化与功能增强，装完即摸鱼。
 
 **最新版本**: v1.1.35  
 **脚本文件**: [`linuxdo-moyu.user.js`](./linuxdo-moyu.user.js)  
+**发布页**: [Greasy Fork #590271](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)  
 **仓库地址**: [urzeye/tampermonkey-scripts](https://github.com/urzeye/tampermonkey-scripts)  
 **适配站点**: [linux.do](https://linux.do) · [idcflare.com](https://idcflare.com)（同架构 Discourse）
 
@@ -53,10 +58,12 @@ Excel 深色阅读路径。
 ## 安装
 
 1. 浏览器安装 [Tampermonkey](https://www.tampermonkey.net/)（或兼容的用户脚本管理器）
-2. 打开本仓库中的 [`linuxdo-moyu.user.js`](./linuxdo-moyu.user.js)，按提示安装
+2. 打开 [Greasy Fork 发布页](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) 一键安装  
+   或从本仓库打开 [`linuxdo-moyu.user.js`](./linuxdo-moyu.user.js) 安装
 3. 访问 [linux.do](https://linux.do)，默认开启 **Excel 摸鱼外观** + **紧凑模式**
 
 油猴菜单可直接「打开摸鱼设置」；页面内快捷键 `S` 同样打开设置面板。
+
 
 ---
 
