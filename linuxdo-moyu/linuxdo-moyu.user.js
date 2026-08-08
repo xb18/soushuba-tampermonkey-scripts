@@ -2116,6 +2116,32 @@ body.${PREFIX}-excel #main-outlet-wrapper.wrap {
   min-width: 0 !important;
   box-sizing: border-box !important;
 }
+
+/* Excel 底栏会盖住 docked composer：抬升 #reply-control 并提高层级 */
+body.${PREFIX}-excel #reply-control,
+body.${PREFIX}-excel .docked-composer,
+body.${PREFIX}-excel #reply-control.docked,
+body.${PREFIX}-excel #reply-control.open,
+body.${PREFIX}-excel #reply-control.edit-title {
+  bottom: var(--${PREFIX}-excel-footer-h, 36px) !important;
+  z-index: 100050 !important;
+  margin-bottom: 0 !important;
+}
+body.${PREFIX}-excel #reply-control .save-or-cancel,
+body.${PREFIX}-excel #reply-control .composer-controls,
+body.${PREFIX}-excel #reply-control .d-editor-button-bar,
+body.${PREFIX}-excel #reply-control .composer-bottom {
+  position: relative;
+  z-index: 1;
+}
+/* 打开回复时 FAB 也避让 composer + footer */
+body.${PREFIX}-excel:has(#reply-control.open) #${PREFIX}-fab,
+body.${PREFIX}-excel:has(#reply-control.edit-title) #${PREFIX}-fab,
+body.${PREFIX}-excel:has(#reply-control.draft) #${PREFIX}-fab,
+body.${PREFIX}-excel:has(.composer-popup) #${PREFIX}-fab {
+  bottom: calc(var(--${PREFIX}-excel-footer-h, 36px) + 72px) !important;
+}
+
 /* 显示时的侧栏：仅最外层滚动，避免多层 overflow 出现双滚动条 */
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #main-outlet-wrapper,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav).has-sidebar-page #main-outlet-wrapper,
