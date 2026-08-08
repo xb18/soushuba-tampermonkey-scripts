@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.3
+// @version      1.1.4
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.3';
+	const SCRIPT_VERSION = '1.1.4';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -2378,14 +2378,11 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #navigation-bar {
   border: none !important;
   box-shadow: none !important;
 }
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .nav-pills > li,
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a,
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .nav-item,
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn,
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn,
+/* 类别/标签下拉：保留边框；导航 pill 跟随原站下划线样式，不再硬套白底方框 */
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .btn,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .combo-box,
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .select-kit.combo-box .select-kit-header {
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .select-kit.combo-box .select-kit-header,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .category-breadcrumb .select-kit-header {
   border-radius: 0 !important;
   box-shadow: none !important;
   min-height: 24px !important;
@@ -2399,16 +2396,60 @@ body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .select-kit.combo-box .selec
   background: #fff !important;
   color: #333 !important;
 }
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .nav-pills > li,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .nav-item,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  min-height: 24px !important;
+  height: auto !important;
+  line-height: 22px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+}
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a.active,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a:hover,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a.active,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-height: 24px !important;
+  height: auto !important;
+  line-height: 22px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  border: 1px solid #c6c6c6 !important;
+  background: #fff !important;
+  color: #333 !important;
+}
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn:hover,
-body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn:hover {
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn:hover,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn:hover {
   background: #e8eef8 !important;
   border-color: #8eb6e8 !important;
   color: #1a3959 !important;
 }
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn-primary,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn-primary,
+body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn-primary,
 body.${PREFIX}-excel:not(.${PREFIX}-excel-hide-nav) .list-controls .btn.btn-icon-text.btn-primary {
   background: #fff !important;
   color: #1a3959 !important;
@@ -3642,10 +3683,10 @@ body.${PREFIX}-excel-tencent th.${PREFIX}-excel-rownum {
   background: #f9fafb !important;
   border-color: #ebebeb !important;
 }
-body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav) .list-controls,
-body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav) .navigation-container,
-body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav) .sidebar-wrapper,
-body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav) #d-sidebar {
+body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav):not(.${PREFIX}-excel-dark) .list-controls,
+body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav):not(.${PREFIX}-excel-dark) .navigation-container,
+body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav):not(.${PREFIX}-excel-dark) .sidebar-wrapper,
+body.${PREFIX}-excel-tencent:not(.${PREFIX}-excel-hide-nav):not(.${PREFIX}-excel-dark) #d-sidebar {
   border-color: #e0e0e0 !important;
   background: #f9fafb !important;
 }
@@ -4277,14 +4318,71 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .sideba
   background: #2d2d30 !important; border-top-color: #3f3f46 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .list-controls,
-body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-container {
-  background: #2d2d30 !important; border-bottom-color: #3f3f46 !important;
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-container,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-topics {
+  background: #2d2d30 !important; border-bottom-color: #3f3f46 !important; color: #e6e6e6 !important;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a,
+/* 类别/标签 + 操作按钮：暗色填充，避免白边 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .combo-box,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .select-kit.combo-box .select-kit-header,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .list-controls .category-breadcrumb .select-kit-header,
 body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn,
 body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .list-controls .btn,
-body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .select-kit.combo-box .select-kit-header {
-  background: #3a3a3a !important; border-color: #555 !important; color: #e6e6e6 !important;
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn {
+  background: #3a3a3a !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .list-controls .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .category-breadcrumb .select-kit-header:hover {
+  background: #2a3340 !important;
+  border-color: #4ea1ff !important;
+  color: #dcecff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .list-controls .btn-primary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-container .btn-primary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-controls .btn-primary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .list-controls .btn.btn-icon-text.btn-primary {
+  background: #2a3340 !important;
+  border-color: #4ea1ff !important;
+  color: #dcecff !important;
+}
+/* 导航 pill：无边框，贴近原站暗色下划线 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .nav-pills > li,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .navigation-container .nav-item,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #cfcfcf !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a.active,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .nav-pills > li a:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a.active,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) #navigation-bar > li a:hover {
+  background: transparent !important;
+  border: none !important;
+  color: #8ec7ff !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .select-kit-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .select-kit-collection {
+  background: #2d2d30 !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.45) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .sidebar-theme-toggle__wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .sidebar-theme-toggle-dropdown,
+body.${PREFIX}-excel.${PREFIX}-excel-dark:not(.${PREFIX}-excel-hide-nav) .sidebar-theme-toggle-dropdown .select-kit-header {
+  background: #3a3a3a !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .topic-meta-data,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .topic-meta-data,
