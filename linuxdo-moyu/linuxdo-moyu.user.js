@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.1
+// @version      1.1.2
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.1';
+	const SCRIPT_VERSION = '1.1.2';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -2915,10 +2915,14 @@ body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn:hover
   background: transparent !important;
 }
 
-/* 暗色：只提亮批注文案/标色，父级保持透明，绝不刷白 */
+/* 暗色：批注容器跟楼层底栏同色，避免透出白底；气泡本身仍无底 */
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__post-menu,
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts,
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__list,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__list {
+  background: #1e1e1e !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble,
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked {
   background: transparent !important;
@@ -4170,7 +4174,11 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark #list-area,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-list,
 body.${PREFIX}-excel.${PREFIX}-excel-dark table.topic-list,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-stream,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .posts-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .container.posts,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .cooked {
   background: #1e1e1e !important; color: #e6e6e6 !important; border-color: #3a3a3a !important;
 }
@@ -4372,6 +4380,102 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area .btn:hover {
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .btn .d-icon,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area .btn .d-icon {
   color: #aaa !important;
+}
+
+
+/* 正文包装层：亮色 Excel 强制了 #fff，暗色必须等权/更高覆盖，否则楼层底会透白 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__regular,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .regular.contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark article.boxed,
+body.${PREFIX}-excel.${PREFIX}-excel-dark article.onscreen-post,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .onscreen-post,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__row,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article {
+  background: #1e1e1e !important;
+  color: #e6e6e6 !important;
+  border-color: #3f3f46 !important;
+  box-shadow: none !important;
+}
+
+/* 楼层底栏 / 反应区：禁止透出白底（含 Horizon reactions-actions-summary） */
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-body > section.post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__body > section.post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark section.post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark section.post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .reactions-actions-summary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-counter,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-list,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-list .reactions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-list-emoji,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-actions-button-shim,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .actions-summary,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .extra-info-wrapper,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .who-liked,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .small-user-list,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .small-user-list-content,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__post-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-boosts__list {
+  background: #1e1e1e !important;
+  border-color: #3f3f46 !important;
+  color: #bbb !important;
+  box-shadow: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls {
+  border-top-color: #3f3f46 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-counter .reactions-counter,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .reactions-counter,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-reaction-button,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-reaction-button .btn,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-actions .btn {
+  background: transparent !important;
+  color: #bbb !important;
+  border-color: transparent !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-list-emoji,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .discourse-reactions-list .emoji {
+  background-color: transparent !important;
+  filter: none !important;
+}
+/* Horizon 帖内：article/post-controls 常残留站点浅色 surface */
+body.${PREFIX}-excel.${PREFIX}-excel-dark nav.post-controls,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls.collapsed,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .actions,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-controls .extra-buttons,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .post-action-menu__button,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article.boxed,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article.onscreen-post,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .post__regular.contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .regular.contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .post__contents,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .post__menu-area,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post .post-menu-area {
+  background: #1e1e1e !important;
+  border-color: #3f3f46 !important;
+  box-shadow: none !important;
 }
 
 /* composer / reply-control */
