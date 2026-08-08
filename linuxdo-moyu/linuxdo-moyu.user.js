@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.21
+// @version      1.1.26
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.21';
+	const SCRIPT_VERSION = '1.1.26';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -1497,9 +1497,29 @@ body.${PREFIX}-font-resize .post-controls .btn {
 /* Excel 不再强制缩小列表数值/标签等原站元素字号；
    表格感只靠边框/间距；字号跟站点，偏移由 font-resize 统一加 */
 
-/* highlight OP */
-body.${PREFIX}-highlight-op .topic-post.topic-owner .names::after,
-body.${PREFIX}-highlight-op .topic-post.post--topic-owner .names::after {
+/* highlight OP：只打在主帖 names 上，避免嵌套/引用展开误标楼主 */
+body.${PREFIX}-highlight-op .topic-post.topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after {
+  content: '楼主';
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+  background: var(--${PREFIX}-author-color, #e74c3c);
+  vertical-align: middle;
+}
+/* 兜底：非 Excel 时若结构略有差异，仍给主楼层 names 标楼主（排除 embedded） */
+body.${PREFIX}-highlight-op:not(.${PREFIX}-excel) .topic-post.topic-owner .topic-meta-data:not(.embedded-reply) > .names::after,
+body.${PREFIX}-highlight-op:not(.${PREFIX}-excel) .topic-post.post--topic-owner .topic-meta-data:not(.embedded-reply) > .names::after {
   content: '楼主';
   display: inline-block;
   margin-left: 6px;
@@ -1516,17 +1536,34 @@ body.${PREFIX}-highlight-op .topic-post.post--topic-owner {
   border-left: 3px solid var(--${PREFIX}-author-color, #e74c3c);
   padding-left: 6px;
 }
-/* Excel：楼主标放用户列更清晰；隐藏站点主题的 TOPIC OWNER，避免正文右侧重复 */
-body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner .names::after,
-body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner .names::after {
+/* 引用/嵌套里的 names 绝不能继承楼主 */
+body.${PREFIX}-highlight-op .topic-post .embedded-posts .names::after,
+body.${PREFIX}-highlight-op .topic-post .post__embedded-posts .names::after,
+body.${PREFIX}-highlight-op .topic-post .topic-meta-data.embedded-reply .names::after {
+  content: none !important;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* Excel：楼主放第 2 行末尾（称号/表情之后） */
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after {
+  order: 7 !important; /* 第 2 行末：称号 → 表情/徽章 → 楼主 */
   margin-left: 0;
-  margin-top: 2px;
-  align-self: flex-start;
+  margin-top: 0;
+  align-self: center;
+  flex: 0 0 auto;
   font-size: 11px;
   line-height: 16px;
   padding: 0 5px;
   border-radius: 2px;
-  vertical-align: baseline;
+  vertical-align: middle;
 }
 body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner,
 body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner {
@@ -1765,24 +1802,31 @@ body.${PREFIX}-img-cap:not(.${PREFIX}-hide-image) .cooked a.lightbox img {
 .names:hover .${PREFIX}-user-actions {
   opacity: 1;
 }
-/* Excel 用户列：备注/拉黑独立成行，不夹在昵称/徽章中间 */
+/* Excel 用户列：备注/拉黑在身份行/时间下方，不夹进 names 横排 */
 body.${PREFIX}-excel .${PREFIX}-user-actions {
   display: flex;
   flex-wrap: wrap;
   margin-left: 0;
-  margin-top: 3px;
+  margin-top: 0;
   max-width: 100%;
 }
 body.${PREFIX}-excel .${PREFIX}-mark-tags {
   display: flex;
   flex-wrap: wrap;
   margin-left: 0;
-  margin-top: 3px;
+  margin-top: 0;
   max-width: 100%;
 }
 body.${PREFIX}-excel .topic-meta-data > .${PREFIX}-user-actions,
 body.${PREFIX}-excel .topic-meta-data > .${PREFIX}-mark-tags {
   order: 20; /* 落在 names / 时间之后 */
+}
+/* 若残留在 names 内，也排到横排末尾，避免插到徽章中间 */
+body.${PREFIX}-excel .names > .${PREFIX}-user-actions,
+body.${PREFIX}-excel .names > .${PREFIX}-mark-tags {
+  order: 20 !important;
+  flex: 1 0 100% !important;
+  margin-top: 2px;
 }
 .${PREFIX}-user-actions button {
   border: 1px solid var(--primary-low, #ddd);
@@ -3541,11 +3585,15 @@ body.${PREFIX}-excel-office .fps-result.${PREFIX}-excel-row-active {
    注意：选择器避免命中 .embedded-posts 内的 .row/.topic-body，否则嵌套回复会乱 */
 body.${PREFIX}-excel {
   --${PREFIX}-floor-col: 42px;
-  --${PREFIX}-user-col: 148px;
+  --${PREFIX}-user-col: 240px; /* 两行身份后可收窄 */
+  --${PREFIX}-avatar-size: 32px;
+  --${PREFIX}-avatar-left: 10px;
+  --${PREFIX}-avatar-gap: 8px;
 }
 body.${PREFIX}-excel.${PREFIX}-compact {
   --${PREFIX}-floor-col: 36px;
-  --${PREFIX}-user-col: 132px;
+  --${PREFIX}-user-col: 220px;
+  --${PREFIX}-avatar-size: 28px;
 }
 body.${PREFIX}-excel .topic-post {
   display: grid !important;
@@ -3603,7 +3651,7 @@ body.${PREFIX}-excel .topic-post > article > .row {
   position: relative !important;
 }
 
-/* 默认 Excel 藏头像；关闭「隐藏头像」时在用户列顶部显示 */
+/* 默认 Excel 藏头像；关闭「隐藏头像」时头像在昵称左侧（同一行起点） */
 body.${PREFIX}-excel .topic-post > article > .post__row > .topic-avatar,
 body.${PREFIX}-excel .topic-post > article > .row > .topic-avatar,
 body.${PREFIX}-excel .topic-post > article > .post__row > .post-avatar,
@@ -3615,6 +3663,11 @@ body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row {
   display: grid !important;
   grid-template-columns: var(--${PREFIX}-user-col) minmax(0, 1fr) !important;
   grid-template-rows: auto;
+  position: relative !important;
+}
+body.${PREFIX}-excel .topic-post > article > .post__row,
+body.${PREFIX}-excel .topic-post > article > .row {
+  position: relative !important;
 }
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .topic-avatar,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .topic-avatar,
@@ -3624,24 +3677,32 @@ body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > 
   grid-column: 1;
   grid-row: 1;
   align-items: flex-start;
-  justify-content: center;
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
+  justify-content: flex-start;
+  width: var(--${PREFIX}-avatar-size) !important;
+  min-width: var(--${PREFIX}-avatar-size) !important;
+  max-width: var(--${PREFIX}-avatar-size) !important;
+  height: var(--${PREFIX}-avatar-size) !important;
   margin: 0 !important;
-  padding: 8px 0 0 !important;
+  padding: 0 !important;
   overflow: visible !important;
   background: transparent !important;
   border: none !important;
-  z-index: 2;
+  z-index: 3;
   pointer-events: auto;
-  position: relative !important;
+  /* 钉在用户列左侧，与昵称第一行对齐 */
+  position: absolute !important;
+  top: 10px !important;
+  left: var(--${PREFIX}-avatar-left) !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: none !important;
 }
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .topic-avatar .post-avatar,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .topic-avatar .post-avatar {
   display: block !important;
-  width: auto !important;
-  min-width: 0 !important;
+  width: var(--${PREFIX}-avatar-size) !important;
+  min-width: var(--${PREFIX}-avatar-size) !important;
+  height: var(--${PREFIX}-avatar-size) !important;
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -3650,12 +3711,29 @@ body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > 
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .post-avatar img.avatar,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .post-avatar img.avatar {
   display: block !important;
-  width: 40px !important;
-  height: 40px !important;
-  max-width: 40px !important;
+  width: var(--${PREFIX}-avatar-size) !important;
+  height: var(--${PREFIX}-avatar-size) !important;
+  max-width: var(--${PREFIX}-avatar-size) !important;
   border-radius: 4px !important;
   box-shadow: none !important;
 }
+/* 关掉站点 sticky-avatar，防止头像乱跑 */
+body.${PREFIX}-excel .topic-post.sticky-avatar > article > .row > .topic-avatar,
+body.${PREFIX}-excel .topic-post.post--sticky-avatar > article > .row > .topic-avatar,
+body.${PREFIX}-excel .topic-post.sticky-avatar > article > .post__row > .topic-avatar,
+body.${PREFIX}-excel .topic-post.post--sticky-avatar > article > .post__row > .topic-avatar {
+  position: absolute !important;
+  top: 10px !important;
+  left: var(--${PREFIX}-avatar-left) !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+body.${PREFIX}-excel .topic-avatar .avatar-flair,
+body.${PREFIX}-excel .post-avatar .avatar-flair {
+  display: none !important;
+}
+
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .topic-body,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .topic-body,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .post__body,
@@ -3687,7 +3765,7 @@ body.${PREFIX}-excel .topic-post > article > .post__body {
   box-shadow: none !important;
   border-radius: 0 !important;
 }
-/* 作者信息列 */
+/* 作者信息列：身份信息尽量一行（贴近原站），过长才换行 */
 body.${PREFIX}-excel .topic-post > article > .post__row > .topic-body > .topic-meta-data,
 body.${PREFIX}-excel .topic-post > article > .row > .topic-body > .topic-meta-data,
 body.${PREFIX}-excel .topic-post > article > .post__row > .post__body > .topic-meta-data,
@@ -3699,37 +3777,62 @@ body.${PREFIX}-excel .topic-post > article > .post__body > .topic-meta-data {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  gap: 2px !important;
+  justify-content: flex-start !important;
+  gap: 4px !important;
   width: var(--${PREFIX}-user-col) !important;
   min-width: var(--${PREFIX}-user-col) !important;
   max-width: var(--${PREFIX}-user-col) !important;
   margin: 0 !important;
-  padding: 6px 8px !important;
+  padding: 8px 10px !important;
   background: #fafafa !important;
   border-right: 1px solid #bbb !important;
   border-bottom: none !important;
   box-sizing: border-box !important;
   float: none !important;
   position: relative !important;
+  overflow: hidden !important; /* 防长昵称撑破列 */
 }
-/* 显示头像时给用户列顶部留空 */
+/* 显示头像：左侧让出头像位，昵称与头像同一行起点，不再被遮挡 */
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .topic-body > .topic-meta-data,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .topic-body > .topic-meta-data,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .post__body > .topic-meta-data,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .post__body > .topic-meta-data,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .topic-body > .topic-meta-data,
 body.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__body > .topic-meta-data {
-  padding-top: 52px !important;
+  padding-top: 10px !important;
+  padding-left: calc(var(--${PREFIX}-avatar-left) + var(--${PREFIX}-avatar-size) + var(--${PREFIX}-avatar-gap)) !important;
 }
+/* 用户信息两行：
+   1) 昵称 + id
+   2) 称号 + 表情/徽章 + 楼主(末尾)
+   用 ::before 强制换行；未识别子节点默认 order 10 落在第 2 行 */
 body.${PREFIX}-excel .topic-post > article .names {
-  line-height: 1.25 !important;
+  line-height: 1.35 !important;
   display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 1px !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  align-content: flex-start !important;
+  gap: 2px 6px !important;
   margin: 0 !important;
   width: 100% !important;
   min-width: 0 !important;
+  max-width: 100% !important;
+}
+body.${PREFIX}-excel .topic-post > article .names > * {
+  order: 10 !important;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+/* 第 1 行：昵称、id */
+body.${PREFIX}-excel .topic-post > article .names > .first,
+body.${PREFIX}-excel .topic-post > article .names > span.first {
+  order: 1 !important;
+}
+body.${PREFIX}-excel .topic-post > article .names > .second,
+body.${PREFIX}-excel .topic-post > article .names > span.second {
+  order: 2 !important;
 }
 body.${PREFIX}-excel .topic-post > article .names > .first,
 body.${PREFIX}-excel .topic-post > article .names > .first a,
@@ -3737,7 +3840,6 @@ body.${PREFIX}-excel .topic-post > article .names > span.first,
 body.${PREFIX}-excel .topic-post > article .names > span.first a {
   font-weight: 600 !important;
   color: #1a3959 !important;
-  max-width: 100% !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
@@ -3745,26 +3847,71 @@ body.${PREFIX}-excel .topic-post > article .names > span.first a {
 body.${PREFIX}-excel .topic-post > article .names > .second,
 body.${PREFIX}-excel .topic-post > article .names > .second a,
 body.${PREFIX}-excel .topic-post > article .names > span.second,
-body.${PREFIX}-excel .topic-post > article .names > span.second a,
-body.${PREFIX}-excel .topic-post > article .names .user-title {
+body.${PREFIX}-excel .topic-post > article .names > span.second a {
   font-weight: 400 !important;
   color: #777 !important;
-  max-width: 100% !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
-/* 徽章/表情容器：换行展示，不和图标按钮抢同一行 */
+/* 强制换到第 2 行 */
+body.${PREFIX}-excel .topic-post > article .names::before {
+  content: '' !important;
+  order: 3 !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+/* 第 2 行：称号 → 表情/徽章 → 楼主(::after order 7) */
+body.${PREFIX}-excel .topic-post > article .names > .user-title {
+  order: 5 !important;
+  font-weight: 400 !important;
+  color: #777 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+body.${PREFIX}-excel .topic-post > article .names > .user-status-message-wrap,
+body.${PREFIX}-excel .topic-post > article .names > .user-status,
+body.${PREFIX}-excel .topic-post > article .names > .poster-icon-container,
+body.${PREFIX}-excel .topic-post > article .names > .badge-group,
+body.${PREFIX}-excel .topic-post > article .names > .user-badge,
+body.${PREFIX}-excel .topic-post > article .names > .poster-avatar-extra {
+  order: 6 !important;
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 2px !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
 body.${PREFIX}-excel .topic-post > article .names .poster-icon-container,
+body.${PREFIX}-excel .topic-post > article .names .user-status-message-wrap,
 body.${PREFIX}-excel .topic-post > article .names .user-status,
 body.${PREFIX}-excel .topic-post > article .names .badge-group,
 body.${PREFIX}-excel .topic-post > article .names .user-badge {
   display: inline-flex !important;
   flex-wrap: wrap !important;
+  align-items: center !important;
   gap: 2px !important;
-  max-width: 100% !important;
-  margin-top: 1px !important;
 }
+body.${PREFIX}-excel .topic-post > article .names .poster-icon-container img,
+body.${PREFIX}-excel .topic-post > article .names .user-status img,
+body.${PREFIX}-excel .topic-post > article .names .user-status-message-wrap img,
+body.${PREFIX}-excel .topic-post > article .names .user-badge img,
+body.${PREFIX}-excel .topic-post > article .names img.emoji {
+  width: 16px !important;
+  height: 16px !important;
+  max-width: 16px !important;
+  vertical-align: middle !important;
+}
+/* 时间 / 回复谁：身份行下方 */
 body.${PREFIX}-excel .topic-post > article .post-infos,
 body.${PREFIX}-excel .topic-post > article .post-info,
 body.${PREFIX}-excel .topic-post > article .post-date,
@@ -3772,13 +3919,39 @@ body.${PREFIX}-excel .topic-post > article .topic-meta-data .post-info {
   color: #777 !important;
   margin: 0 !important;
   opacity: 1 !important;
+  font-size: 12px !important;
+  line-height: 1.3 !important;
 }
 body.${PREFIX}-excel .topic-post > article .topic-meta-data > .post-infos {
   display: flex !important;
   flex-direction: column !important;
-  gap: 1px !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
   width: 100% !important;
+  min-width: 0 !important;
   order: 10;
+}
+body.${PREFIX}-excel .topic-post > article .topic-meta-data .reply-to-tab {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #777 !important;
+  font-size: 12px !important;
+}
+/* 引用回复：彻底隐藏被引用楼层作者头像，只留箭头+名字，避免错位 */
+body.${PREFIX}-excel .topic-post > article .topic-meta-data .reply-to-tab img,
+body.${PREFIX}-excel .topic-post > article .topic-meta-data .reply-to-tab img.avatar,
+body.${PREFIX}-excel .reply-to-tab img.avatar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* 主帖 topic-body 的非作者列子项一律进正文列，避免 boost/embedded 等落到用户列 */
@@ -3958,7 +4131,10 @@ body.${PREFIX}-excel .topic-post > article > .row > .post__body > section.post-a
   box-sizing: border-box !important;
 }
 
-/* ========== 嵌套回复（展开的「N 个回复」） ========== */
+/* ========== 嵌套/引用展开 ==========
+   - bottom：展开「N 个回复」
+   - top：点击 reply-to 加载的父帖预览
+   统一做成正文列内的紧凑引用卡片，避免误用主帖用户列两行布局 */
 body.${PREFIX}-excel .topic-post > article .embedded-posts,
 body.${PREFIX}-excel .topic-post > article .post__embedded-posts {
   grid-column: 2 !important;
@@ -3966,13 +4142,53 @@ body.${PREFIX}-excel .topic-post > article .post__embedded-posts {
   position: relative !important;
   max-width: none !important;
   width: auto !important;
-  margin: 4px 8px 10px !important;
-  padding: 8px 36px 6px 10px !important; /* 右侧给收起按钮留位 */
+  margin: 6px 8px 8px !important;
+  padding: 8px 34px 8px 10px !important; /* 右侧给收起按钮留位 */
   border: 1px solid #d0d0d0 !important;
   border-left: 3px solid #8eb6e8 !important;
   border-radius: 0 !important;
   background: #f7f9fc !important;
   box-sizing: border-box !important;
+  clear: both !important;
+  float: none !important;
+}
+/* 点击「回复谁」展开的父帖：略收紧，更像引用条 */
+body.${PREFIX}-excel .topic-post > article .embedded-posts.top,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts--top,
+body.${PREFIX}-excel .topic-post > article .embedded-posts.post__embedded-posts--top {
+  margin: 6px 8px 4px !important;
+  padding: 6px 34px 6px 10px !important;
+  background: #f5f7fa !important;
+  border-left-color: #6a9bd8 !important;
+}
+/* 若嵌在 article 下（不在 topic-body 网格内）：缩进对齐正文列，避免左侧空白断层 */
+body.${PREFIX}-excel .topic-post > article > .embedded-posts,
+body.${PREFIX}-excel .topic-post > article > .post__embedded-posts {
+  display: block !important;
+  width: auto !important;
+  margin: 6px 8px 6px calc(var(--${PREFIX}-user-col) + 8px) !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+/* Excel 兜底：主帖 names 标楼主（排除 embedded），防止 DOM 层级微调后丢失 */
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner > article .topic-body > .topic-meta-data:not(.embedded-reply) > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.topic-owner > article .post__body > .topic-meta-data:not(.embedded-reply) > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner > article .topic-body > .topic-meta-data:not(.embedded-reply) > .names::after,
+body.${PREFIX}-excel.${PREFIX}-highlight-op .topic-post.post--topic-owner > article .post__body > .topic-meta-data:not(.embedded-reply) > .names::after {
+  content: '楼主';
+  display: inline-block;
+  order: 7 !important;
+  margin-left: 0;
+  margin-top: 0;
+  align-self: center;
+  flex: 0 0 auto;
+  font-size: 11px;
+  line-height: 16px;
+  padding: 0 5px;
+  border-radius: 2px;
+  color: #fff;
+  background: var(--${PREFIX}-author-color, #e74c3c);
+  vertical-align: middle;
 }
 body.${PREFIX}-excel .topic-post > article .embedded-posts > .reply,
 body.${PREFIX}-excel .topic-post > article .post__embedded-posts > .reply,
@@ -4068,6 +4284,50 @@ body.${PREFIX}-excel .topic-post > article .embedded-posts .names .second a {
   font-weight: 400 !important;
   color: #777 !important;
 }
+/* 取消主帖 names 的两行 order/::before，引用区保持单行身份 */
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names::before,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts .names::before,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names::after,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts .names::after {
+  content: none !important;
+  display: none !important;
+  flex: none !important;
+  order: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names > *,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts .names > * {
+  order: 0 !important;
+}
+/* 引用卡片里弱化称号/徽章，突出昵称与正文 */
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .user-title,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts .names .user-title,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .user-status-message-wrap,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .user-status,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .poster-icon-container,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .badge-group,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .user-badge,
+body.${PREFIX}-excel .topic-post > article .embedded-posts .names .poster-avatar-extra,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts .names .user-status-message-wrap,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts .names .poster-icon-container {
+  display: none !important;
+}
+/* 顶部引用：名字前加「引用」提示，更易读 */
+body.${PREFIX}-excel .topic-post > article .embedded-posts.top .names > .first::before,
+body.${PREFIX}-excel .topic-post > article .post__embedded-posts--top .names > .first::before {
+  content: '引用' !important;
+  display: inline-block !important;
+  margin-right: 6px !important;
+  padding: 0 5px !important;
+  border-radius: 2px !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  font-weight: 500 !important;
+  color: #5b7fa6 !important;
+  background: #e8eef6 !important;
+  vertical-align: middle !important;
+}
 body.${PREFIX}-excel .topic-post > article .embedded-posts .post-link-arrow,
 body.${PREFIX}-excel .topic-post > article .post__embedded-posts .post-link-arrow {
   position: static !important;
@@ -4124,14 +4384,15 @@ body.${PREFIX}-compact.${PREFIX}-excel .topic-post > article > .post__row > .top
 body.${PREFIX}-compact.${PREFIX}-excel .topic-post > article > .row > .topic-body > .topic-meta-data,
 body.${PREFIX}-compact.${PREFIX}-excel .topic-post > article > .post__row > .post__body > .topic-meta-data,
 body.${PREFIX}-compact.${PREFIX}-excel .topic-post > article > .row > .post__body > .topic-meta-data {
-  padding: 4px 6px !important;
-  gap: 1px !important;
+  padding: 6px 8px !important;
+  gap: 2px !important;
 }
 body.${PREFIX}-compact.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .topic-body > .topic-meta-data,
 body.${PREFIX}-compact.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .topic-body > .topic-meta-data,
 body.${PREFIX}-compact.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .post__row > .post__body > .topic-meta-data,
 body.${PREFIX}-compact.${PREFIX}-excel:not(.${PREFIX}-hide-avatar) .topic-post > article > .row > .post__body > .topic-meta-data {
-  padding-top: 48px !important;
+  padding-top: 8px !important;
+  padding-left: calc(var(--${PREFIX}-avatar-left) + var(--${PREFIX}-avatar-size) + var(--${PREFIX}-avatar-gap)) !important;
 }
 body.${PREFIX}-compact.${PREFIX}-excel .topic-post > article .names,
 body.${PREFIX}-compact.${PREFIX}-excel .topic-post > article .names .first,
@@ -5124,6 +5385,11 @@ body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post__embedded-
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts .names .first,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts .names .first a {
   color: #d5d5d5 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts.top .names > .first::before,
+body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .post__embedded-posts--top .names > .first::before {
+  color: #9db7d4 !important;
+  background: #2a3340 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts .collapse-up,
 body.${PREFIX}-excel.${PREFIX}-excel-dark .topic-post > article .embedded-posts .post__collapse-button,
