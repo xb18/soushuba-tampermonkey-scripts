@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.0
+// @version      1.1.1
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.0';
+	const SCRIPT_VERSION = '1.1.1';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -2706,66 +2706,251 @@ body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) 
   text-align: center !important;
 }
 
-/* boost 批注：仅设置开启时生效；默认保留原生气泡 */
+/* boost 批注：Word 风格（仅 Excel + 设置开启）
+ * 约束：
+ * 1) 只作用在 .discourse-boosts*，不给正文/父容器刷白底
+ * 2) 不做整列虚线轨（避免左侧长红线）
+ * 3) 头像跟随 hideAvatar：显示原头像 / 隐藏时用多色人物标
+ */
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__post-menu {
   position: relative !important;
-  margin: 4px 0 2px !important;
+  margin: 6px 0 4px !important;
   padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts {
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__list {
   position: relative !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__list {
   display: flex !important;
   flex-direction: column !important;
   align-items: stretch !important;
-  gap: 4px !important;
-  max-width: min(420px, 100%) !important;
+  gap: 8px !important;
+  max-width: min(380px, 100%) !important;
   margin-left: auto !important;
   padding: 0 !important;
 }
+/* 单条批注：左红竖条 + 头像/人物标 + 文本 + 回复角标 */
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble {
+  position: relative !important;
   display: flex !important;
   align-items: flex-start !important;
-  gap: 6px !important;
+  gap: 8px !important;
   width: 100% !important;
   max-width: 100% !important;
-  padding: 4px 8px !important;
-  border-radius: 2px !important;
-  border: 1px solid #e6d59a !important;
-  border-left: 3px solid #f0c14a !important;
-  background: #fffbe6 !important;
-  box-shadow: none !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 1.35 !important;
-}
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble .avatar {
-  width: 18px !important;
-  height: 18px !important;
-  margin-top: 1px !important;
-  flex: 0 0 auto !important;
-}
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked,
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
   margin: 0 !important;
-  color: #6b5a1e !important;
+  padding: 1px 2px 1px 10px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
+  line-height: 1.35 !important;
+  color: #222 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 2px !important;
+  background: #c00000 !important;
+  border-radius: 1px !important;
+  pointer-events: none !important;
+}
+/* 右侧回复角标（仅装饰，不挡点击） */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble::after {
+  content: "" !important;
+  flex: 0 0 auto !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin-top: 3px !important;
+  margin-left: auto !important;
+  background-color: #6b6b6b !important;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='black' d='M6.5 2.5v2.2C4.1 5 2.4 6.7 2 9.4c.9-1.1 2.1-1.7 3.6-1.7h.9V10L10.8 6 6.5 2.5z'/></svg>") center / contain no-repeat !important;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='black' d='M6.5 2.5v2.2C4.1 5 2.4 6.7 2 9.4c.9-1.1 2.1-1.7 3.6-1.7h.9V10L10.8 6 6.5 2.5z'/></svg>") center / contain no-repeat !important;
+  opacity: 0.72 !important;
+  pointer-events: none !important;
+}
+/* 头像锚点：固定尺寸，避免隐藏 img 后塌陷 */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble a:has(> img.avatar) {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  margin: 2px 0 0 !important;
+  padding: 0 !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+/* 显示头像：用原图 */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation:not(.${PREFIX}-hide-avatar) .discourse-boosts__bubble img.avatar {
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  border-radius: 2px !important;
+  object-fit: cover !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+/* 隐藏头像：多色人物标（Word 多作者批注色） */
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble a:has(> img.avatar) {
+  background: #c00000 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 1) > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 1) > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 1) a:has(> img.avatar) {
+  background: #c00000 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 2) > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 2) > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 2) a:has(> img.avatar) {
+  background: #5b2c6f !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 3) > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 3) > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 3) a:has(> img.avatar) {
+  background: #1f4e79 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 4) > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 4) > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 4) a:has(> img.avatar) {
+  background: #1e7a46 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 5) > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 5) > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 5) a:has(> img.avatar) {
+  background: #b85c00 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 6) > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 6) > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__list > .discourse-boosts__bubble:nth-child(6n + 6) a:has(> img.avatar) {
+  background: #0e7c7b !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble > a[data-user-card]::after,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble > a.avatar::after,
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble a:has(> img.avatar)::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background-color: #fff !important;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='5.2' r='2.4' fill='black'/><path fill='black' d='M3.2 13.2c.4-2.6 2.2-3.8 4.8-3.8s4.4 1.2 4.8 3.8H3.2z'/></svg>") center / 11px 11px no-repeat !important;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='5.2' r='2.4' fill='black'/><path fill='black' d='M3.2 13.2c.4-2.6 2.2-3.8 4.8-3.8s4.4 1.2 4.8 3.8H3.2z'/></svg>") center / 11px 11px no-repeat !important;
+  pointer-events: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-hide-avatar.${PREFIX}-boost-annotation .discourse-boosts__bubble img.avatar {
+  display: none !important;
+}
+/* 文本：透明底，避免盖住 Excel 深色阅读面 */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   text-align: left !important;
+  color: #222 !important;
+  font-weight: 400 !important;
+  font-size: inherit !important;
+  line-height: 1.35 !important;
+  cursor: pointer !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: inherit !important;
   white-space: normal !important;
   word-break: break-word !important;
+  background: transparent !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked img.emoji {
+  width: 14px !important;
+  height: 14px !important;
+  vertical-align: -2px !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover .discourse-boosts__cooked,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover .discourse-boosts__cooked p {
+  background: transparent !important;
+  color: #000 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover::before {
+  background: #a00000 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn {
   align-self: flex-end !important;
+  margin-top: 2px !important;
+  padding: 0 2px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #666 !important;
   font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn:hover {
+  color: #c00000 !important;
+  background: transparent !important;
+}
+
+/* 暗色：只提亮批注文案/标色，父级保持透明，绝不刷白 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__post-menu,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__list,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble {
-  background: #3a3420 !important;
-  border-color: #6a5a2a !important;
-  border-left-color: #c9a227 !important;
-  color: #f0e6c0 !important;
+  color: #e8e8e8 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble::before {
+  background: #e06666 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble::after {
+  background-color: #bdbdbd !important;
 }
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked,
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
-  color: #f0e6c0 !important;
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover .discourse-boosts__cooked,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover .discourse-boosts__cooked p {
+  color: #fff !important;
+  background: transparent !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__add-btn {
+  color: #bbb !important;
+  background: transparent !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__add-btn:hover {
+  color: #e06666 !important;
 }
 
 
