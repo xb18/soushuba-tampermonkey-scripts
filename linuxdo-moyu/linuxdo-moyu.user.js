@@ -1658,6 +1658,19 @@ body.${PREFIX}-excel #${PREFIX}-excel-root { display: block; }
 #${PREFIX}-excel-root .${PREFIX}-excel-ico16 { width: 16px; height: 16px; }
 #${PREFIX}-excel-root .${PREFIX}-excel-ico20 { width: 20px; height: 20px; }
 #${PREFIX}-excel-root .${PREFIX}-excel-ico24 { width: 24px; height: 24px; }
+#${PREFIX}-excel-root .${PREFIX}-excel-home {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+#${PREFIX}-excel-root .${PREFIX}-excel-home:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+body.${PREFIX}-excel-dark #${PREFIX}-excel-root .${PREFIX}-excel-home:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 #${PREFIX}-excel-root .${PREFIX}-excel-vsep {
   height: 16px;
   border-right: 1px solid #000;
@@ -5948,7 +5961,7 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			return `
         <div class="${PREFIX}-excel-header" data-theme="tencent">
           <div class="${PREFIX}-excel-titlebar">
-            ${this.ico(t, 'icon_1', 24)}
+            <div class="${PREFIX}-excel-home" role="link" title="返回首页" aria-label="返回首页">${this.ico(t, 'icon_1', 24)}</div>
             ${this.ico(t, 'icon_2', 12)}
             ${this.vsep(24, '0 12px')}
             <div class="${PREFIX}-excel-titlebar-title"></div>
@@ -6182,11 +6195,11 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 						location.assign(navLink.getAttribute('href') || '');
 						return;
 					}
-					// 工作簿标题 → 首页
-					const book = e.target.closest(
-						`.${PREFIX}-excel-titlebar-title, .${PREFIX}-excel-h1-title`
+					// 标题栏主页图标 / 工作簿标题 → 首页
+					const homeHit = e.target.closest(
+						`.${PREFIX}-excel-home, .${PREFIX}-excel-titlebar-title, .${PREFIX}-excel-h1-title`
 					);
-					if (book) {
+					if (homeHit) {
 						e.preventDefault();
 						e.stopPropagation();
 						location.assign(this.homeUrl());
@@ -6261,9 +6274,11 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
 			if (!force && this._builtTheme === theme && root.childElementCount) return root;
 			root.innerHTML = theme === 'office' ? this.buildOffice(script) : this.buildTencent(script);
 			this._builtTheme = theme;
-			// 腾讯标题栏图标左边距
-			const firstIco = root.querySelector(`.${PREFIX}-excel-titlebar .${PREFIX}-excel-ico24`);
-			if (firstIco) firstIco.style.margin = '2px 2px 2px 10px';
+			// 腾讯标题栏主页图标左边距
+			const homeIco =
+				root.querySelector(`.${PREFIX}-excel-titlebar .${PREFIX}-excel-home`) ||
+				root.querySelector(`.${PREFIX}-excel-titlebar .${PREFIX}-excel-ico24`);
+			if (homeIco) homeIco.style.margin = '2px 2px 2px 10px';
 			return root;
 		},
 
