@@ -77,6 +77,7 @@
 		excelHideNav: true, // 隐藏顶栏导航 + 左侧侧栏（分类/tag/板块）
 		excelMetaCol: false, // Default/Moyu 经典列表：分类/标签单独一列（false=留在标题下方）
 		excelMetaLeading: false, // 经典列表：把活动/浏览/回复挪到标题前（默认关）
+		boostAsAnnotation: false, // 帖内 boost 收成批注样式（默认关）
 	};
 
 	const DEFAULT_SHORTCUTS = {
@@ -485,6 +486,10 @@
 			document.body.classList.toggle(
 				`${PREFIX}-excel-meta-leading`,
 				excelOn && !!this.advanced.excelMetaLeading
+			);
+			document.body.classList.toggle(
+				`${PREFIX}-boost-annotation`,
+				excelOn && !!this.advanced.boostAsAnnotation
 			);
 			// Horizon 主题 / 深色模式（Excel 专用 class）
 			const isHorizon =
@@ -1514,7 +1519,8 @@ body:not(.${PREFIX}-hide-image) .cooked img:not(.emoji) {
   max-width: none !important;
 }
 #${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="excelMetaCol"],
-#${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="excelMetaLeading"] {
+#${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="excelMetaLeading"],
+#${PREFIX}-panel .${PREFIX}-excel-inline-opts select[data-key="boostAsAnnotation"] {
   width: 100px !important;
   min-width: 100px !important;
   max-width: none !important;
@@ -2700,6 +2706,67 @@ body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) 
   text-align: center !important;
 }
 
+/* boost 批注：仅设置开启时生效；默认保留原生气泡 */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__post-menu {
+  position: relative !important;
+  margin: 4px 0 2px !important;
+  padding: 0 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts {
+  position: relative !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__list {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 4px !important;
+  max-width: min(420px, 100%) !important;
+  margin-left: auto !important;
+  padding: 0 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 4px 8px !important;
+  border-radius: 2px !important;
+  border: 1px solid #e6d59a !important;
+  border-left: 3px solid #f0c14a !important;
+  background: #fffbe6 !important;
+  box-shadow: none !important;
+  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
+  line-height: 1.35 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble .avatar {
+  width: 18px !important;
+  height: 18px !important;
+  margin-top: 1px !important;
+  flex: 0 0 auto !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
+  margin: 0 !important;
+  color: #6b5a1e !important;
+  text-align: left !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn {
+  align-self: flex-end !important;
+  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble {
+  background: #3a3420 !important;
+  border-color: #6a5a2a !important;
+  border-left-color: #c9a227 !important;
+  color: #f0e6c0 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked,
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
+  color: #f0e6c0 !important;
+}
 
 
 
@@ -4635,6 +4702,13 @@ body.${PREFIX}-excel #${PREFIX}-overlay { z-index: 100000; }
                       <label class="${PREFIX}-field" title="Default/Moyu 主题：把活动/浏览/回复挪到标题列前，扫一眼先看热度；默认关闭，关闭后恢复原列序；Horizon 主题自动忽略">
                         <span>元数据前置</span>
                         <select data-type="advanced" data-key="excelMetaLeading">
+                          <option value="false">关闭</option>
+                          <option value="true">开启</option>
+                        </select>
+                      </label>
+                      <label class="${PREFIX}-field" title="Excel 模式下将 boost 气泡收成批注样式，减少对表格阅读的干扰；默认关闭">
+                        <span>Boost 批注</span>
+                        <select data-type="advanced" data-key="boostAsAnnotation">
                           <option value="false">关闭</option>
                           <option value="true">开启</option>
                         </select>
