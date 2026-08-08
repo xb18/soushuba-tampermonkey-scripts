@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LINUX DO 优化摸鱼体验
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.1.12
+// @version      1.1.13
 // @description  LINUX DO / Discourse论坛显示优化与功能增强，优雅摸鱼。支持高仿 Excel 摸鱼外观（腾讯文档矢量 / Microsoft Excel 切图主题）、隐藏头像/表情/图片（[图]占位）、高亮楼主、黑名单、关键字屏蔽、图片预览
 // @author       urzeye
 // @license      MIT
@@ -27,7 +27,7 @@
 	// 常量
 	// ============================================================
 	const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-	const SCRIPT_VERSION = '1.1.12';
+	const SCRIPT_VERSION = '1.1.13';
 	const PREFIX = 'ldmy';
 	const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 	const SUPPORT_WECHAT_IMG =
@@ -927,45 +927,54 @@ body.${PREFIX}-fab-left #${PREFIX}-fab {
   color: var(--primary, #222);
   font-size: 13px;
 }
-/* 滑块字段：占满一行，数值即时可见 */
+/* 滑块字段：高级设置两列并排；窄屏 adv-grid 会折成单列 */
 #${PREFIX}-panel .${PREFIX}-field.${PREFIX}-slider-field {
-  grid-column: 1 / -1;
   gap: 6px;
-  padding: 4px 0 2px;
+  padding: 2px 0;
+  min-width: 0;
 }
 #${PREFIX}-panel .${PREFIX}-slider-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  gap: 6px;
+  min-width: 0;
 }
 #${PREFIX}-panel .${PREFIX}-slider-head > span:first-child {
   color: var(--primary-medium, #666);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 #${PREFIX}-panel .${PREFIX}-slider-val {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--tertiary, #08c);
   background: color-mix(in srgb, var(--tertiary, #08c) 12%, transparent);
   border-radius: 999px;
-  padding: 1px 8px;
-  min-width: 4.5em;
+  padding: 1px 7px;
+  min-width: 3.6em;
   text-align: center;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 #${PREFIX}-panel .${PREFIX}-slider-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  min-width: 0;
 }
+/* 并排时两端刻度略挤，收窄；单列时仍可读 */
 #${PREFIX}-panel .${PREFIX}-slider-row .${PREFIX}-slider-min,
 #${PREFIX}-panel .${PREFIX}-slider-row .${PREFIX}-slider-max {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--primary-medium, #888);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
-  min-width: 1.6em;
+  min-width: 0;
+  line-height: 1;
 }
 #${PREFIX}-panel .${PREFIX}-field input[type="range"] {
   -webkit-appearance: none;
