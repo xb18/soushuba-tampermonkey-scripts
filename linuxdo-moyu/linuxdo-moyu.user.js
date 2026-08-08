@@ -2706,66 +2706,199 @@ body.${PREFIX}-excel.${PREFIX}-excel-meta-leading:not(.${PREFIX}-excel-horizon) 
   text-align: center !important;
 }
 
-/* boost 批注：仅设置开启时生效；默认保留原生气泡 */
+/* boost 批注：模拟 Word/Office 批注条（默认关；仅 Excel + 设置开启） */
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__post-menu {
   position: relative !important;
-  margin: 4px 0 2px !important;
-  padding: 0 !important;
+  margin: 8px 0 6px !important;
+  padding: 0 0 0 12px !important;
+  background: transparent !important;
 }
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts {
   position: relative !important;
+  background: transparent !important;
+}
+/* 左侧红色虚线轨：像 Word 批注引出线 */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 7px !important;
+  top: 2px !important;
+  bottom: 2px !important;
+  width: 0 !important;
+  border-left: 1.5px dashed #c00000 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
 }
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__list {
   display: flex !important;
   flex-direction: column !important;
   align-items: stretch !important;
-  gap: 4px !important;
-  max-width: min(420px, 100%) !important;
+  gap: 10px !important;
+  max-width: min(360px, 100%) !important;
   margin-left: auto !important;
   padding: 0 !important;
+  background: transparent !important;
 }
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 6px !important;
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 18px minmax(0, 1fr) 14px !important;
+  align-items: start !important;
+  column-gap: 8px !important;
   width: 100% !important;
   max-width: 100% !important;
-  padding: 4px 8px !important;
-  border-radius: 2px !important;
-  border: 1px solid #e6d59a !important;
-  border-left: 3px solid #f0c14a !important;
-  background: #fffbe6 !important;
-  box-shadow: none !important;
-  font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
-  line-height: 1.35 !important;
-}
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble .avatar {
-  width: 18px !important;
-  height: 18px !important;
-  margin-top: 1px !important;
-  flex: 0 0 auto !important;
-}
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked,
-body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
   margin: 0 !important;
-  color: #6b5a1e !important;
+  padding: 0 2px 0 18px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: calc(13px + var(--${PREFIX}-font-offset, 0px)) !important;
+  line-height: 1.35 !important;
+  color: #222 !important;
+}
+/* 每条批注左侧红竖条 + 与虚线轨衔接 */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 6px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 2px !important;
+  background: #c00000 !important;
+  border-radius: 1px !important;
+  z-index: 1 !important;
+}
+/* 右侧回复箭头（Word 批注角标） */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble::after {
+  content: "" !important;
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin-top: 3px !important;
+  background-color: #666 !important;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='black' d='M6.5 2.5v2.2C4.1 5 2.4 6.7 2 9.4c.9-1.1 2.1-1.7 3.6-1.7h.9V10L10.8 6 6.5 2.5z'/></svg>") center / contain no-repeat !important;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='black' d='M6.5 2.5v2.2C4.1 5 2.4 6.7 2 9.4c.9-1.1 2.1-1.7 3.6-1.7h.9V10L10.8 6 6.5 2.5z'/></svg>") center / contain no-repeat !important;
+  opacity: 0.7 !important;
+  pointer-events: none !important;
+}
+/* 用户头像 → 红色人物方标（Word 批注作者图标） */
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble > a.avatar,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble a:has(> img.avatar) {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  position: relative !important;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin: 1px 0 0 !important;
+  flex: none !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+  background: #c00000 !important;
+  box-shadow: none !important;
+  z-index: 2 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble img.avatar {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  object-fit: cover !important;
+  /* 压掉真实头像，露出红底 + 人物剪影 */
+  opacity: 0 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble > a[data-user-card]::after,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble a:has(> img.avatar)::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background-color: #fff !important;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='5.2' r='2.4' fill='black'/><path fill='black' d='M3.2 13.2c.4-2.6 2.2-3.8 4.8-3.8s4.4 1.2 4.8 3.8H3.2z'/></svg>") center / 12px 12px no-repeat !important;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='5.2' r='2.4' fill='black'/><path fill='black' d='M3.2 13.2c.4-2.6 2.2-3.8 4.8-3.8s4.4 1.2 4.8 3.8H3.2z'/></svg>") center / 12px 12px no-repeat !important;
+  pointer-events: none !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
   text-align: left !important;
+  color: #222 !important;
+  font-weight: 400 !important;
+  font-size: inherit !important;
+  line-height: 1.35 !important;
+  cursor: pointer !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #222 !important;
   white-space: normal !important;
   word-break: break-word !important;
 }
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__cooked img.emoji {
+  width: 14px !important;
+  height: 14px !important;
+  vertical-align: -2px !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover .discourse-boosts__cooked,
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover .discourse-boosts__cooked p {
+  background: transparent !important;
+  color: #000 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__bubble.--actionable:hover::before {
+  background: #a00000 !important;
+}
 body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn {
   align-self: flex-end !important;
+  margin-top: 2px !important;
+  padding: 0 2px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #666 !important;
   font-size: calc(12px + var(--${PREFIX}-font-offset, 0px)) !important;
 }
-body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble {
-  background: #3a3420 !important;
-  border-color: #6a5a2a !important;
-  border-left-color: #c9a227 !important;
-  color: #f0e6c0 !important;
+body.${PREFIX}-excel.${PREFIX}-boost-annotation .discourse-boosts__add-btn:hover {
+  color: #c00000 !important;
 }
+
+/* 暗色：仍保持 Word 批注语义，只把文字提亮 */
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts::before {
+  border-left-color: #e06666 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble::before {
+  background: #e06666 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble > a[data-user-card],
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble a:has(> img.avatar) {
+  background: #e06666 !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble,
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked,
 body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__cooked p {
-  color: #f0e6c0 !important;
+  color: #eee !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__bubble::after {
+  background-color: #bbb !important;
+}
+body.${PREFIX}-excel.${PREFIX}-excel-dark.${PREFIX}-boost-annotation .discourse-boosts__add-btn {
+  color: #bbb !important;
 }
 
 
