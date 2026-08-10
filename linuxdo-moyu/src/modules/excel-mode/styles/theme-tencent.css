@@ -1,0 +1,181 @@
+/* ===================== 腾讯文档（矢量图标） ===================== */
+body.ldmy-excel-tencent {
+  --ldmy-excel-header-h: 146px;
+  --ldmy-excel-footer-h: 36px;
+  --ldmy-excel-accent: #1e6fff;
+  font-family: -apple-system, "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei",
+    "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif !important;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-header {
+  height: var(--ldmy-excel-header-h);
+  background: #fff;
+  border-bottom: 1px solid #ebebeb;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-titlebar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 0;
+  border-bottom: 1px solid #ebebeb;
+  box-sizing: border-box;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-titlebar-title {
+  height: 36px;
+  line-height: 36px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000;
+  opacity: 0.88;
+  margin: 0 9px;
+  max-width: 36%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-titlebar-title:hover {
+  background: rgba(0,0,0,.04);
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-muted {
+  margin-left: 5px;
+  font-size: 12px;
+  line-height: 20px;
+  height: 18px;
+  color: #000;
+  opacity: 0.48;
+  font-weight: 400;
+  white-space: nowrap;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-fish {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: transparent;
+  text-align: center;
+  line-height: 28px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  pointer-events: auto;
+  transition: background .15s ease;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-fish:hover { background: #e8eef8; }
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-toolbar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #ebebeb;
+  line-height: 24px;
+  font-size: 12px;
+  color: rgba(0,0,0,.88);
+  font-weight: 400;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-toolbar-label {
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-formulabar {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e2e4;
+  background: #fff;
+  box-sizing: border-box;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-fx-cell {
+  border-right: 1px solid #e0e2e4;
+  color: #777;
+  text-align: center;
+  width: 50px;
+  font-size: 12px;
+  height: 25px;
+  line-height: 25px;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-fx-value {
+  flex: 1;
+  height: 25px;
+  line-height: 25px;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: none;
+  outline: none;
+  background: transparent;
+  pointer-events: auto;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-fx-value a,
+#ldmy-excel-root .ldmy-excel-fx a,
+#ldmy-excel-root .ldmy-excel-nav-link {
+  color: #1a3959;
+  text-decoration: none;
+  pointer-events: auto;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-fx-value a:hover,
+#ldmy-excel-root .ldmy-excel-fx a:hover,
+#ldmy-excel-root .ldmy-excel-nav-link:hover {
+  text-decoration: underline;
+  color: #1e6fff;
+}
+#ldmy-excel-root .ldmy-excel-nav-sep {
+  margin: 0 6px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-sub { width: 51px; }
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-footer {
+  height: 36px;
+  background: #fff;
+  border-top: 1px solid #e8e8e8;
+  align-items: center;
+  padding: 0 4px;
+  gap: 0;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-sheet-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin-left: 8px;
+  padding: 0 14px 0 10px;
+  font-size: 12px;
+  color: #1e6fff;
+  font-weight: 500;
+  cursor: default;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-sheet-tab::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 2px;
+  background: #1e6fff;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-footer-meta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 400;
+}
+body.ldmy-excel-tencent #ldmy-excel-root .ldmy-excel-zoom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #666;
+}
+

@@ -1,0 +1,28 @@
+/* ===================== 标题栏右侧：搜索 / 语言 / 我的 ===================== */
+#ldmy-excel-root .ldmy-excel-chrome-actions {
+  display: flex; align-items: center; gap: 6px; margin-right: 8px; pointer-events: auto; flex-shrink: 0;
+}
+#ldmy-excel-root .ldmy-excel-chrome-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0; border: none; border-radius: 4px;
+  background: transparent; color: #555; cursor: pointer; user-select: none;
+  transition: background .15s ease, color .15s ease;
+}
+#ldmy-excel-root .ldmy-excel-chrome-btn svg {
+  width: 15px; height: 15px; display: block;
+}
+#ldmy-excel-root .ldmy-excel-chrome-btn:hover {
+  background: #e8eef8; color: #1a3959;
+}
+#ldmy-excel-root .ldmy-excel-chrome-btn[data-act="me"] {
+  position: relative;
+  background: transparent; color: #555; border-radius: 4px;
+}
+#ldmy-excel-root .ldmy-excel-chrome-btn[data-act="me"]:hover { background: #e8eef8; color: #1a3959; }
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-chrome-actions {
+  position: absolute; right: 12px; top: 8px; z-index: 5;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-chrome-btn[data-act="me"]:hover {
+  background: #e8f2ea; color: #1a5c38;
+}
+

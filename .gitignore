@@ -153,3 +153,7 @@ linuxdo-moyu/test/package-lock.json
 
 # *.html
 # *.htm
+
+# linuxdo-moyu build
+linuxdo-moyu/dist/
+linuxdo-moyu/node_modules/

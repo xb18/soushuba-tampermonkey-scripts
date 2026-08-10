@@ -1,0 +1,131 @@
+/* ========== Excel 摸鱼外观 ========== */
+#ldmy-excel-root {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99980;
+  pointer-events: none;
+  /* 独立合成层，避免帖内 emoji/boost 上滚时与固定头抢绘制顺序 */
+  isolation: isolate;
+  transform: translateZ(0);
+}
+body.ldmy-excel #ldmy-excel-root { display: block; }
+#ldmy-excel-root .ldmy-excel-header,
+#ldmy-excel-root .ldmy-excel-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  pointer-events: auto;
+  box-sizing: border-box;
+  z-index: 99981;
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* 强制自成不透明合成层，避免滚动时被帖内 emoji/boost 穿透 */
+  will-change: transform;
+}
+#ldmy-excel-root .ldmy-excel-header {
+  top: 0;
+  background: #fff;
+  background-clip: padding-box;
+  border-bottom: 1px solid #bbb;
+  overflow: hidden;
+  /* 额外遮罩：即使子层有透明缝，也不让下层像素透上来 */
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.01), 0 1px 0 #bbb;
+}
+#ldmy-excel-root .ldmy-excel-footer {
+  bottom: 0;
+  background: #f4f4f4;
+  border-top: 1px solid #c8c8c8;
+  display: flex;
+  align-items: stretch;
+  height: var(--ldmy-excel-footer-h, 50px);
+}
+
+/* ---- 通用图标/切图 ---- */
+#ldmy-excel-root .ldmy-excel-ico {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+#ldmy-excel-root .ldmy-excel-ico12 { width: 12px; height: 12px; }
+#ldmy-excel-root .ldmy-excel-ico16 { width: 16px; height: 16px; }
+#ldmy-excel-root .ldmy-excel-ico20 { width: 20px; height: 20px; }
+#ldmy-excel-root .ldmy-excel-ico24 { width: 24px; height: 24px; }
+#ldmy-excel-root .ldmy-excel-home {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+#ldmy-excel-root .ldmy-excel-home:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+body.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-home:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+#ldmy-excel-root .ldmy-excel-vsep {
+  height: 16px;
+  border-right: 1px solid #000;
+  opacity: 0.06;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+#ldmy-excel-root .ldmy-excel-grow { flex-grow: 1; }
+#ldmy-excel-root img.ldmy-excel-slice {
+  position: absolute;
+  top: 0;
+  max-height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+#ldmy-excel-root img.ldmy-excel-slice-l { left: 0; }
+#ldmy-excel-root img.ldmy-excel-slice-r { right: 0; }
+
+/* 列字母 */
+#ldmy-excel-root .ldmy-excel-h4 {
+  height: 21px;
+  display: flex;
+  overflow: hidden;
+  background: #eee;
+  border-top: 1px solid #d0d0d0;
+  box-sizing: border-box;
+}
+#ldmy-excel-root .ldmy-excel-h4 > div {
+  height: 21px;
+  border-right: 1px solid #c8c8c8;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+#ldmy-excel-root .ldmy-excel-sub {
+  width: 34px;
+  position: relative;
+  background: #e8e8e8;
+}
+#ldmy-excel-root .ldmy-excel-sub > div {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-left: 6px solid transparent;
+  border-right: 6px solid #b8b8b8;
+  border-bottom: 6px solid #b8b8b8;
+}
+#ldmy-excel-root .ldmy-excel-column {
+  width: 72px;
+  line-height: 21px;
+  text-align: center;
+  color: #444;
+  font-family: sans-serif;
+  font-weight: 400;
+  font-size: calc(13px + var(--ldmy-font-offset, 0px));
+  background: #f3f3f3;
+}
+

@@ -1,0 +1,14 @@
+{
+  "name": "linuxdo-moyu",
+  "private": true,
+  "version": "1.2.0",
+  "description": "LINUX DO 优化摸鱼体验 — modular userscript sources",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "sync-root": "node scripts/sync-dist.js"
+  },
+  "devDependencies": {
+    "rollup": "^4.34.0"
+  }
+}

@@ -11,7 +11,7 @@
 
 > Discourse / [LINUX DO](https://linux.do) 论坛显示优化与功能增强，装完即摸鱼。
 
-**最新版本**: v1.1.35  
+**最新版本**: v1.2.0  
 **脚本文件**: [`linuxdo-moyu.user.js`](./linuxdo-moyu.user.js)  
 **发布页**: [Greasy Fork #590271](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)  
 **仓库地址**: [urzeye/tampermonkey-scripts](https://github.com/urzeye/tampermonkey-scripts)  
@@ -167,6 +167,24 @@ Excel 深色阅读路径。
 
 ---
 
+## 开发构建
+
+源码在 `src/`，使用 Rollup 打包为单文件 UserScript：
+
+```bash
+cd linuxdo-moyu
+npm install
+npm run build    # → linuxdo-moyu.user.js，并同步根目录 linuxdo-moyu.user.js
+npm run watch    # 开发监视
+```
+
+- **安装 / Greasy Fork**：`linuxdo-moyu.user.js`（或同步后的根目录同名文件）
+- **源码**：`src/` 为唯一开发源；改完请 `npm run build`
+- 重构说明与任务：[docs/refactor/](./docs/refactor/)
+- 插件口子（预留）：[docs/refactor/PLUGIN_API.md](./docs/refactor/PLUGIN_API.md)
+
+---
+
 ## 致谢
 
 - [NGA-BBS-Script](https://github.com/kisshang1993/NGA-BBS-Script) — 摸鱼思路与 Excel 主题素材
@@ -188,3 +206,4 @@ Excel 深色阅读路径。
 | [LINUX DO](https://linux.do) | 新一代的技术社区，连接每一位探索者 |
 
 > 本脚本为社区爱好者作品，与 LINUX DO 官方无隶属关系。请遵守社区规范，理性摸鱼。
+

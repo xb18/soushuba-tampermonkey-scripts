@@ -1,0 +1,668 @@
+/* ===== feature styles ===== */
+/* hide avatar */
+body.ldmy-hide-avatar img.avatar,
+body.ldmy-hide-avatar .post-avatar img,
+body.ldmy-hide-avatar .topic-avatar img,
+body.ldmy-hide-avatar .topic-list .posters img,
+body.ldmy-hide-avatar .avatar-flair {
+  display: none !important;
+}
+body.ldmy-hide-avatar .topic-avatar,
+body.ldmy-hide-avatar .post-avatar {
+  min-width: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* hide emoji */
+body.ldmy-hide-emoji img.emoji,
+body.ldmy-hide-emoji img.emojis,
+body.ldmy-hide-emoji .emoji-images {
+  display: none !important;
+}
+body:not(.ldmy-hide-emoji) .ldmy-emoji-alt {
+  display: none !important;
+}
+
+/* hide images in posts (keep emoji controlled separately) */
+body.ldmy-hide-image .cooked img:not(.emoji),
+body.ldmy-hide-image .cooked .lightbox-wrapper,
+body.ldmy-hide-image .cooked .image-wrapper {
+  display: none !important;
+}
+body.ldmy-hide-image .cooked img:not(.emoji).ldmy-img-revealed {
+  display: inline-block !important;
+}
+body.ldmy-hide-image .cooked .lightbox-wrapper.ldmy-img-revealed {
+  display: block !important;
+}
+body.ldmy-hide-image .cooked .image-wrapper.ldmy-img-revealed {
+  display: inline-block !important;
+}
+/* 隐藏图片时的 [图] 占位：可点击临时显示 */
+.ldmy-img-ph {
+  display: none;
+  box-sizing: border-box;
+  margin: 0 2px;
+  padding: 0 4px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #6b7280;
+  font-size: 12px;
+  font-family: Consolas, "SF Mono", Menlo, "Courier New", monospace;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  vertical-align: baseline;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+body.ldmy-hide-image .ldmy-img-ph {
+  display: inline;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+body.ldmy-hide-image .ldmy-img-ph:hover {
+  color: #1a3959;
+  background: #eee;
+  border-color: #bbb;
+}
+body.ldmy-hide-image .ldmy-img-ph.is-open {
+  color: #217346;
+  background: #eef6ff;
+  border-color: #8eb6e8;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-hide-image .ldmy-img-ph {
+  color: #a0a0a0;
+  background: #2a2a2a;
+  border-color: #3f3f46;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-hide-image .ldmy-img-ph:hover {
+  color: #8ec7ff;
+  background: #333;
+  border-color: #555;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-hide-image .ldmy-img-ph.is-open {
+  color: #7dcea0;
+  background: #1e2a24;
+  border-color: #3d6b4f;
+}
+body:not(.ldmy-hide-image) .ldmy-img-ph {
+  display: none !important;
+}
+
+/* user title */
+body.ldmy-hide-user-title .user-title,
+body.ldmy-hide-user-title .user-status,
+body.ldmy-hide-user-title .poster-avatar-extra {
+  display: none !important;
+}
+
+/* sidebar */
+body.ldmy-hide-sidebar .sidebar-wrapper,
+body.ldmy-hide-sidebar #d-sidebar,
+body.ldmy-hide-sidebar .d-header-sidebar-toggle {
+  display: none !important;
+}
+/*
+ * Discourse 默认 grid-template-areas: "sidebar content"。
+ * 仅改 columns 为 1fr 时，named area 仍会隐式生成两列：
+ * 空的 sidebar 列吃掉 1fr，content 贴右 → 左侧大片空白。
+ */
+body.ldmy-hide-sidebar.has-sidebar-page #main-outlet-wrapper,
+body.ldmy-hide-sidebar #main-outlet-wrapper {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas:
+    "content"
+    "below-content" !important;
+  gap: 0 !important;
+}
+/* has-sidebar-page 的 .wrap 默认 max-width 含侧栏宽度，隐藏后去掉 */
+body.ldmy-hide-sidebar.has-sidebar-page .wrap,
+body.ldmy-hide-sidebar.has-sidebar-page #main-outlet-wrapper.wrap {
+  max-width: var(--d-max-width, 1110px) !important;
+}
+body.ldmy-hide-sidebar.ldmy-wide.has-sidebar-page .wrap,
+body.ldmy-hide-sidebar.ldmy-wide.has-sidebar-page #main-outlet-wrapper,
+body.ldmy-hide-sidebar.ldmy-wide.has-sidebar-page #main-outlet-wrapper.wrap {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* topic map */
+body.ldmy-hide-topic-map .topic-map,
+body.ldmy-hide-topic-map .topic-map.--op,
+body.ldmy-hide-topic-map .toggle-summary {
+  display: none !important;
+}
+
+/* compact topic list（Excel 下同样生效，压缩行高更像表格） */
+body.ldmy-compact .topic-list .topic-list-item {
+  border-bottom: 1px solid var(--primary-low, #eee) !important;
+}
+body.ldmy-compact .topic-list td,
+body.ldmy-compact .topic-list .topic-list-data {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  line-height: 1.25 !important;
+}
+body.ldmy-compact .topic-list .link-bottom-line,
+body.ldmy-compact .topic-list .topic-excerpt,
+body.ldmy-compact .topic-list .posters,
+body.ldmy-compact .topic-list .topic-list-data.posters {
+  display: none !important;
+}
+body.ldmy-compact .topic-list .main-link .title,
+body.ldmy-compact .topic-list a.title,
+body.ldmy-compact .topic-list a.raw-topic-link {
+  /* 紧凑只压行高/间距，不改基础字号 */
+  line-height: 1.3 !important;
+}
+body.ldmy-compact.ldmy-excel .topic-list td,
+body.ldmy-compact.ldmy-excel .topic-list .topic-list-data {
+  /* 字号解耦后略放宽，避免标题被裁切 */
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 34px !important;
+}
+
+/* wide mode（非 Excel；Excel 已强制全宽） */
+body.ldmy-wide {
+  --d-max-width: 1400px !important;
+  --topic-body-width: 980px !important;
+}
+body.ldmy-wide #main-outlet,
+body.ldmy-wide .wrap,
+body.ldmy-wide #main-outlet-wrapper,
+body.ldmy-wide .topic-body,
+body.ldmy-wide .container.posts {
+  max-width: none !important;
+  width: 100% !important;
+}
+body.ldmy-wide .topic-area,
+body.ldmy-wide .posts-wrapper,
+body.ldmy-wide .topic-body {
+  max-width: none !important;
+}
+
+/* font resize：统一偏移。
+   注意：不要父子同时选中（会 1em+offset 叠两次）。
+   侧栏用容器一次放大；列表元数据/标签用叶子节点。 */
+body.ldmy-font-resize .cooked,
+body.ldmy-font-resize .topic-list .main-link .title,
+body.ldmy-font-resize .topic-list a.title,
+body.ldmy-font-resize .topic-list a.raw-topic-link,
+body.ldmy-font-resize .fancy-title,
+body.ldmy-font-resize #topic-title h1,
+body.ldmy-font-resize .fps-result .topic-title,
+body.ldmy-font-resize .fps-result .topic-title span,
+body.ldmy-font-resize .fps-result .search-link,
+body.ldmy-font-resize .fps-result .blurb,
+body.ldmy-font-resize .names,
+body.ldmy-font-resize .post-date,
+body.ldmy-font-resize .post-info,
+body.ldmy-font-resize .discourse-boosts__cooked,
+/* 列表：分类/标签/回复/浏览/活动等 */
+body.ldmy-font-resize .topic-list .badge-category,
+body.ldmy-font-resize .topic-list .badge-category__wrapper,
+body.ldmy-font-resize .topic-list .badge-category__name,
+body.ldmy-font-resize .topic-list .discourse-tag,
+body.ldmy-font-resize .topic-list .discourse-tags,
+body.ldmy-font-resize .topic-list .link-bottom-line,
+body.ldmy-font-resize .topic-list .topic-excerpt,
+body.ldmy-font-resize .topic-list .num,
+body.ldmy-font-resize .topic-list .num .number,
+body.ldmy-font-resize .topic-list .posts-map,
+body.ldmy-font-resize .topic-list .views .number,
+body.ldmy-font-resize .topic-list .replies .number,
+body.ldmy-font-resize .topic-list .activity,
+body.ldmy-font-resize .topic-list .activity .relative-date,
+body.ldmy-font-resize .topic-list .posters,
+body.ldmy-font-resize .topic-category-data,
+body.ldmy-font-resize .topic-likes-replies-data,
+body.ldmy-font-resize .topic-activity-data,
+body.ldmy-font-resize .topic-status-data,
+body.ldmy-font-resize .topic-list .topic-category,
+body.ldmy-font-resize .topic-list .badge-notification,
+/* 侧栏：只改容器，避免子项再 +offset */
+body.ldmy-font-resize #d-sidebar,
+body.ldmy-font-resize .sidebar-wrapper,
+body.ldmy-font-resize .sidebar-container,
+body.ldmy-font-resize aside.sidebar,
+/* 导航/面包屑 */
+body.ldmy-font-resize .navigation-container,
+body.ldmy-font-resize .category-breadcrumb,
+body.ldmy-font-resize .nav-pills > li > a,
+body.ldmy-font-resize .post-menu-area .btn,
+body.ldmy-font-resize .post__menu-area .btn,
+body.ldmy-font-resize .post-controls .btn {
+  font-size: calc(1em + var(--ldmy-font-offset, 0px)) !important;
+}
+
+/* Excel 不再强制缩小列表数值/标签等原站元素字号；
+   表格感只靠边框/间距；字号跟站点，偏移由 font-resize 统一加 */
+
+/* highlight OP：只打在主帖 names 上，避免嵌套/引用展开误标楼主 */
+body.ldmy-highlight-op .topic-post.topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.post--topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.post--topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.post--topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.ldmy-highlight-op .topic-post.post--topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after {
+  content: '楼主';
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+  background: var(--ldmy-author-color, #e74c3c);
+  vertical-align: middle;
+}
+/* 兜底：非 Excel 时若结构略有差异，仍给主楼层 names 标楼主（排除 embedded） */
+body.ldmy-highlight-op:not(.ldmy-excel) .topic-post.topic-owner .topic-meta-data:not(.embedded-reply) > .names::after,
+body.ldmy-highlight-op:not(.ldmy-excel) .topic-post.post--topic-owner .topic-meta-data:not(.embedded-reply) > .names::after {
+  content: '楼主';
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+  background: var(--ldmy-author-color, #e74c3c);
+  vertical-align: middle;
+}
+body.ldmy-highlight-op .topic-post.topic-owner,
+body.ldmy-highlight-op .topic-post.post--topic-owner {
+  border-left: 3px solid var(--ldmy-author-color, #e74c3c);
+  padding-left: 6px;
+}
+/* 引用/嵌套里的 names 绝不能继承楼主 */
+body.ldmy-highlight-op .topic-post .embedded-posts .names::after,
+body.ldmy-highlight-op .topic-post .post__embedded-posts .names::after,
+body.ldmy-highlight-op .topic-post .topic-meta-data.embedded-reply .names::after {
+  content: none !important;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* Excel：楼主放第 2 行末尾（称号/表情之后） */
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner > article > .row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner > article > .post__row > .topic-body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner > article > .row > .post__body > .topic-meta-data > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner > article > .post__row > .post__body > .topic-meta-data > .names::after {
+  order: 7 !important; /* 第 2 行末：称号 → 表情/徽章 → 楼主 */
+  margin-left: 0;
+  margin-top: 0;
+  align-self: center;
+  flex: 0 0 auto;
+  font-size: 11px;
+  line-height: 16px;
+  padding: 0 5px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner {
+  border-left: none !important;
+  padding-left: 0 !important;
+}
+body.ldmy-excel .topic-owner .cooked::after,
+body.ldmy-excel .topic-post.topic-owner .contents > .cooked::after,
+body.ldmy-excel .topic-post.post--topic-owner .contents > .cooked::after,
+body.ldmy-excel div.topic-owner .topic-body .contents > .cooked::after,
+body.ldmy-excel div.topic-owner .post__body .contents > .cooked::after,
+body.ldmy-excel div.topic-owner .topic-body .post__contents > .cooked::after,
+body.ldmy-excel div.topic-owner .post__body .post__contents > .cooked::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* only OP */
+body.ldmy-only-op .topic-post:not(.topic-owner):not(.post--topic-owner) {
+  display: none !important;
+}
+
+/* image max size：默认不额外限制（随正文列宽）；开启封顶时再套 --img-max */
+body:not(.ldmy-hide-image) .cooked img:not(.emoji) {
+  max-width: 100% !important;
+  height: auto !important;
+  cursor: zoom-in;
+}
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked img:not(.emoji),
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked .lightbox-wrapper,
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked .image-wrapper,
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked a.lightbox {
+  max-width: min(100%, var(--ldmy-img-max)) !important;
+}
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked .lightbox-wrapper img,
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked .image-wrapper img,
+body.ldmy-img-cap:not(.ldmy-hide-image) .cooked a.lightbox img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+.ldmy-img-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 100001;
+  background: rgba(0,0,0,.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.ldmy-img-viewer img {
+  max-width: 92vw;
+  max-height: 82vh;
+  object-fit: contain;
+  transition: transform .15s ease;
+  cursor: grab;
+  user-select: none;
+}
+.ldmy-img-viewer .toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ldmy-img-viewer .toolbar button {
+  border: none;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ldmy-img-viewer .toolbar button:hover { background: rgba(255,255,255,.28); }
+.ldmy-img-viewer .counter { color: #ddd; font-size: 13px; }
+
+/* ban / mark */
+.ldmy-banned-post {
+  opacity: .35;
+  filter: grayscale(1);
+}
+.ldmy-banned-post.ldmy-ban-collapsed .cooked,
+.ldmy-banned-post.ldmy-ban-collapsed .post-menu-area {
+  display: none !important;
+}
+.ldmy-ban-placeholder {
+  padding: 8px 12px;
+  color: var(--primary-medium, #888);
+  font-size: 13px;
+  font-style: italic;
+}
+.ldmy-mark-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.ldmy-mark-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+  background: #8e44ad;
+  cursor: pointer;
+  user-select: none;
+}
+.ldmy-mark-tag:hover { filter: brightness(0.92); }
+.ldmy-mark-tag .ldmy-mark-x {
+  font-size: 11px;
+  opacity: 0.75;
+  line-height: 1;
+}
+.ldmy-mark-tag:hover .ldmy-mark-x { opacity: 1; }
+/* Excel 设置块：整行占满两列；提示贴在开关旁 */
+#ldmy-panel .ldmy-excel-block {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0 8px;
+  border-bottom: 1px dashed var(--primary-low, #eee);
+}
+#ldmy-panel .ldmy-excel-block > .ldmy-item {
+  border-bottom: none;
+  padding: 4px 0 0;
+}
+#ldmy-panel .ldmy-excel-block > .ldmy-item label {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  max-width: 100%;
+}
+#ldmy-panel .ldmy-excel-tip {
+  font-size: 11px;
+  opacity: 0.55;
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: normal;
+}
+#ldmy-panel .ldmy-excel-inline-opts {
+  margin: 4px 0 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--primary-low, #e5e5e5);
+  border-radius: 8px;
+  background: var(--secondary, #fafafa);
+  overflow: visible;
+}
+#ldmy-panel .ldmy-excel-inline-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  #ldmy-panel .ldmy-excel-inline-row {
+    grid-template-columns: 1fr;
+  }
+}
+/* 标签+控件同一行，省高度；选择器带 #panel 盖过通用 .field */
+#ldmy-panel .ldmy-excel-inline-opts .ldmy-field {
+  display: grid !important;
+  grid-template-columns: 6.5em 1fr;
+  align-items: center !important;
+  gap: 8px;
+  font-size: 12px;
+  margin: 0;
+  min-width: 0;
+  min-height: 32px;
+  white-space: nowrap;
+}
+#ldmy-panel .ldmy-excel-inline-opts .ldmy-field > span {
+  opacity: 0.85;
+  line-height: 1.3;
+  color: var(--primary-medium, #666);
+  white-space: nowrap;
+  text-align: right;
+  box-sizing: border-box;
+}
+#ldmy-panel .ldmy-excel-inline-opts select,
+#ldmy-panel .ldmy-excel-inline-opts input[type="text"] {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  font-size: 12px !important;
+  font-family: inherit !important;
+  height: auto !important;
+  min-height: 32px !important;
+  max-height: none !important;
+  line-height: 20px !important;
+  padding: 5px 8px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--primary-low, #ddd) !important;
+  background: var(--secondary, #fff) !important;
+  color: var(--primary, #222) !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  -webkit-appearance: menulist !important;
+  appearance: menulist !important;
+}
+#ldmy-panel .ldmy-excel-inline-opts input[type="text"] {
+  -webkit-appearance: textfield !important;
+  appearance: textfield !important;
+}
+/* 分组小标题：外观 / 显示 */
+#ldmy-panel .ldmy-excel-opt-group {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--primary-medium, #888);
+  line-height: 1.2;
+}
+#ldmy-panel .ldmy-excel-opt-group::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--primary-low, #e5e5e5);
+}
+#ldmy-panel .ldmy-excel-opt-group:first-child {
+  margin-top: 0;
+}
+
+.ldmy-user-actions {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity .15s ease;
+  vertical-align: middle;
+}
+.topic-meta-data:hover .ldmy-user-actions,
+.names:hover .ldmy-user-actions {
+  opacity: 1;
+}
+/* Excel 用户列：备注/拉黑在身份行/时间下方，不夹进 names 横排 */
+body.ldmy-excel .ldmy-user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 0;
+  margin-top: 0;
+  max-width: 100%;
+}
+body.ldmy-excel .ldmy-mark-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 0;
+  margin-top: 0;
+  max-width: 100%;
+}
+body.ldmy-excel .topic-meta-data > .ldmy-user-actions,
+body.ldmy-excel .topic-meta-data > .ldmy-mark-tags {
+  order: 20; /* 落在 names / 时间之后 */
+}
+/* 若残留在 names 内，也排到横排末尾，避免插到徽章中间 */
+body.ldmy-excel .names > .ldmy-user-actions,
+body.ldmy-excel .names > .ldmy-mark-tags {
+  order: 20 !important;
+  flex: 1 0 100% !important;
+  margin-top: 2px;
+}
+.ldmy-user-actions button {
+  border: 1px solid var(--primary-low, #ddd);
+  background: var(--secondary, #fff);
+  color: var(--primary-medium, #666);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 0 5px;
+  line-height: 18px;
+  cursor: pointer;
+}
+.ldmy-user-actions button:hover {
+  color: var(--tertiary, #08c);
+  border-color: var(--tertiary, #08c);
+}
+.ldmy-user-actions button.ban:hover { color: #c0392b; border-color: #c0392b; }
+
+/* keyword blocked row */
+.ldmy-kw-blocked {
+  display: none !important;
+}
+
+/* floor jump */
+.ldmy-floor-bar {
+  position: fixed;
+  /* 水平避开 FAB 按钮组（顶部/楼层/设置），显示在按钮左侧 */
+  right: 76px;
+  bottom: 150px;
+  z-index: 99982; /* 盖过 Excel 固定头/尾（99981），避免被遮住 */
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--secondary, #fff);
+  border: 1px solid var(--primary-low, #ddd);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
+}
+body.ldmy-fab-left .ldmy-floor-bar {
+  right: auto;
+  left: 76px;
+}
+.ldmy-floor-bar.open { display: flex; }
+.ldmy-floor-bar input {
+  width: 72px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--primary-low, #ddd);
+  font-size: 13px;
+}
+.ldmy-floor-bar button {
+  border: none;
+  background: var(--tertiary, #08c);
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* blocked topic list item residual */
+.topic-list-item.ldmy-kw-blocked { display: none !important; }
+
+/* only-op tip */
+#ldmy-only-op-tip {
+  position: sticky;
+  top: 60px;
+  z-index: 80;
+  margin: 8px auto;
+  width: fit-content;
+  background: var(--tertiary, #08c);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  display: none;
+  cursor: pointer;
+}
+body.ldmy-only-op #ldmy-only-op-tip { display: inline-flex; gap: 6px; align-items: center; }
+

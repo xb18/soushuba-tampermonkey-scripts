@@ -1,0 +1,366 @@
+/* ========== 嵌套/引用展开 ==========
+   - bottom：展开「N 个回复」
+   - top：点击 reply-to 加载的父帖预览
+   统一做成正文列内的紧凑引用卡片，避免误用主帖用户列两行布局 */
+body.ldmy-excel .topic-post > article .embedded-posts,
+body.ldmy-excel .topic-post > article .post__embedded-posts {
+  grid-column: 2 !important;
+  grid-row: auto !important;
+  position: relative !important;
+  max-width: none !important;
+  width: auto !important;
+  margin: 6px 8px 8px !important;
+  padding: 8px 34px 8px 10px !important; /* 右侧给收起按钮留位 */
+  border: 1px solid var(--ldmy-border-soft, #d0d0d0) !important;
+  border-left: 3px solid #8eb6e8 !important;
+  border-radius: 0 !important;
+  background: var(--ldmy-surface-chip, #f7f9fc) !important;
+  box-sizing: border-box !important;
+  clear: both !important;
+  float: none !important;
+  color: var(--ldmy-text-body, #222) !important;
+}
+/* 点击「回复谁」展开的父帖：略收紧，更像引用条 */
+body.ldmy-excel .topic-post > article .embedded-posts.top,
+body.ldmy-excel .topic-post > article .post__embedded-posts--top,
+body.ldmy-excel .topic-post > article .embedded-posts.post__embedded-posts--top {
+  margin: 6px 8px 4px !important;
+  padding: 6px 34px 6px 10px !important;
+  background: var(--ldmy-surface-soft, #f5f7fa) !important;
+  border-left-color: #6a9bd8 !important;
+}
+/* 若嵌在 article 下（不在 topic-body 网格内）：缩进对齐正文列，避免左侧空白断层 */
+body.ldmy-excel .topic-post > article > .embedded-posts,
+body.ldmy-excel .topic-post > article > .post__embedded-posts {
+  display: block !important;
+  width: auto !important;
+  margin: 6px 8px 6px calc(var(--ldmy-user-col) + 8px) !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+/* Excel 兜底：主帖 names 标楼主（排除 embedded），防止 DOM 层级微调后丢失 */
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner > article .topic-body > .topic-meta-data:not(.embedded-reply) > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.topic-owner > article .post__body > .topic-meta-data:not(.embedded-reply) > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner > article .topic-body > .topic-meta-data:not(.embedded-reply) > .names::after,
+body.ldmy-excel.ldmy-highlight-op .topic-post.post--topic-owner > article .post__body > .topic-meta-data:not(.embedded-reply) > .names::after {
+  content: '楼主';
+  display: inline-block;
+  order: 7 !important;
+  margin-left: 0;
+  margin-top: 0;
+  align-self: center;
+  flex: 0 0 auto;
+  font-size: 11px;
+  line-height: 16px;
+  padding: 0 5px;
+  border-radius: 2px;
+  color: #fff;
+  background: var(--ldmy-author-color, #e74c3c);
+  vertical-align: middle;
+}
+body.ldmy-excel .topic-post > article .embedded-posts > .reply,
+body.ldmy-excel .topic-post > article .post__embedded-posts > .reply,
+body.ldmy-excel .topic-post > article .embedded-posts > div.reply,
+body.ldmy-excel .topic-post > article .embedded-posts > div[role="region"] {
+  position: relative !important;
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts > .reply:last-of-type,
+body.ldmy-excel .topic-post > article .embedded-posts > div[role="region"]:last-of-type {
+  margin-bottom: 0 !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .row,
+body.ldmy-excel .topic-post > article .post__embedded-posts .row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  float: none !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .row::before,
+body.ldmy-excel .topic-post > article .post__embedded-posts .row::before {
+  content: none !important;
+  display: none !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .topic-avatar,
+body.ldmy-excel .topic-post > article .post__embedded-posts .topic-avatar,
+body.ldmy-excel .topic-post > article .embedded-posts .post-avatar,
+body.ldmy-excel .topic-post > article .post__embedded-posts .post-avatar {
+  display: none !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .topic-body,
+body.ldmy-excel .topic-post > article .post__embedded-posts .topic-body,
+body.ldmy-excel .topic-post > article .embedded-posts .post__body,
+body.ldmy-excel .topic-post > article .post__embedded-posts .post__body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  float: none !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .topic-meta-data,
+body.ldmy-excel .topic-post > article .post__embedded-posts .topic-meta-data,
+body.ldmy-excel .topic-post > article .embedded-posts .topic-meta-data.embedded-reply {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 6px 10px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  float: none !important;
+  position: relative !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .names,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: baseline !important;
+  gap: 4px 8px !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .names .first,
+body.ldmy-excel .topic-post > article .embedded-posts .names .first a {
+  font-weight: 600 !important;
+  color: #1a3959 !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .names .second,
+body.ldmy-excel .topic-post > article .embedded-posts .names .second a {
+  font-weight: 400 !important;
+  color: #777 !important;
+}
+/* 取消主帖 names 的两行 order/::before，引用区保持单行身份 */
+body.ldmy-excel .topic-post > article .embedded-posts .names::before,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names::before,
+body.ldmy-excel .topic-post > article .embedded-posts .names::after,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names::after {
+  content: none !important;
+  display: none !important;
+  flex: none !important;
+  order: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .names > *,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names > * {
+  order: 0 !important;
+}
+/* 引用卡片里弱化称号/徽章，突出昵称与正文 */
+body.ldmy-excel .topic-post > article .embedded-posts .names .user-title,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names .user-title,
+body.ldmy-excel .topic-post > article .embedded-posts .names .user-status-message-wrap,
+body.ldmy-excel .topic-post > article .embedded-posts .names .user-status,
+body.ldmy-excel .topic-post > article .embedded-posts .names .poster-icon-container,
+body.ldmy-excel .topic-post > article .embedded-posts .names .badge-group,
+body.ldmy-excel .topic-post > article .embedded-posts .names .user-badge,
+body.ldmy-excel .topic-post > article .embedded-posts .names .poster-avatar-extra,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names .user-status-message-wrap,
+body.ldmy-excel .topic-post > article .post__embedded-posts .names .poster-icon-container {
+  display: none !important;
+}
+/* 顶部引用：名字前加「引用」提示，更易读 */
+body.ldmy-excel .topic-post > article .embedded-posts.top .names > .first::before,
+body.ldmy-excel .topic-post > article .post__embedded-posts--top .names > .first::before {
+  content: '引用' !important;
+  display: inline-block !important;
+  margin-right: 6px !important;
+  padding: 0 5px !important;
+  border-radius: 2px !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+  font-weight: 500 !important;
+  color: var(--ldmy-text-link, #5b7fa6) !important;
+  background: var(--ldmy-surface-chip, #e8eef6) !important;
+  vertical-align: middle !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .post-link-arrow,
+body.ldmy-excel .topic-post > article .post__embedded-posts .post-link-arrow {
+  position: static !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  margin-left: auto !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .post-link-arrow .post-info.arrow,
+body.ldmy-excel .topic-post > article .post__embedded-posts .post-link-arrow .post-info.arrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  color: #888 !important;
+  font-size: 12px !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .cooked,
+body.ldmy-excel .topic-post > article .post__embedded-posts .cooked {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--ldmy-text-body, #222) !important;
+  background: transparent !important;
+}
+/* 收起按钮：不要绝对定位盖在用户名上 */
+body.ldmy-excel .topic-post > article .embedded-posts .collapse-up,
+body.ldmy-excel .topic-post > article .embedded-posts .post__collapse-button,
+body.ldmy-excel .topic-post > article .embedded-posts .post__collapse-button-up,
+body.ldmy-excel .topic-post > article .post__embedded-posts .collapse-up,
+body.ldmy-excel .topic-post > article .post__embedded-posts .post__collapse-button,
+body.ldmy-excel .topic-post > article .post__embedded-posts .post__collapse-button-up {
+  position: absolute !important;
+  top: 4px !important;
+  right: 4px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: 3 !important;
+  margin: 0 !important;
+  padding: 2px 6px !important;
+  min-height: 24px !important;
+  border: 1px solid var(--ldmy-border-soft, #ccc) !important;
+  border-radius: 0 !important;
+  background: var(--ldmy-surface, #fff) !important;
+  color: var(--ldmy-text-dim, #666) !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel .topic-post > article .embedded-posts .collapse-up:hover,
+body.ldmy-excel .topic-post > article .embedded-posts .post__collapse-button:hover {
+  background: var(--ldmy-surface-soft, #eee) !important;
+  border-color: var(--ldmy-border-soft, #aaa) !important;
+  color: var(--ldmy-text-body, #333) !important;
+}
+
+/* Excel + 紧凑：只再压一点内边距，列宽走 CSS 变量 */
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .topic-meta-data,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .topic-meta-data,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .topic-meta-data,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .topic-meta-data {
+  padding: 6px 8px !important;
+  gap: 2px !important;
+}
+body.ldmy-compact.ldmy-excel:not(.ldmy-hide-avatar) .topic-post > article > .post__row > .topic-body > .topic-meta-data,
+body.ldmy-compact.ldmy-excel:not(.ldmy-hide-avatar) .topic-post > article > .row > .topic-body > .topic-meta-data,
+body.ldmy-compact.ldmy-excel:not(.ldmy-hide-avatar) .topic-post > article > .post__row > .post__body > .topic-meta-data,
+body.ldmy-compact.ldmy-excel:not(.ldmy-hide-avatar) .topic-post > article > .row > .post__body > .topic-meta-data {
+  padding-top: 8px !important;
+  padding-left: calc(var(--ldmy-avatar-left) + var(--ldmy-avatar-size) + var(--ldmy-avatar-gap)) !important;
+}
+body.ldmy-compact.ldmy-excel .topic-post > article .names,
+body.ldmy-compact.ldmy-excel .topic-post > article .names .first,
+body.ldmy-compact.ldmy-excel .topic-post > article .names a {
+  line-height: 1.25 !important;
+}
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .post__regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .post__contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .post__regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .post__contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .post__regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .post__contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .contents,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .post__regular,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .post__contents {
+  padding: 4px 8px 0 !important;
+}
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .post-menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .topic-body > .post__menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .post-menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .topic-body > .post__menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .post-menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .post__row > .post__body > .post__menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .post-menu-area,
+body.ldmy-compact.ldmy-excel .topic-post > article > .row > .post__body > .post__menu-area {
+  padding: 0 4px 0 !important;
+}
+body.ldmy-compact.ldmy-excel .cooked {
+  line-height: 1.3 !important;
+}
+body.ldmy-compact.ldmy-excel .cooked p {
+  margin: 0 0 0.2em !important;
+}
+body.ldmy-compact.ldmy-excel .post-controls .btn,
+body.ldmy-compact.ldmy-excel .post-menu-area .btn,
+body.ldmy-compact.ldmy-excel .post__menu-area .btn {
+  min-height: 24px !important;
+  padding: 1px 4px !important;
+}
+body.ldmy-compact.ldmy-excel .topic-post > article .embedded-posts,
+body.ldmy-compact.ldmy-excel .topic-post > article .post__embedded-posts {
+  margin: 2px 6px 8px !important;
+  padding: 6px 8px 4px !important;
+}
+
+/* 非 Excel 紧凑：详情也略压一点 */
+body.ldmy-compact:not(.ldmy-excel) .topic-post {
+  margin-bottom: 0 !important;
+}
+body.ldmy-compact:not(.ldmy-excel) .topic-body,
+body.ldmy-compact:not(.ldmy-excel) .post__body {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+body.ldmy-compact:not(.ldmy-excel) .cooked {
+  line-height: 1.4 !important;
+}
+body.ldmy-compact:not(.ldmy-excel) .cooked p {
+  margin-bottom: 0.4em !important;
+}
+
+body.ldmy-excel-tencent .topic-list th,
+body.ldmy-excel-tencent .topic-list td,
+body.ldmy-excel-tencent .topic-list .topic-list-data,
+body.ldmy-excel-tencent .topic-post,
+body.ldmy-excel-tencent .topic-body,
+body.ldmy-excel-tencent .topic-body > .topic-meta-data,
+body.ldmy-excel-tencent .post__body > .topic-meta-data,
+body.ldmy-excel-tencent #topic-title,
+body.ldmy-excel-tencent .title-wrapper {
+  border-color: #ebebeb !important;
+}
+body.ldmy-excel-tencent.ldmy-excel-rows .topic-post::before,
+body.ldmy-excel-tencent .ldmy-excel-rownum,
+body.ldmy-excel-tencent th.ldmy-excel-rownum {
+  background: #f9fafb !important;
+  border-color: #ebebeb !important;
+}
+body.ldmy-excel-tencent:not(.ldmy-excel-hide-nav):not(.ldmy-excel-dark) .list-controls,
+body.ldmy-excel-tencent:not(.ldmy-excel-hide-nav):not(.ldmy-excel-dark) .navigation-container,
+body.ldmy-excel-tencent:not(.ldmy-excel-hide-nav):not(.ldmy-excel-dark) .sidebar-wrapper,
+body.ldmy-excel-tencent:not(.ldmy-excel-hide-nav):not(.ldmy-excel-dark) #d-sidebar {
+  border-color: #e0e0e0 !important;
+  background: #f9fafb !important;
+}
+
+/* 主题色微调：选中行 */
+body.ldmy-excel-office .topic-list .topic-list-item:hover .topic-list-data {
+  background: #e7f4ea !important;
+}
+body.ldmy-excel-office .topic-list-item.ldmy-excel-row-active .topic-list-data {
+  background: #dceaf0 !important;
+  outline-color: #217346;
+}
+

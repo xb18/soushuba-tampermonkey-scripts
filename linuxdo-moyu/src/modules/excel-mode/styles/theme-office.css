@@ -1,0 +1,98 @@
+/* ===================== Microsoft Excel ===================== */
+body.ldmy-excel-office {
+  --ldmy-excel-header-h: 221px;
+  --ldmy-excel-footer-h: 50px;
+  --ldmy-excel-accent: #217346;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-header {
+  height: 221px;
+  background: #e8e8e8;
+  border-bottom: 1px solid #bbb;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-h1 {
+  height: 59px;
+  background: #227447;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-h1-title {
+  display: block;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: sans-serif;
+  line-height: 30px;
+  position: relative;
+  z-index: 2;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-h2 {
+  height: 95px;
+  background: #f1f1f1;
+  border-bottom: 1px solid #d5d5d5;
+  position: relative;
+  overflow: hidden;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-h3 {
+  height: 48px;
+  background: #e6e6e6;
+  position: relative;
+  overflow: hidden;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-fx {
+  position: absolute;
+  top: 10px;
+  left: 250px;
+  right: 5px;
+  height: 28px;
+  box-sizing: border-box;
+  border: 1px solid #c6c6c6;
+  border-radius: 0;
+  background: #fff;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-h4 { height: 20px; }
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-h4 .ldmy-excel-column {
+  line-height: 20px;
+  height: 20px;
+  background: #eee;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-footer {
+  height: 50px;
+  flex-direction: column;
+  padding: 0;
+  background: #f4f4f4;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-f1 {
+  height: 29px;
+  position: relative;
+  background: #e8e8e8;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #bfbfbf;
+  overflow: hidden;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-f2 {
+  height: 21px;
+  position: relative;
+  background: #f4f4f4;
+  overflow: hidden;
+}
+body.ldmy-excel-office #ldmy-excel-root .ldmy-excel-f1 img.ldmy-excel-slice { top: -1px; }
+

@@ -1,0 +1,419 @@
+/* ===================== Horizon：真表格（打掉原生卡片 Grid） ===================== */
+/*
+ * Horizon 原生 .--d-topic-cards 给每行 display:grid + grid-area，会拆掉表格框线。
+ * Excel 下强制 table/table-row/table-cell，并用 JS 把 DOM 列重排为：
+ *   # | 标题 | 分类 | 回复 | 活动 | 状态
+ */
+body.ldmy-excel.ldmy-excel-horizon table.topic-list,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list.--d-topic-cards,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards {
+  display: table !important;
+  table-layout: fixed !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-header,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards thead,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead,
+body.ldmy-excel.ldmy-excel-horizon .topic-list-header {
+  display: table-header-group !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-body,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards tbody,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list tbody,
+body.ldmy-excel.ldmy-excel-horizon .topic-list-body {
+  display: table-row-group !important;
+  flex-direction: unset !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+/* 打掉每行卡片 grid */
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context),
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-replies,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-status-card,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list .topic-list-item,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list tr {
+  display: table-row !important;
+  position: static !important;
+  grid-template-columns: none !important;
+  grid-template-areas: none !important;
+  grid-template-rows: none !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  text-overflow: unset !important;
+  width: auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list-header tr {
+  display: table-row !important;
+  background: #f3f3f3 !important;
+}
+/* 所有单元格：统一框线 + 清掉 grid-area */
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item > td,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context) > td,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards td,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards th,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .main-link,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-status-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-category-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-creator-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-activity-data,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list td,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list th,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list .topic-list-data {
+  display: table-cell !important;
+  grid-area: unset !important;
+  grid-column: unset !important;
+  grid-row: unset !important;
+  position: static !important;
+  float: none !important;
+  align-self: auto !important;
+  justify-self: auto !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: none !important;
+  padding: 2px 8px !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: 1px solid #c6c6c6 !important;
+  border-bottom: 1px solid #c6c6c6 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.25 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list-header th,
+body.ldmy-excel.ldmy-excel-horizon .topic-list-header .topic-list-data,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th.sf-hidden,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th.sr-only {
+  display: table-cell !important;
+  background: #f3f3f3 !important;
+  color: #555 !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
+  height: auto !important;
+  min-height: 28px !important;
+  text-align: left !important;
+  -webkit-font-smoothing: antialiased;
+  /* 禁止 sf-hidden / 无障碍隐藏把表头列从表格布局里拿掉，否则会整列错位 */
+  position: static !important;
+  width: auto !important;
+  clip: auto !important;
+  clip-path: none !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th .sr-only,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th .sf-hidden {
+  /* 只藏文字节点的辅助类，不要牵连父 th */
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  clip: auto !important;
+  clip-path: none !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th[data-ldmy-col="topic-status-data"],
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th[data-ldmy-col="topic-likes-replies-data"] {
+  text-align: center !important;
+}
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th.ldmy-excel-rownum {
+  text-align: center !important;
+}
+
+/* 列宽：JS 重排后 DOM 顺序 = # 标题 分类 回复 活动 状态
+ * 标题列吃剩余宽度；右侧元数据列尽量窄，避免标题被挤到右侧错位
+ */
+body.ldmy-excel.ldmy-excel-horizon .topic-list col.ldmy-excel-col-rownum { width: 44px; }
+body.ldmy-excel.ldmy-excel-horizon .topic-list col.ldmy-excel-col-title { width: auto; }
+body.ldmy-excel.ldmy-excel-horizon .topic-list col.ldmy-excel-col-category { width: 200px; }
+body.ldmy-excel.ldmy-excel-horizon .topic-list col.ldmy-excel-col-replies { width: 64px; }
+body.ldmy-excel.ldmy-excel-horizon .topic-list col.ldmy-excel-col-activity { width: 110px; }
+body.ldmy-excel.ldmy-excel-horizon .topic-list col.ldmy-excel-col-status { width: 38px; }
+
+body.ldmy-excel.ldmy-excel-horizon .topic-list .ldmy-excel-rownum,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.ldmy-excel-rownum,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.ldmy-excel-rownum,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th[data-ldmy-col="ldmy-excel-rownum"] {
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 48px !important;
+  text-align: center !important;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+  background: #e8e8e8 !important;
+  color: #555 !important;
+  font-size: calc(12px + var(--ldmy-font-offset, 0px)) !important;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+/* 标题列：明确占主要宽度，避免 fixed 布局下被右侧列挤成空列 */
+body.ldmy-excel.ldmy-excel-horizon .topic-list .main-link,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.main-link,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.main-link,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th[data-ldmy-col="main-link"],
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.default {
+  /* fixed 下大百分比让标题吸收几乎全部剩余宽度，右侧列贴右 */
+  width: 70% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  padding-right: 8px !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .main-link .title,
+body.ldmy-excel.ldmy-excel-horizon .topic-list a.raw-topic-link,
+body.ldmy-excel.ldmy-excel-horizon .topic-list a.title,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .link-top-line,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .main-link a.title {
+  /* 字号跟站点 base，Excel 只改表格观感 */
+  font-family: inherit !important;
+  font-weight: 400 !important;
+  color: #1a3959 !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: inline !important;
+  max-width: 100% !important;
+  grid-area: unset !important;
+  line-height: 1.3 !important;
+  word-break: normal !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: static !important;
+  transform: none !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .link-top-line {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  grid-area: unset !important;
+  font-weight: 400 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .link-bottom-line,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-excerpt,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-statuses,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .posters {
+  display: none !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-category-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.topic-category-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.topic-category-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th[data-ldmy-col="topic-category-data"] {
+  width: 200px !important;
+  min-width: 170px !important;
+  max-width: 220px !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th[data-ldmy-col="topic-likes-replies-data"] {
+  width: 64px !important;
+  min-width: 56px !important;
+  max-width: 72px !important;
+  text-align: right !important;
+  color: #c45c26 !important;
+  font-variant-numeric: tabular-nums;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-likes-replies-data .topic-replies,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-replies {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0 !important;
+  height: auto !important;
+  color: #c45c26 !important;
+  white-space: nowrap !important;
+}
+/* 回复列只留数字，去掉引用/回复箭头图标 */
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-likes-replies-data .d-icon,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-likes-replies-data svg,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-replies .d-icon,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-replies svg,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-replies::before,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-likes-replies-data .badge-posts::before,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-likes-replies-data a::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-activity-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.topic-activity-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.topic-activity-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th[data-ldmy-col="topic-activity-data"] {
+  width: 110px !important;
+  min-width: 92px !important;
+  max-width: 124px !important;
+  color: #666 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-activity {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  color: #666 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-activity__username {
+  color: #1a3959 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 48px !important;
+  margin-left: 0 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-status-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.topic-status-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.topic-status-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th[data-ldmy-col="topic-status-data"],
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item .topic-status-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context) .topic-status-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-status-card .topic-status-data {
+  display: table-cell !important;
+  width: 38px !important;
+  min-width: 34px !important;
+  max-width: 44px !important;
+  text-align: center !important;
+  padding: 2px 2px !important;
+  vertical-align: middle !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-status-card,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-status-card {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 18px !important;
+  margin: 0 auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: 1px solid #d0d0d0 !important;
+  border-radius: 0 !important;
+  background: #f7f7f7 !important;
+  box-shadow: none !important;
+  position: static !important;
+  float: none !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-status-card__name { display: none !important; }
+/* 表头「话题」标签强制可见 */
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th.main-link .ldmy-excel-th-label,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th[data-ldmy-col="main-link"] .ldmy-excel-th-label,
+body.ldmy-excel.ldmy-excel-horizon table.topic-list thead th.default .ldmy-excel-th-label {
+  display: inline !important;
+  color: #555 !important;
+  font-weight: 500 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-status-card .d-icon,
+body.ldmy-excel.ldmy-excel-horizon .topic-status-card svg {
+  width: 12px !important; height: 12px !important; margin: 0 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-status-card.--hot {
+  color: #c0392b !important; border-color: #e0a8a0 !important; background: #fff5f4 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-status-card.--pinned {
+  color: #666 !important; border-color: #ccc !important; background: #f5f5f5 !important;
+}
+/* 空状态格：保留单元格（列数必须一致），仅隐藏内容 */
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.topic-status-data.ldmy-excel-col-empty {
+  display: table-cell !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+/* 创建者列隐藏 */
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-creator-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list td.topic-creator-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list th.topic-creator-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-creator-data,
+body.ldmy-excel.ldmy-excel-horizon .topic-list .topic-creator-data.ldmy-excel-col-empty {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+  visibility: collapse !important;
+}
+/* colgroup 显式声明列组，防止固定布局留出尾部空白列 */
+body.ldmy-excel.ldmy-excel-horizon table.topic-list colgroup.ldmy-excel-cols {
+  display: table-column-group !important;
+}
+body.ldmy-excel.ldmy-excel-horizon table.topic-list col {
+  display: table-column !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .badge-category,
+body.ldmy-excel.ldmy-excel-horizon .badge-category__wrapper {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list-item:hover > td,
+body.ldmy-excel.ldmy-excel-horizon .topic-list-item:hover .topic-list-data {
+  background: #eef5ff !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .topic-list-item.ldmy-excel-row-active > td,
+body.ldmy-excel.ldmy-excel-horizon .topic-list-item.ldmy-excel-row-active .topic-list-data {
+  background: #dcecfc !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .sidebar-new-topic-button,
+body.ldmy-excel.ldmy-excel-horizon .sidebar-new-topic-button__wrapper .btn,
+body.ldmy-excel.ldmy-excel-horizon .topic-create-button__combo,
+body.ldmy-excel.ldmy-excel-horizon .list-controls .btn-primary {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-height: 28px !important;
+  height: auto !important;
+  padding: 0 10px !important;
+  background: #fff !important;
+  color: #1a3959 !important;
+  border: 1px solid #8eb6e8 !important;
+}
+body.ldmy-excel.ldmy-excel-horizon .sidebar-new-topic-button__wrapper {
+  padding: 6px 8px !important;
+  border-bottom: 1px solid #d0d0d0 !important;
+  background: #f3f3f3 !important;
+  margin: 0 !important;
+}
+

@@ -1,0 +1,1203 @@
+/* ===================== Excel 深色模式 ===================== */
+body.ldmy-excel.ldmy-excel-dark {
+  background: #1e1e1e !important; color: #e6e6e6 !important; color-scheme: dark;
+  --ldmy-excel-accent: #4ea1ff;
+  /* 阅读语义 token：壳用 accent，列表正文用 title/text */
+  --ldmy-excel-row: #252526;
+  --ldmy-excel-row-hover: #2a3340;
+  --ldmy-excel-border: #3f3f46;
+  --ldmy-excel-text: #e6e6e6;
+  --ldmy-excel-text-muted: #9a9a9a;
+  --ldmy-excel-title: #e8eaed;
+  --ldmy-excel-title-hover: #ffffff;
+  --ldmy-excel-title-unseen: #f3f5f7;
+  --ldmy-excel-link: #8ec7ff;
+  /* 与帖内表格表面 token 对齐，压过用户列等高特异性浅色 */
+  --ldmy-surface: #1e1e1e;
+  --ldmy-surface-muted: #252526;
+  --ldmy-surface-soft: #2a2a2a;
+  --ldmy-surface-row: #2a2a2a;
+  --ldmy-surface-chip: #2a3340;
+  --ldmy-border-soft: #3f3f46;
+  --ldmy-border-faint: #3f3f46;
+  --ldmy-text-body: #e6e6e6;
+  --ldmy-text-dim: #9a9a9a;
+  --ldmy-text-link: #8ec7ff;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-header,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-footer,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-titlebar,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-toolbar,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-formulabar,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-h4,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-column,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-sub,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-sub > div {
+  background: #2b2b2b !important; border-color: #3f3f3f !important; color: #e8e8e8 !important;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-titlebar-title,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-h1-title,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-fx-value,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-fx,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-sheet-name,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-count,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-zoom { color: #eaeaea !important; }
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-muted { color: #9a9a9a !important; }
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-fx-cell,
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-column {
+  background: #333 !important; color: #bbb !important; border-color: #444 !important;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-fish { background: #3a3a3a !important; color: #eee !important; }
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-chrome-btn {
+  background: transparent; color: #c9d4e0;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-chrome-btn:hover {
+  background: #2f3b4d; color: #dcecff;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-chrome-btn[data-act="me"]:hover {
+  background: #2f3b4d; color: #dcecff;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-sheet-tab { color: #4ea1ff !important; }
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-sheet-tab::after { background: #4ea1ff !important; }
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-nav-link { color: #8ec7ff !important; }
+body.ldmy-excel.ldmy-excel-dark #main-outlet,
+body.ldmy-excel.ldmy-excel-dark .main-outlet,
+body.ldmy-excel.ldmy-excel-dark .list-container,
+body.ldmy-excel.ldmy-excel-dark #list-area,
+body.ldmy-excel.ldmy-excel-dark .topic-list,
+body.ldmy-excel.ldmy-excel-dark table.topic-list,
+body.ldmy-excel.ldmy-excel-dark .topic-body,
+body.ldmy-excel.ldmy-excel-dark .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-post,
+body.ldmy-excel.ldmy-excel-dark .post-stream,
+body.ldmy-excel.ldmy-excel-dark .posts-wrapper,
+body.ldmy-excel.ldmy-excel-dark .container.posts,
+body.ldmy-excel.ldmy-excel-dark .cooked {
+  background: #1e1e1e !important; color: #e6e6e6 !important; border-color: #3a3a3a !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-list th,
+body.ldmy-excel.ldmy-excel-dark .topic-list td,
+body.ldmy-excel.ldmy-excel-dark .topic-list .topic-list-data,
+body.ldmy-excel.ldmy-excel-dark .topic-list .main-link,
+body.ldmy-excel.ldmy-excel-dark .topic-list .posts-map,
+body.ldmy-excel.ldmy-excel-dark .topic-list .num,
+body.ldmy-excel.ldmy-excel-dark .topic-list .topic-status-data,
+body.ldmy-excel.ldmy-excel-dark .topic-list .topic-category-data,
+body.ldmy-excel.ldmy-excel-dark .topic-list .topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-dark .topic-list .topic-creator-data,
+body.ldmy-excel.ldmy-excel-dark .topic-list .topic-activity-data {
+  background: #252526 !important; color: #e6e6e6 !important;
+  border-right: 1px solid #3f3f46 !important; border-bottom: 1px solid #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-list th,
+body.ldmy-excel.ldmy-excel-dark .ldmy-excel-rownum,
+body.ldmy-excel.ldmy-excel-dark th.ldmy-excel-rownum {
+  background: #2d2d30 !important; color: #aaa !important;
+}
+/* 列表标题：正文色，不是超链接蓝；禁止全局 a 染蓝 */
+body.ldmy-excel.ldmy-excel-dark .topic-list .main-link .title,
+body.ldmy-excel.ldmy-excel-dark .topic-list a.raw-topic-link,
+body.ldmy-excel.ldmy-excel-dark .topic-list a.title,
+body.ldmy-excel.ldmy-excel-dark .topic-list .main-link a.title span {
+  color: var(--ldmy-excel-title, #e8eaed) !important;
+  text-decoration: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-list .main-link:hover .title,
+body.ldmy-excel.ldmy-excel-dark .topic-list .main-link:hover a.raw-topic-link,
+body.ldmy-excel.ldmy-excel-dark .topic-list .main-link:hover a.title,
+body.ldmy-excel.ldmy-excel-dark .topic-list a.raw-topic-link:hover,
+body.ldmy-excel.ldmy-excel-dark .topic-list a.title:hover {
+  color: var(--ldmy-excel-title-hover, #ffffff) !important;
+}
+/* 未读/未见略提亮，便于扫列表 */
+body.ldmy-excel.ldmy-excel-dark .topic-list-item.unseen-topic .main-link .title,
+body.ldmy-excel.ldmy-excel-dark .topic-list-item.unseen-topic a.raw-topic-link,
+body.ldmy-excel.ldmy-excel-dark .topic-list-item.unseen-topic a.title {
+  color: var(--ldmy-excel-title-unseen, #f3f5f7) !important;
+  font-weight: 500 !important;
+}
+/* 仅真正的导航/控件链接保留 link 蓝 */
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root a.ldmy-excel-nav-link,
+body.ldmy-excel.ldmy-excel-dark .cooked a:not(.mention):not(.mention-group) {
+  color: var(--ldmy-excel-link, #8ec7ff) !important;
+}
+/* Horizon 列表标题同样正文化（盖过 horizon 亮色 #1a3959） */
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .main-link .title,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list a.raw-topic-link,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list a.title,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .main-link a.title,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .link-top-line a {
+  color: var(--ldmy-excel-title, #e8eaed) !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .main-link:hover .title,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list a.raw-topic-link:hover,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list a.title:hover {
+  color: var(--ldmy-excel-title-hover, #ffffff) !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-activity__username {
+  color: #c8c8c8 !important;
+}
+/* Horizon 深色：盖过 horizon 硬编码的 #fff / #f3f3f3 / 亮色边框（特异性必须带 excel-horizon） */
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list.--d-topic-cards,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .list-container,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon #list-area,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-container {
+  background: #1e1e1e !important;
+  color: #e6e6e6 !important;
+  border-color: #3f3f46 !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context),
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-replies,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context).--has-status-card,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list .topic-list-item,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list tr,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-header tr {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-color: #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item > td,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:not(.--high-context) > td,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards td,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards th,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .main-link,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-status-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-category-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-creator-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-activity-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list td,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list th,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list .topic-list-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .ldmy-excel-rownum,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list td.ldmy-excel-rownum {
+  background: #252526 !important;
+  color: #e6e6e6 !important;
+  border-right: 1px solid #3f3f46 !important;
+  border-bottom: 1px solid #3f3f46 !important;
+  border-top: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-header th,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-header .topic-list-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list thead th,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list thead th.sf-hidden,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list thead th.sr-only,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list th.ldmy-excel-rownum,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-header tr {
+  background: #2d2d30 !important;
+  color: #aaa !important;
+  border-right: 1px solid #3f3f46 !important;
+  border-bottom: 1px solid #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list thead th.main-link .ldmy-excel-th-label,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list thead th[data-ldmy-col="main-link"] .ldmy-excel-th-label,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon table.topic-list thead th.default .ldmy-excel-th-label {
+  color: #aaa !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list td.topic-likes-replies-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-likes-replies-data .topic-replies,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-replies,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-likes-replies-data .number,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-replies .number {
+  color: #e0a070 !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-activity-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list td.topic-activity-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list .topic-activity {
+  color: #9a9a9a !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-item:hover > td,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-item:hover .topic-list-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-item:hover .main-link,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-list-item:hover > td {
+  background: #2a3340 !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-item.ldmy-excel-row-active > td,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list-item.ldmy-excel-row-active .topic-list-data {
+  background: #243447 !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-status-card,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-list.--d-topic-cards .topic-status-card {
+  background: #2d2d30 !important;
+  border-color: #555 !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-status-card.--hot {
+  background: #3a2222 !important;
+  border-color: #8a4040 !important;
+  color: #ff8e8e !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-status-card.--pinned {
+  background: #2a2a2a !important;
+  border-color: #555 !important;
+  color: #bbb !important;
+}
+/* Horizon 侧栏「新建话题」组合按钮（含 drafts 下拉） */
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .sidebar-new-topic-button__wrapper,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo.sidebar-new-topic-button__wrapper {
+  background: #2d2d30 !important;
+  border-bottom: 1px solid #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .sidebar-new-topic-button,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .sidebar-new-topic-button__wrapper .btn,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo .btn,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo .d-combo-button-button,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo .d-combo-button-menu,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-drafts-menu-trigger,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .list-controls .btn-primary,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon #create-topic {
+  background: #2a3340 !important;
+  color: #dcecff !important;
+  border: 1px solid #4ea1ff !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .sidebar-new-topic-button .d-icon,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo .d-icon,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon #create-topic .d-icon,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-drafts-menu-trigger .d-icon {
+  color: #dcecff !important;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .sidebar-new-topic-button:hover,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .sidebar-new-topic-button__wrapper .btn:hover,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon .topic-create-button__combo .btn:hover,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-horizon #create-topic:hover {
+  background: #31465f !important;
+  border-color: #6bb0ff !important;
+  color: #ffffff !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-list-item:hover > td,
+body.ldmy-excel.ldmy-excel-dark .topic-list-item:hover .topic-list-data,
+body.ldmy-excel.ldmy-excel-dark .topic-list-item:hover .main-link,
+body.ldmy-excel.ldmy-excel-dark .topic-list tr:hover td { background: #2a3340 !important; }
+body.ldmy-excel.ldmy-excel-dark .topic-list-item.ldmy-excel-row-active > td,
+body.ldmy-excel.ldmy-excel-dark .topic-list-item.ldmy-excel-row-active .topic-list-data {
+  background: #243447 !important; outline-color: #4ea1ff;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-status-card {
+  background: #2d2d30 !important; border-color: #555 !important; color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-status-card.--hot {
+  background: #3a2222 !important; border-color: #8a4040 !important; color: #ff8e8e !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-wrapper,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) #d-sidebar,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-container,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-sections {
+  background: #252526 !important; border-right-color: #3f3f46 !important; color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-section-header-wrapper,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-section-header {
+  background: #2d2d30 !important; border-bottom-color: #3f3f46 !important; color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-section-link-wrapper,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-row {
+  background: #252526 !important; border-bottom-color: #333 !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-section-link { color: #ddd !important; }
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-section-link:hover,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-section-link.active {
+  background: #2a3340 !important; color: #8ec7ff !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-footer-wrapper,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-footer-actions {
+  background: #2d2d30 !important; border-top-color: #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .list-controls,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-container,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-topics {
+  background: #2d2d30 !important; border-bottom-color: #3f3f46 !important; color: #e6e6e6 !important;
+}
+/* 类别/标签 + 操作按钮：暗色填充，避免白边 */
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .category-breadcrumb .btn,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .category-breadcrumb .combo-box,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .category-breadcrumb .select-kit.combo-box .select-kit-header,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .list-controls .category-breadcrumb .select-kit-header,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-container .btn,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .list-controls .btn,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-controls .btn {
+  background: #3a3a3a !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-container .btn:hover,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .list-controls .btn:hover,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-controls .btn:hover,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .category-breadcrumb .select-kit-header:hover {
+  background: #2a3340 !important;
+  border-color: #4ea1ff !important;
+  color: #dcecff !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .list-controls .btn-primary,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-container .btn-primary,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-controls .btn-primary,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .list-controls .btn.btn-icon-text.btn-primary {
+  background: #2a3340 !important;
+  border-color: #4ea1ff !important;
+  color: #dcecff !important;
+}
+/* 导航 pill：无边框，贴近原站暗色下划线 */
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .nav-pills > li,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .nav-pills > li a,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .navigation-container .nav-item,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) #navigation-bar > li,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) #navigation-bar > li a {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #cfcfcf !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .nav-pills > li a.active,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .nav-pills > li a:hover,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) #navigation-bar > li a.active,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) #navigation-bar > li a:hover {
+  background: transparent !important;
+  border: none !important;
+  color: #8ec7ff !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .select-kit-body,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .select-kit-collection {
+  background: #2d2d30 !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.45) !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-theme-toggle__wrapper,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-theme-toggle-dropdown,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-hide-nav) .sidebar-theme-toggle-dropdown .select-kit-header {
+  background: #3a3a3a !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-rows .topic-post::before {
+  background: var(--ldmy-surface-muted, #252526) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  color: var(--ldmy-text-dim, #bbb) !important;
+}
+/* 正文列包装层 / 底栏：对齐 surface，去掉白缝 */
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .topic-body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > section.post-actions {
+  background: var(--ldmy-surface, #1e1e1e) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  color: var(--ldmy-text-body, #e6e6e6) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .first,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .first a,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.first,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.first a {
+  color: var(--ldmy-excel-link, #8ec7ff) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .second,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .second a,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.second,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.second a,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .user-title,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post-infos,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post-info,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post-date,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .topic-meta-data .post-info,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .topic-meta-data .reply-to-tab {
+  color: var(--ldmy-text-dim, #9a9a9a) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts {
+  background: #252526 !important;
+  border-color: #3f3f46 !important;
+  border-left-color: #4a7ab0 !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts .cooked,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts .cooked {
+  color: #e6e6e6 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts .names .first,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts .names .first a {
+  color: #d5d5d5 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts.top .names > .first::before,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts--top .names > .first::before {
+  color: #9db7d4 !important;
+  background: #2a3340 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts .collapse-up,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts .post__collapse-button,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts .collapse-up,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts .post__collapse-button {
+  background: #2d2d30 !important;
+  border-color: #555 !important;
+  color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark #topic-title,
+body.ldmy-excel.ldmy-excel-dark .title-wrapper {
+  background: #2d2d30 !important; border-bottom-color: #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .fancy-title {
+  color: var(--ldmy-excel-title, #e8eaed) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .names a,
+body.ldmy-excel.ldmy-excel-dark .names .first {
+  color: #d5d5d5 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .names a:hover {
+  color: var(--ldmy-excel-title-hover, #ffffff) !important;
+}
+
+/* 全页搜索 · 深色 */
+body.ldmy-excel.ldmy-excel-dark .search-container,
+body.ldmy-excel.ldmy-excel-dark .search-advanced,
+body.ldmy-excel.ldmy-excel-dark .search-results,
+body.ldmy-excel.ldmy-excel-dark .fps-result-entries,
+body.ldmy-excel.ldmy-excel-dark .fps-result {
+  background: #1e1e1e !important;
+  border-color: #3f3f46 !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .search-header,
+body.ldmy-excel.ldmy-excel-dark .search-advanced .search-info {
+  background: #2d2d30 !important;
+  border-bottom-color: #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .search-page-heading,
+body.ldmy-excel.ldmy-excel-dark .result-count {
+  color: #8ec7ff !important;
+}
+body.ldmy-excel.ldmy-excel-dark .search-bar .full-page-search,
+body.ldmy-excel.ldmy-excel-dark .search-bar input.search-query,
+body.ldmy-excel.ldmy-excel-dark .search-bar input[type="search"],
+body.ldmy-excel.ldmy-excel-dark .search-bar .select-kit .select-kit-header,
+body.ldmy-excel.ldmy-excel-dark .search-info .select-kit .select-kit-header,
+body.ldmy-excel.ldmy-excel-dark .search-bar .search-cta,
+body.ldmy-excel.ldmy-excel-dark .advanced-filters__toggle,
+body.ldmy-excel.ldmy-excel-dark .search-filters .btn {
+  background: #3a3a3a !important;
+  border-color: #555 !important;
+  color: #e6e6e6 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .fps-result:hover {
+  background: #2a3340 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .fps-result.ldmy-excel-row-active {
+  background: #243246 !important;
+  outline-color: #4a9eff;
+}
+body.ldmy-excel.ldmy-excel-dark.ldmy-excel-rows .fps-result::before {
+  background: #2a2a2a !important;
+  border-color: #3f3f46 !important;
+  color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark .fps-result .search-link,
+body.ldmy-excel.ldmy-excel-dark .fps-result .topic-title,
+body.ldmy-excel.ldmy-excel-dark .fps-result .topic-title span {
+  color: var(--ldmy-excel-title, #e8eaed) !important;
+  text-decoration: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark .fps-result .search-link:hover,
+body.ldmy-excel.ldmy-excel-dark .fps-result .search-link:hover .topic-title,
+body.ldmy-excel.ldmy-excel-dark .fps-result .search-link:hover .topic-title span {
+  color: var(--ldmy-excel-title-hover, #ffffff) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .fps-result .blurb {
+  color: #aaa !important;
+}
+/* 搜索分类：透明底，保留色相图标 */
+body.ldmy-excel.ldmy-excel-dark .fps-result .badge-category,
+body.ldmy-excel.ldmy-excel-dark .fps-result .badge-category__wrapper,
+body.ldmy-excel.ldmy-excel-dark .fps-result .badge-category__name {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #b0b0b0 !important;
+}
+/* 搜索标签：行底 tint，无硬边 */
+body.ldmy-excel.ldmy-excel-dark .fps-result .discourse-tag,
+body.ldmy-excel.ldmy-excel-dark .fps-result .discourse-tags .discourse-tag {
+  background: color-mix(in srgb, var(--color1, #888) 18%, var(--ldmy-excel-row, #252526)) !important;
+  color: color-mix(in srgb, var(--color1, #ccc) 45%, #ddd) !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 0.88 !important;
+}
+
+/* ---- Excel 深色：帖内阅读路径补齐 ---- */
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__post-menu,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__list {
+  background: transparent !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__bubble {
+  background: #333 !important;
+  color: #e6e6e6 !important;
+  border: 1px solid #4a4a4a !important;
+}
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__bubble.--actionable:hover {
+  background: #3a4555 !important;
+  border-color: #5a6a80 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__cooked,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__cooked p,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__add-btn {
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__add-btn:hover {
+  color: #8ec7ff !important;
+}
+
+body.ldmy-excel.ldmy-excel-dark .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .post-controls,
+body.ldmy-excel.ldmy-excel-dark .post-menu-area .actions,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area .actions {
+  background: transparent !important;
+  border-top-color: #3f3f46 !important;
+  color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark .post-controls .btn,
+body.ldmy-excel.ldmy-excel-dark .post-menu-area .btn,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area .btn,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu__reply,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu__like,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu__edit,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu__show-more,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu__boost,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts-trigger {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark .post-controls .btn:hover,
+body.ldmy-excel.ldmy-excel-dark .post-menu-area .btn:hover,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area .btn:hover {
+  background: #333 !important;
+  border-color: #555 !important;
+  color: #eee !important;
+}
+body.ldmy-excel.ldmy-excel-dark .post-controls .btn .d-icon,
+body.ldmy-excel.ldmy-excel-dark .post-menu-area .btn .d-icon {
+  color: #aaa !important;
+}
+
+/* 正文包装层：亮色 Excel 强制了 #fff，暗色必须等权/更高覆盖，否则楼层底会透白 */
+body.ldmy-excel.ldmy-excel-dark .topic-body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .post__body > .regular,
+body.ldmy-excel.ldmy-excel-dark .post__body > .contents,
+body.ldmy-excel.ldmy-excel-dark .post__body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .post__body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .post__regular,
+body.ldmy-excel.ldmy-excel-dark .post__contents,
+body.ldmy-excel.ldmy-excel-dark .regular.contents,
+body.ldmy-excel.ldmy-excel-dark article.boxed,
+body.ldmy-excel.ldmy-excel-dark article.onscreen-post,
+body.ldmy-excel.ldmy-excel-dark .onscreen-post,
+body.ldmy-excel.ldmy-excel-dark .post__row,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article {
+  background: #1e1e1e !important;
+  color: #e6e6e6 !important;
+  border-color: #3f3f46 !important;
+  box-shadow: none !important;
+}
+
+/* 楼层底栏 / 反应区：禁止透出白底（含 Horizon reactions-actions-summary） */
+body.ldmy-excel.ldmy-excel-dark .topic-body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .post__body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .post__body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-body > section.post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .post__body > section.post-menu-area,
+body.ldmy-excel.ldmy-excel-dark section.post-menu-area,
+body.ldmy-excel.ldmy-excel-dark section.post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .post-controls,
+body.ldmy-excel.ldmy-excel-dark .reactions-actions-summary,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-actions,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-counter,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-list,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-list .reactions,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-list-emoji,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-actions-button-shim,
+body.ldmy-excel.ldmy-excel-dark .actions-summary,
+body.ldmy-excel.ldmy-excel-dark .post-actions,
+body.ldmy-excel.ldmy-excel-dark .post__actions,
+body.ldmy-excel.ldmy-excel-dark section.post-actions,
+body.ldmy-excel.ldmy-excel-dark section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .post-action,
+body.ldmy-excel.ldmy-excel-dark .extra-info-wrapper,
+body.ldmy-excel.ldmy-excel-dark .who-liked,
+body.ldmy-excel.ldmy-excel-dark .small-user-list,
+body.ldmy-excel.ldmy-excel-dark .small-user-list-content,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__post-menu,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts,
+body.ldmy-excel.ldmy-excel-dark .discourse-boosts__list {
+  background: #1e1e1e !important;
+  border-color: #3f3f46 !important;
+  color: #bbb !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .post-controls {
+  border-top-color: #3f3f46 !important;
+}
+/* 楼层分隔线 / 空 actions 残留：禁止 #bbb/#eee 白边 */
+body.ldmy-excel.ldmy-excel-dark .topic-post {
+  border: none !important;
+  border-bottom: 1px solid #3f3f46 !important;
+  background: #1e1e1e !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-body,
+body.ldmy-excel.ldmy-excel-dark .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-body.clearfix {
+  border-right-color: #3f3f46 !important;
+  border-color: #3f3f46 !important;
+  background: #1e1e1e !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .post__body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .post__body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark section.post__actions,
+body.ldmy-excel.ldmy-excel-dark section.post-actions {
+  background: #1e1e1e !important;
+  border: none !important;
+  border-top-color: #3f3f46 !important;
+  color: #bbb !important;
+  box-shadow: none !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post .gap,
+body.ldmy-excel.ldmy-excel-dark .time-gap,
+body.ldmy-excel.ldmy-excel-dark .small-action {
+  border-bottom: 1px solid #3f3f46 !important;
+  background: #252526 !important;
+  color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-counter .reactions-counter,
+body.ldmy-excel.ldmy-excel-dark .reactions-counter,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-reaction-button,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-reaction-button .btn,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-actions .btn {
+  background: transparent !important;
+  color: #bbb !important;
+  border-color: transparent !important;
+}
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-list-emoji,
+body.ldmy-excel.ldmy-excel-dark .discourse-reactions-list .emoji {
+  background-color: transparent !important;
+  filter: none !important;
+}
+/* Horizon 帖内：article/post-controls 常残留站点浅色 surface */
+body.ldmy-excel.ldmy-excel-dark nav.post-controls,
+body.ldmy-excel.ldmy-excel-dark .post-controls.collapsed,
+body.ldmy-excel.ldmy-excel-dark .post-controls .actions,
+body.ldmy-excel.ldmy-excel-dark .post-controls .extra-buttons,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu,
+body.ldmy-excel.ldmy-excel-dark .post-action-menu__button,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article.boxed,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article.onscreen-post,
+body.ldmy-excel.ldmy-excel-dark .topic-post .post__regular.contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post .regular.contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post .post-menu-area {
+  background: #1e1e1e !important;
+  border-color: #3f3f46 !important;
+  box-shadow: none !important;
+}
+
+/* composer / reply-control */
+body.ldmy-excel.ldmy-excel-dark #reply-control,
+body.ldmy-excel.ldmy-excel-dark .docked-composer,
+body.ldmy-excel.ldmy-excel-dark #reply-control .reply-area,
+body.ldmy-excel.ldmy-excel-dark #reply-control .composer-fields,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-container,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-textarea-wrapper,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-preview-wrapper,
+body.ldmy-excel.ldmy-excel-dark #reply-control .composer-popup {
+  background: #252526 !important;
+  color: #e6e6e6 !important;
+  border-color: #3f3f46 !important;
+  box-shadow: 0 -2px 16px rgba(0,0,0,.45) !important;
+}
+body.ldmy-excel.ldmy-excel-dark #reply-control .grippie,
+body.ldmy-excel.ldmy-excel-dark #reply-control .composer-controls,
+body.ldmy-excel.ldmy-excel-dark #reply-control .save-or-cancel,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-button-bar,
+body.ldmy-excel.ldmy-excel-dark #reply-control .composer-bottom {
+  background: #2d2d30 !important;
+  border-color: #3f3f46 !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark #reply-control textarea,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-input,
+body.ldmy-excel.ldmy-excel-dark #reply-control input,
+body.ldmy-excel.ldmy-excel-dark #reply-control #reply-title,
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-preview {
+  background: #1e1e1e !important;
+  color: #e6e6e6 !important;
+  border-color: #444 !important;
+  caret-color: #8ec7ff !important;
+}
+body.ldmy-excel.ldmy-excel-dark #reply-control .btn,
+body.ldmy-excel.ldmy-excel-dark #reply-control .btn-primary,
+body.ldmy-excel.ldmy-excel-dark #reply-control .save-or-cancel .btn {
+  background: #3a3a3a !important;
+  border: 1px solid #555 !important;
+  color: #eee !important;
+}
+body.ldmy-excel.ldmy-excel-dark #reply-control .btn-primary {
+  background: #1e4f8a !important;
+  border-color: #2b6cb0 !important;
+  color: #fff !important;
+}
+body.ldmy-excel.ldmy-excel-dark #reply-control .btn:hover {
+  background: #454545 !important;
+}
+body.ldmy-excel.ldmy-excel-dark #reply-control .d-editor-button-bar .btn .d-icon,
+body.ldmy-excel.ldmy-excel-dark #reply-control .composer-controls .d-icon {
+  color: #ccc !important;
+}
+
+/* cooked: onebox / quote / code / badges */
+body.ldmy-excel.ldmy-excel-dark .cooked a,
+body.ldmy-excel.ldmy-excel-dark .cooked a.mention,
+body.ldmy-excel.ldmy-excel-dark .cooked a.mention-group {
+  color: #8ec7ff !important;
+}
+body.ldmy-excel.ldmy-excel-dark .cooked blockquote,
+body.ldmy-excel.ldmy-excel-dark .cooked aside.quote,
+body.ldmy-excel.ldmy-excel-dark .cooked .quote,
+body.ldmy-excel.ldmy-excel-dark .cooked .quote .title {
+  background: #2a2a2a !important;
+  border-color: #4a4a4a !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .cooked aside.quote {
+  border-left-color: #4ea1ff !important;
+}
+body.ldmy-excel.ldmy-excel-dark .cooked .onebox,
+body.ldmy-excel.ldmy-excel-dark .cooked aside.onebox,
+body.ldmy-excel.ldmy-excel-dark .cooked .onebox-body,
+body.ldmy-excel.ldmy-excel-dark .cooked .onebox header {
+  background: #2a2a2a !important;
+  border-color: #4a4a4a !important;
+  color: #ddd !important;
+}
+body.ldmy-excel.ldmy-excel-dark .cooked pre,
+body.ldmy-excel.ldmy-excel-dark .cooked code,
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs,
+body.ldmy-excel.ldmy-excel-dark .cooked pre code {
+  background: #1a1a1a !important;
+  color: #d4d4d4 !important;
+  border-color: #3f3f46 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-keyword,
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-selector-tag,
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-literal { color: #569cd6 !important; }
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-string,
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-attr { color: #ce9178 !important; }
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-comment { color: #6a9955 !important; }
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-number,
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-built_in { color: #b5cea8 !important; }
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-title,
+body.ldmy-excel.ldmy-excel-dark .cooked .hljs-section { color: #dcdcaa !important; }
+/* 分类：透明底 + 弱化字色，保留原站色标/图标 */
+body.ldmy-excel.ldmy-excel-dark .badge-category,
+body.ldmy-excel.ldmy-excel-dark .badge-category__wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #b0b0b0 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .badge-category__name {
+  color: #b0b0b0 !important;
+}
+/* 标签：吃 --color1 tint，贴近行底；盖过亮色 #f0f0f0 chip */
+body.ldmy-excel.ldmy-excel-dark .discourse-tag,
+body.ldmy-excel.ldmy-excel-dark .discourse-tags .discourse-tag,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-horizon) .topic-list .discourse-tag,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-horizon) .topic-list .discourse-tags .discourse-tag {
+  background: color-mix(in srgb, var(--color1, #888) 18%, var(--ldmy-excel-row, #252526)) !important;
+  color: color-mix(in srgb, var(--color1, #ccc) 45%, #ddd) !important;
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  opacity: 0.88 !important;
+}
+/* 图标保留标签色相，文字仍弱化 */
+body.ldmy-excel.ldmy-excel-dark .discourse-tag .tag-icon,
+body.ldmy-excel.ldmy-excel-dark .discourse-tag .d-icon,
+body.ldmy-excel.ldmy-excel-dark .discourse-tag svg {
+  color: var(--color1, currentColor) !important;
+  fill: currentColor !important;
+  opacity: 0.95 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .badge-category .d-icon,
+body.ldmy-excel.ldmy-excel-dark .badge-category svg {
+  color: var(--category-badge-color, currentColor) !important;
+  opacity: 0.95 !important;
+}
+/* 无色变量时的兜底 chip */
+body.ldmy-excel.ldmy-excel-dark .discourse-tag:not([style]),
+body.ldmy-excel.ldmy-excel-dark .discourse-tags .discourse-tag:not([style]) {
+  background: color-mix(in srgb, #fff 7%, var(--ldmy-excel-row, #252526)) !important;
+  color: #b8b8b8 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .badge-notification {
+  background: #333 !important;
+  border-color: #4a4a4a !important;
+  color: #ccc !important;
+}
+/* 列表 meta 行：再压一档，避免抢标题 */
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-horizon) .topic-list .link-bottom-line,
+body.ldmy-excel.ldmy-excel-dark .fps-result .search-category {
+  opacity: 0.78 !important;
+}
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-horizon) .topic-list .badge-category__wrapper,
+body.ldmy-excel.ldmy-excel-dark:not(.ldmy-excel-horizon) .topic-list .badge-category {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #b0b0b0 !important;
+  opacity: 0.9 !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .names,
+body.ldmy-excel.ldmy-excel-dark .post-infos,
+body.ldmy-excel.ldmy-excel-dark .post-date,
+body.ldmy-excel.ldmy-excel-dark .post-info {
+  color: #bbb !important;
+}
+body.ldmy-excel.ldmy-excel-dark .small-action,
+body.ldmy-excel.ldmy-excel-dark .time-gap,
+body.ldmy-excel.ldmy-excel-dark .topic-post .gap {
+  background: #2a2a2a !important;
+  border-color: #3f3f46 !important;
+  color: #aaa !important;
+}
+body.ldmy-excel.ldmy-excel-dark .timeline-container,
+body.ldmy-excel.ldmy-excel-dark .topic-timeline,
+body.ldmy-excel.ldmy-excel-dark .topic-navigation {
+  background: #252526 !important;
+  border-color: #3f3f46 !important;
+  color: #ccc !important;
+}
+
+/* Excel 模式下的 Discourse 弹层：只抬真正的浮层，避免 [class*=tooltip] 等宽选择器
+ * 把帖内状态/boost 节点抬到 Excel 头之上造成穿模。 */
+body.ldmy-excel .d-header [class*="search-menu"],
+body.ldmy-excel .d-header [class*="user-menu"],
+body.ldmy-excel .d-header [class*="menu-panel"],
+body.ldmy-excel .d-header .fk-d-menu,
+body.ldmy-excel .d-header-wrap [class*="search-menu"],
+body.ldmy-excel .d-header-wrap [class*="user-menu"],
+body.ldmy-excel > .fk-d-menu,
+body.ldmy-excel > [data-content],
+body.ldmy-excel > .menu-panel,
+body.ldmy-excel > .lang-dropdown,
+body.ldmy-excel > .d-modal,
+body.ldmy-excel > .modal,
+body.ldmy-excel .d-modal,
+body.ldmy-excel .modal-inner-container,
+body.ldmy-excel .d-modal-container,
+body.ldmy-excel .fk-d-menu[data-expanded="true"],
+body.ldmy-excel .tippy-box,
+body.ldmy-excel .tippy-popover,
+body.ldmy-excel [data-tippy-root],
+body.ldmy-excel .select-kit-body,
+body.ldmy-excel .select-kit-collection,
+body.ldmy-excel .d-menu-panel {
+  z-index: 100020 !important;
+}
+/* 仅在 JS 显式标记弹层打开时处理（禁止 :has(fk-d-menu) 之类宽规则：
+   侧栏主题切换等也会命中，导致原生 logo/标题整块冒出来） */
+body.ldmy-excel.ldmy-excel-popup-open #ldmy-excel-root,
+body.ldmy-excel.ldmy-excel-popup-open #ldmy-excel-root .ldmy-excel-header {
+  z-index: 1 !important;
+}
+body.ldmy-excel.ldmy-excel-popup-open .search-menu,
+body.ldmy-excel.ldmy-excel-popup-open .search-menu-container,
+body.ldmy-excel.ldmy-excel-popup-open .menu-panel,
+body.ldmy-excel.ldmy-excel-popup-open .user-menu,
+body.ldmy-excel.ldmy-excel-popup-open .user-menu-panel,
+body.ldmy-excel.ldmy-excel-popup-open [class*="search-menu"],
+body.ldmy-excel.ldmy-excel-popup-open [class*="user-menu"],
+body.ldmy-excel.ldmy-excel-popup-open .fk-d-menu {
+  z-index: 100020 !important;
+}
+/* d-header 只作挂载点：外壳透明，不给祖先设 opacity（子面板逃不出父级 opacity）。
+   用 visibility 隐藏 chrome：子面板可再 visibility:visible 露出来。 */
+body.ldmy-excel.ldmy-excel-popup-open .d-header,
+body.ldmy-excel.ldmy-excel-popup-open .d-header-wrap {
+  display: block !important;
+  visibility: visible !important;
+  z-index: 100010 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+}
+/* 只藏原生 chrome 节点，不动 .panel/.contents 祖先（面板常挂在它们下面） */
+body.ldmy-excel.ldmy-excel-popup-open .d-header .title,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .home-logo-wrapper,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .home-logo,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .extra-info-wrapper,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .auth-buttons,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .d-header-icons,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .header-buttons,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .header-dropdown-toggle,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .search-dropdown,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .current-user,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .language-switcher,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .language-switcher-trigger,
+body.ldmy-excel.ldmy-excel-popup-open .d-header #search-button,
+body.ldmy-excel.ldmy-excel-popup-open .d-header #toggle-current-user,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .panel > ul,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .panel > .d-header-icons,
+body.ldmy-excel.ldmy-excel-popup-open .d-header::before,
+body.ldmy-excel.ldmy-excel-popup-open .d-header::after,
+body.ldmy-excel.ldmy-excel-popup-open .d-header-wrap::before,
+body.ldmy-excel.ldmy-excel-popup-open .d-header-wrap::after {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+/* 真正的下拉面板：visibility 可覆盖祖先 hidden；抬到 Excel 头之上。
+   选择器尽量收窄，避免把页面其它 [data-content]/fk-d-menu 全强制显示。 */
+body.ldmy-excel.ldmy-excel-popup-open .d-header .menu-panel,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .search-menu,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .search-menu-container,
+body.ldmy-excel.ldmy-excel-popup-open .d-header [class*="search-menu"],
+body.ldmy-excel.ldmy-excel-popup-open .d-header [class*="user-menu"],
+body.ldmy-excel.ldmy-excel-popup-open .d-header [class*="menu-panel"],
+body.ldmy-excel.ldmy-excel-popup-open .d-header .fk-d-menu,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .fk-d-menu__inner-content,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .d-menu-panel,
+body.ldmy-excel.ldmy-excel-popup-open > .menu-panel,
+body.ldmy-excel.ldmy-excel-popup-open > .fk-d-menu,
+body.ldmy-excel.ldmy-excel-popup-open > [data-content],
+body.ldmy-excel.ldmy-excel-popup-open .search-menu,
+body.ldmy-excel.ldmy-excel-popup-open .search-menu-container,
+body.ldmy-excel.ldmy-excel-popup-open .user-menu,
+body.ldmy-excel.ldmy-excel-popup-open .user-menu-panel,
+body.ldmy-excel.ldmy-excel-popup-open .menu-panel.user-menu,
+body.ldmy-excel.ldmy-excel-popup-open .fk-d-menu[data-expanded="true"] {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 100020 !important;
+}
+body.ldmy-excel.ldmy-excel-popup-open .d-header .menu-panel *,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .search-menu *,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .search-menu-container *,
+body.ldmy-excel.ldmy-excel-popup-open .d-header [class*="search-menu"] *,
+body.ldmy-excel.ldmy-excel-popup-open .d-header [class*="user-menu"] *,
+body.ldmy-excel.ldmy-excel-popup-open .d-header .fk-d-menu *,
+body.ldmy-excel.ldmy-excel-popup-open > .menu-panel *,
+body.ldmy-excel.ldmy-excel-popup-open > .fk-d-menu *,
+body.ldmy-excel.ldmy-excel-popup-open > [data-content] *,
+body.ldmy-excel.ldmy-excel-popup-open .search-menu *,
+body.ldmy-excel.ldmy-excel-popup-open .search-menu-container *,
+body.ldmy-excel.ldmy-excel-popup-open .user-menu *,
+body.ldmy-excel.ldmy-excel-popup-open .user-menu-panel *,
+body.ldmy-excel.ldmy-excel-popup-open .fk-d-menu[data-expanded="true"] * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Excel 开启时弱化 FAB，避免破坏伪装；仍可点设置（无放大动效） */
+body.ldmy-excel #ldmy-fab {
+  bottom: 56px;
+  opacity: 0.35;
+  transform: none;
+}
+body.ldmy-excel #ldmy-fab:hover { opacity: 1; transform: none; }
+body.ldmy-excel #ldmy-panel,
+body.ldmy-excel #ldmy-overlay { z-index: 100000; }
+
+/* 深色模式兜底：用户列/内容列/横向空白条（改用户列布局后被浅色高特异性规则盖住） */
+body.ldmy-excel.ldmy-excel-dark .topic-post > article,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .topic-body,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__body {
+  background: var(--ldmy-surface, #1e1e1e) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  color: var(--ldmy-text-body, #e6e6e6) !important;
+}
+/* 用户列单独用 muted，避免跟正文同色糊成一片 */
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .topic-body > .topic-meta-data,
+body.ldmy-excel.ldmy-excel-dark .post__body > .topic-meta-data {
+  background: var(--ldmy-surface-muted, #252526) !important;
+  border-right-color: var(--ldmy-border-soft, #3f3f46) !important;
+  color: var(--ldmy-text-dim, #bbb) !important;
+}
+/* 正文列内包装层 / 菜单 / 动作区：去掉白缝 */
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post__regular,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post__contents,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post-menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > .post__menu-area,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .topic-body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .topic-body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .post__row > .post__body > section.post-actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > section.post__actions,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article > .row > .post__body > section.post-actions {
+  background: var(--ldmy-surface, #1e1e1e) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  color: var(--ldmy-text-body, #e6e6e6) !important;
+}
+/* 引用/展开卡片、楼层间隙 */
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts {
+  background: var(--ldmy-surface-muted, #252526) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  border-left-color: #4a7ab0 !important;
+  color: var(--ldmy-text-body, #e6e6e6) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts.top,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post__embedded-posts--top,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .embedded-posts.post__embedded-posts--top {
+  background: var(--ldmy-surface-soft, #2a2a2a) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post .gap,
+body.ldmy-excel.ldmy-excel-dark .time-gap,
+body.ldmy-excel.ldmy-excel-dark .small-action {
+  background: var(--ldmy-surface-soft, #2a2a2a) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  color: var(--ldmy-text-dim, #aaa) !important;
+}
+/* 用户列文字色 */
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .first,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .first a,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.first,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.first a {
+  color: var(--ldmy-excel-link, #8ec7ff) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .second,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .second a,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.second,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > span.second a,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .names > .user-title,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post-infos,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post-info,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .post-date,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .topic-meta-data .post-info,
+body.ldmy-excel.ldmy-excel-dark .topic-post > article .topic-meta-data .reply-to-tab {
+  color: var(--ldmy-text-dim, #9a9a9a) !important;
+}
+/* 备注/拉黑按钮：深色下别亮边 */
+body.ldmy-excel.ldmy-excel-dark .ldmy-user-actions button,
+body.ldmy-excel.ldmy-excel-dark .ldmy-mark-tags .ldmy-mark-tag {
+  background: var(--ldmy-surface-soft, #2a2a2a) !important;
+  border-color: var(--ldmy-border-soft, #555) !important;
+  color: var(--ldmy-text-dim, #bbb) !important;
+}
+/* 引用块/菜单按钮 hover */
+body.ldmy-excel.ldmy-excel-dark .cooked aside.quote,
+body.ldmy-excel.ldmy-excel-dark .cooked blockquote {
+  background: var(--ldmy-surface-muted, #252526) !important;
+  border-color: var(--ldmy-border-soft, #3f3f46) !important;
+  border-left-color: #4a7ab0 !important;
+  color: var(--ldmy-text-body, #e6e6e6) !important;
+}
+body.ldmy-excel.ldmy-excel-dark .post-menu-area .btn:hover,
+body.ldmy-excel.ldmy-excel-dark .post__menu-area .btn:hover,
+body.ldmy-excel.ldmy-excel-dark .post-controls .btn:hover {
+  background: var(--ldmy-surface-soft, #2a2a2a) !important;
+  border-color: var(--ldmy-border-soft, #555) !important;
+  color: var(--ldmy-text-body, #e6e6e6) !important;
+}
+

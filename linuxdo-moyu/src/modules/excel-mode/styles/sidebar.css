@@ -1,0 +1,55 @@
+/* ===================== 侧栏单元格框线 ===================== */
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-wrapper,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section {
+  border-bottom: 1px solid #d0d0d0 !important; background: transparent !important; margin: 0 !important; padding: 0 !important;
+}
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-header-wrapper,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-header {
+  border-bottom: 1px solid #d8d8d8 !important; background: #eef0f3 !important;
+  min-height: 26px !important; padding: 0 8px !important; display: flex !important; align-items: center !important;
+}
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-link-wrapper,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-row {
+  border-bottom: 1px solid #e4e4e4 !important; margin: 0 !important; padding: 0 !important;
+  min-height: 26px !important; background: #fbfbfc !important;
+}
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-link {
+  min-height: 26px !important; height: 26px !important; line-height: 26px !important;
+  padding: 0 10px !important; border-radius: 0 !important; border: none !important;
+  box-shadow: none !important; background: transparent !important;
+}
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-link:hover,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-link.active,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-section-link[aria-current="page"] {
+  background: #e8eef8 !important;
+  box-shadow: inset 3px 0 0 var(--ldmy-excel-accent, #1e6fff) !important;
+}
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-footer-wrapper,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-footer-actions {
+  border-top: 1px solid #cfcfcf !important; background: #f0f0f0 !important;
+  border-radius: 0 !important; padding: 4px 6px !important;
+}
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-theme-toggle__wrapper,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-theme-toggle-dropdown,
+body.ldmy-excel:not(.ldmy-excel-hide-nav) .sidebar-theme-toggle-dropdown .select-kit-header {
+  border-radius: 0 !important; border: 1px solid #c6c6c6 !important; background: #fff !important;
+  box-shadow: none !important; min-height: 28px !important;
+}
+
+/* 通用列表框线补强 */
+body.ldmy-excel .topic-list th,
+body.ldmy-excel .topic-list td,
+body.ldmy-excel .topic-list .topic-list-data,
+body.ldmy-excel .topic-list .main-link,
+body.ldmy-excel .topic-list .posts-map,
+body.ldmy-excel .topic-list .num {
+  border-right: 1px solid #c6c6c6 !important;
+  border-bottom: 1px solid #c6c6c6 !important;
+}
+body.ldmy-excel .list-container,
+body.ldmy-excel #list-area,
+body.ldmy-excel .topic-list-container {
+  background: #fff !important; box-shadow: none !important; border: none !important;
+  border-radius: 0 !important; padding: 0 !important; margin: 0 !important;
+}
+
