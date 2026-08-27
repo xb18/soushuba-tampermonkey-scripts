@@ -90,7 +90,7 @@
 
 > Display optimization and power features for Discourse / LINUX DO. Excel disguise, meta leading, Boost annotations, quick reply, floor flattening, `[img]` placeholder, blacklist/keywords, and more.
 
-**Latest**: v1.2.0
+**Latest**: v1.2.1
 
 [Docs](./linuxdo-moyu/README.md) | [Install](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
 

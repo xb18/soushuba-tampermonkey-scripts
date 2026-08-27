@@ -1,7 +1,7 @@
 {
   "name": "linuxdo-moyu",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "LINUX DO 优化摸鱼体验 — modular userscript sources",
   "scripts": {
     "build": "rollup -c",

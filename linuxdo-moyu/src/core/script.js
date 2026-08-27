@@ -326,7 +326,8 @@ export class LinuxDoMoyu {
 				mu.addedNodes.forEach((n) => {
 					if (n.nodeType !== 1) return;
 					if (n.id && String(n.id).startsWith(PREFIX)) return;
-					if (n.closest && n.closest(`#${PREFIX}-overlay, #${PREFIX}-fab, #${PREFIX}-toast-box`)) return;
+					if (n.closest && n.closest(`#${PREFIX}-overlay, #${PREFIX}-fab, #${PREFIX}-toast-box, #${PREFIX}-excel-root`)) return;
+					if (n.classList && (n.classList.contains(`${PREFIX}-excel-rownum`) || n.classList.contains(`${PREFIX}-excel-meta-cell`) || n.classList.contains(`${PREFIX}-excel-meta-head`))) return;
 					relevant = true;
 				});
 				if (relevant) {

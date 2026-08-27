@@ -154,18 +154,40 @@ export const excelHorizon = {
 		this.syncHorizonHeader(script);
 		const wanted = this.HORIZON_COLS.map((c) => c.cls);
 		qsa('table.topic-list .topic-list-item').forEach((row) => {
-			const pick = (cls) =>
-				Array.from(row.children).find((c) => c.classList?.contains(cls));
-			const ordered = wanted.map(pick).filter(Boolean);
-			// 先把目标列按顺序挂到末尾，再把非目标列（创建者等）挪到最后并隐藏
-			ordered.forEach((node) => row.appendChild(node));
-			Array.from(row.children).forEach((cell) => {
-				const isWanted = wanted.some((cls) => cell.classList?.contains(cls));
-				if (!isWanted) row.appendChild(cell);
-			});
+			const dedupePick = (cls) => {
+				const matched = Array.from(row.children).filter((c) => c.classList?.contains(cls));
+				if (!matched.length) return null;
+				if (matched.length > 1) {
+					const keep = matched[matched.length - 1];
+					matched.slice(0, -1).forEach((el) => {
+						try { el.remove(); } catch (_) { }
+					});
+					return keep;
+				}
+				return matched[0];
+			};
+
+			const ordered = wanted.map(dedupePick).filter(Boolean);
+			const wantedSet = new Set(ordered);
+
+			// 把非 wanted 的未知节点（创建者等）留在后面
+			const rest = Array.from(row.children).filter((c) => !wantedSet.has(c));
+
+			const newOrder = [...ordered, ...rest];
+			const currentChildren = Array.from(row.children);
+			const same =
+				newOrder.length === currentChildren.length &&
+				newOrder.every((c, i) => c === currentChildren[i]);
+
+			if (!same) {
+				newOrder.forEach((node) => row.appendChild(node));
+			}
+
 			// 创建者列：只加标记类，交给 CSS 隐藏（不动 Ember 管理的节点）
-			pick('topic-creator-data')?.classList.add(`${PREFIX}-excel-col-empty`);
-			const status = pick('topic-status-data');
+			const creator = Array.from(row.children).find((c) => c.classList?.contains('topic-creator-data'));
+			if (creator) creator.classList.add(`${PREFIX}-excel-col-empty`);
+
+			const status = Array.from(row.children).find((c) => c.classList?.contains('topic-status-data'));
 			if (status) {
 				status.classList.toggle(
 					`${PREFIX}-excel-col-empty`,
@@ -173,7 +195,7 @@ export const excelHorizon = {
 				);
 			}
 			// 标题单元格：去掉可能把内容挤没的 colspan / 残留 grid 样式
-			const main = pick('main-link');
+			const main = Array.from(row.children).find((c) => c.classList?.contains('main-link'));
 			if (main) {
 				if (main.getAttribute('colspan')) main.removeAttribute('colspan');
 				main.style.removeProperty('display');

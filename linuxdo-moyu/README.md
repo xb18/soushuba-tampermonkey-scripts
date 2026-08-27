@@ -11,7 +11,7 @@
 
 > Discourse / [LINUX DO](https://linux.do) 论坛显示优化与功能增强，装完即摸鱼。
 
-**最新版本**: v1.2.0  
+**最新版本**: v1.2.1  
 **脚本文件**: [`linuxdo-moyu.user.js`](./linuxdo-moyu.user.js)  
 **发布页**: [Greasy Fork #590271](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)  
 **仓库地址**: [urzeye/tampermonkey-scripts](https://github.com/urzeye/tampermonkey-scripts)  

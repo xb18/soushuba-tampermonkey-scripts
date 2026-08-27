@@ -1,6 +1,6 @@
 /** 脚本常量与默认配置 */
 export const SCRIPT_NAME = 'LINUX DO 优化摸鱼体验';
-export const SCRIPT_VERSION = '1.2.0';
+export const SCRIPT_VERSION = '1.2.1';
 export const PREFIX = 'ldmy';
 export const PROJECT_URL = 'https://github.com/urzeye/tampermonkey-scripts';
 export const STORAGE = {

@@ -92,7 +92,7 @@
 
 > Discourse / [LINUX DO](https://linux.do) 论坛显示优化与功能增强，装完即摸鱼。高仿 Excel 外观、元数据前置、Boost 批注、快捷回复、楼层扁平化、`[图]` 占位、黑名单/关键字等。
 
-**最新版本**: v1.2.0
+**最新版本**: v1.2.1
 
 [文档 Docs](./linuxdo-moyu/README.md) | [安装 Install](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)
 

@@ -723,7 +723,19 @@ body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list td.age {
   text-align: right !important;
 }
 body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .posters,
-body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.posters {
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .topic-posters,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .topic-creator-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .topic-status-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .topic-category-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .topic-likes-replies-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list .topic-activity-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.posters,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.topic-posters,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.topic-creator-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.topic-status-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.topic-category-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.topic-likes-replies-data,
+body.ldmy-excel:not(.ldmy-excel-horizon) .topic-list th.topic-activity-data {
   display: none !important;
   width: 0 !important;
   max-width: 0 !important;
