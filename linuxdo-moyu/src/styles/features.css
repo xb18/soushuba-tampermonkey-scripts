@@ -29,10 +29,16 @@ body:not(.ldmy-hide-emoji) .ldmy-emoji-alt {
 /* hide images in posts (keep emoji controlled separately) */
 body.ldmy-hide-image .cooked img:not(.emoji),
 body.ldmy-hide-image .cooked .lightbox-wrapper,
-body.ldmy-hide-image .cooked .image-wrapper {
+body.ldmy-hide-image .cooked .image-wrapper,
+body.ldmy-hide-image img.signature-img,
+body.ldmy-hide-image .signature-img,
+body.ldmy-hide-image .user-signature img {
   display: none !important;
 }
-body.ldmy-hide-image .cooked img:not(.emoji).ldmy-img-revealed {
+body.ldmy-hide-image .cooked img:not(.emoji).ldmy-img-revealed,
+body.ldmy-hide-image img.signature-img.ldmy-img-revealed,
+body.ldmy-hide-image .signature-img.ldmy-img-revealed,
+body.ldmy-hide-image .user-signature img.ldmy-img-revealed {
   display: inline-block !important;
 }
 body.ldmy-hide-image .cooked .lightbox-wrapper.ldmy-img-revealed {
@@ -665,4 +671,15 @@ body.ldmy-fab-left .ldmy-floor-bar {
   cursor: pointer;
 }
 body.ldmy-only-op #ldmy-only-op-tip { display: inline-flex; gap: 6px; align-items: center; }
+
+/* normal mode timeline refinement */
+body:not(.ldmy-excel) .topic-navigation {
+  z-index: 100 !important;
+}
+body:not(.ldmy-excel) .topic-navigation .timeline-container .topic-timeline .timeline-scroller-content {
+  border-radius: 6px !important;
+}
+body:not(.ldmy-excel).ldmy-wide .topic-navigation {
+  right: 16px !important;
+}
 

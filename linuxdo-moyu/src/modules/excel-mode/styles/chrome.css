@@ -63,11 +63,31 @@ body.ldmy-excel #ldmy-excel-root { display: block; }
   border-radius: 4px;
   flex-shrink: 0;
 }
+#ldmy-excel-root .ldmy-excel-ico-btn {
+  padding: 2px;
+  transition: background .15s ease;
+}
 #ldmy-excel-root .ldmy-excel-home:hover {
   background: rgba(0, 0, 0, 0.06);
 }
 body.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-home:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+#ldmy-excel-root .ldmy-excel-h1-home {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 140px;
+  height: 28px;
+  z-index: 2;
+}
+#ldmy-excel-root .ldmy-excel-h2-file {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 30px;
+  z-index: 2;
 }
 #ldmy-excel-root .ldmy-excel-vsep {
   height: 16px;
@@ -127,5 +147,128 @@ body.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-home:hover {
   font-weight: 400;
   font-size: calc(13px + var(--ldmy-font-offset, 0px));
   background: #f3f3f3;
+}
+
+/* ========== Excel 底栏横向 Timeline 楼层缩放滑块控件 ========== */
+#ldmy-excel-root .ldmy-excel-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  font-size: 12px;
+  color: #555;
+  cursor: default;
+}
+#ldmy-excel-root .ldmy-excel-zoom-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background .15s ease, border-color .15s ease;
+}
+#ldmy-excel-root .ldmy-excel-zoom-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+#ldmy-excel-root .ldmy-excel-slider-wrap {
+  display: inline-flex;
+  align-items: center;
+  width: 90px;
+}
+#ldmy-excel-root .ldmy-excel-floor-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #c8c8c8;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+#ldmy-excel-root .ldmy-excel-floor-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 6px;
+  height: 14px;
+  background: #666;
+  border: 1px solid #444;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: transform .1s ease, background .15s ease;
+}
+#ldmy-excel-root .ldmy-excel-floor-slider:hover::-webkit-slider-thumb {
+  background: #217346;
+  border-color: #107c41;
+  transform: scaleY(1.15);
+}
+#ldmy-excel-root .ldmy-excel-floor-slider::-moz-range-thumb {
+  width: 6px;
+  height: 14px;
+  background: #666;
+  border: 1px solid #444;
+  border-radius: 1px;
+  cursor: pointer;
+}
+#ldmy-excel-root .ldmy-excel-floor-text {
+  min-width: 52px;
+  text-align: center;
+  font-family: Consolas, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 2px;
+  transition: background .15s ease;
+}
+#ldmy-excel-root .ldmy-excel-floor-text:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Office 主题底栏右下角浮动定位：使用不透明纯色背景与遮罩，彻底覆盖底层切图上的假缩放条 */
+#ldmy-excel-root .ldmy-excel-zoom-office {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 21px;
+  background: #f4f4f4;
+  padding: 0 8px 0 12px;
+  z-index: 3;
+  box-shadow: -6px 0 10px #f4f4f4;
+}
+
+/* 深色模式适配 */
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-zoom {
+  color: #ccc;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-zoom-office {
+  background: #252526;
+  box-shadow: -6px 0 10px #252526;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-floor-slider {
+  background: #444;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-floor-slider::-webkit-slider-thumb {
+  background: #aaa;
+  border-color: #888;
+}
+body.ldmy-excel.ldmy-excel-dark #ldmy-excel-root .ldmy-excel-floor-text:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 

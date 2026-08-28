@@ -207,6 +207,85 @@ export const excelChrome = {
 				true
 			);
 		}
+		if (!this._zoomBound) {
+			this._zoomBound = true;
+			let scrollTimer = null;
+			window.addEventListener(
+				'scroll',
+				() => {
+					if (!script.normal.excelMode) return;
+					if (scrollTimer) return;
+					scrollTimer = requestAnimationFrame(() => {
+						scrollTimer = null;
+						this.syncBottomTimeline();
+					});
+				},
+				{ passive: true }
+			);
+
+			root.addEventListener('input', (e) => {
+				const slider = e.target.closest(`.${PREFIX}-excel-floor-slider`);
+				if (!slider) return;
+				slider._isDragging = true;
+				const zoom = slider.closest(`.${PREFIX}-excel-zoom`);
+				const text = zoom?.querySelector(`.${PREFIX}-excel-floor-text`);
+				const state = this.getFloorState();
+				if (state.isTopic && text) {
+					text.textContent = `${slider.value} / ${slider.max}`;
+				}
+			});
+
+			root.addEventListener('change', (e) => {
+				const slider = e.target.closest(`.${PREFIX}-excel-floor-slider`);
+				if (!slider) return;
+				slider._isDragging = false;
+				const state = this.getFloorState();
+				if (state.isTopic) {
+					this.jumpToFloor(slider.value);
+				}
+			});
+
+			root.addEventListener('click', (e) => {
+				const minusBtn = e.target.closest(`.${PREFIX}-excel-zoom-minus`);
+				if (minusBtn) {
+					e.preventDefault();
+					e.stopPropagation();
+					const state = this.getFloorState();
+					if (state.isTopic) {
+						const next = Math.max(1, state.current - 1);
+						this.jumpToFloor(next);
+					}
+					return;
+				}
+				const plusBtn = e.target.closest(`.${PREFIX}-excel-zoom-plus`);
+				if (plusBtn) {
+					e.preventDefault();
+					e.stopPropagation();
+					const state = this.getFloorState();
+					if (state.isTopic) {
+						const next = Math.min(state.total, state.current + 1);
+						this.jumpToFloor(next);
+					}
+					return;
+				}
+				const floorText = e.target.closest(`.${PREFIX}-excel-floor-text`);
+				if (floorText) {
+					e.preventDefault();
+					e.stopPropagation();
+					const state = this.getFloorState();
+					if (state.isTopic) {
+						const input = prompt(`请输入要跳转的楼层 (1 ~ ${state.total}):`, String(state.current));
+						if (input != null) {
+							const num = parseInt(input.trim(), 10);
+							if (num >= 1 && num <= state.total) {
+								this.jumpToFloor(num);
+							}
+						}
+					}
+					return;
+				}
+			});
+		}
 		this._root = root;
 		return root;
 	},
@@ -246,6 +325,91 @@ export const excelChrome = {
 		}
 	},
 
+	/** 跳转到指定楼层（考虑 Excel 顶部固定栏偏移） */
+	jumpToFloor(n) {
+		const target = parseInt(n, 10);
+		if (!target || target < 1) return;
+		const el =
+			qs(`.topic-post[data-post-number="${target}"]`) ||
+			qs(`#post_${target}`) ||
+			qs(`a[href$="/${target}"]`);
+		if (el) {
+			const headerH = parseInt(
+				getComputedStyle(document.documentElement).getPropertyValue('--ldmy-excel-header-h') || '110',
+				10
+			);
+			const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12;
+			window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+		} else {
+			const m = location.pathname.match(/\/t\/[^/]+\/(\d+)/);
+			if (m) {
+				location.href = `/t/topic/${m[1]}/${target}`;
+			}
+		}
+	},
+
+	/** 获取当前页面的楼层状态 { current, total, isTopic } */
+	getFloorState() {
+		const isTopic = /^\/t(\/|$)/.test(location.pathname) || !!qs('.topic-post, .posts-wrapper');
+		if (!isTopic) return { current: 1, total: 100, isTopic: false };
+
+		let total = 0;
+		const repliesText = qs('.topic-navigation .timeline-replies')?.textContent || '';
+		const mReplies = repliesText.match(/\/ (\d+)/);
+		if (mReplies) total = parseInt(mReplies[1], 10);
+
+		if (!total) {
+			const postNums = Array.from(qsa('.topic-post[data-post-number]'))
+				.map((el) => parseInt(el.getAttribute('data-post-number'), 10))
+				.filter(Boolean);
+			if (postNums.length) total = Math.max(...postNums);
+		}
+		if (!total) total = 1;
+
+		let current = 1;
+		const posts = Array.from(qsa('.topic-post[data-post-number]'));
+		const headerH = parseInt(
+			getComputedStyle(document.documentElement).getPropertyValue('--ldmy-excel-header-h') || '110',
+			10
+		);
+		for (const p of posts) {
+			const rect = p.getBoundingClientRect();
+			if (rect.bottom > headerH + 30) {
+				current = parseInt(p.getAttribute('data-post-number'), 10) || 1;
+				break;
+			}
+		}
+		return { current, total: Math.max(total, current), isTopic: true };
+	},
+
+	/** 实时同步底栏缩放/楼层控制条 */
+	syncBottomTimeline() {
+		const root = this._root;
+		if (!root) return;
+		const state = this.getFloorState();
+		const zoomEls = root.querySelectorAll(`.${PREFIX}-excel-zoom`);
+		zoomEls.forEach((zoom) => {
+			const slider = zoom.querySelector(`.${PREFIX}-excel-floor-slider`);
+			const text = zoom.querySelector(`.${PREFIX}-excel-floor-text`);
+			if (!slider || !text) return;
+			if (state.isTopic) {
+				slider.min = '1';
+				slider.max = String(state.total);
+				if (!slider._isDragging) {
+					slider.value = String(state.current);
+				}
+				text.textContent = `${state.current} / ${state.total}`;
+				text.title = `当前第 ${state.current} 楼，共 ${state.total} 楼（点击输入跳转）`;
+			} else {
+				slider.min = '1';
+				slider.max = '100';
+				slider.value = '100';
+				text.textContent = '100%';
+				text.title = '缩放: 100%';
+			}
+		});
+	},
+
 	syncChrome(script) {
 		const theme = this.normalizeTheme(script.advanced.excelTheme || 'tencent');
 		this.rebuild(script);
@@ -283,6 +447,7 @@ export const excelChrome = {
 		// A1 区：默认展示 板块 › 标题（可点击跳转）
 		if (fxCell) fxCell.textContent = 'A1';
 		this.renderFxNav(fxVal);
+		this.syncBottomTimeline();
 	},
 
 	handleChromeAction(act, script) {

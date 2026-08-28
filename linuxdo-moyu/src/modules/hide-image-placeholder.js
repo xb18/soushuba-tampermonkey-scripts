@@ -95,6 +95,11 @@ export const HideImagePlaceholder = {
 				this.attach(img, 1);
 			});
 		});
+		qsa('img.signature-img, .signature-img, .user-signature img').forEach((img) => {
+			if (img.tagName === 'IMG') {
+				this.attach(img, 1);
+			}
+		});
 	},
 };
 

@@ -93,16 +93,16 @@ export const excelThemes = {
 		return `
         <div class="${PREFIX}-excel-header" data-theme="tencent">
           <div class="${PREFIX}-excel-titlebar">
-            <div class="${PREFIX}-excel-home" role="link" title="返回首页" aria-label="返回首页">${this.ico(t, 'icon_1', 24)}</div>
-            ${this.ico(t, 'icon_2', 12)}
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-ico-btn" role="link" title="返回首页" aria-label="返回首页">${this.ico(t, 'icon_1', 24)}</div>
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-ico-btn" role="link" title="返回首页">${this.ico(t, 'icon_2', 12)}</div>
             ${this.vsep(24, '0 12px')}
             <div class="${PREFIX}-excel-titlebar-title"></div>
-            ${this.ico(t, 'icon_3', 16)}
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-ico-btn" role="link" title="返回首页">${this.ico(t, 'icon_3', 16)}</div>
             <span style="width:12px"></span>
-            ${this.ico(t, 'icon_4', 16)}
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-ico-btn" role="link" title="返回首页">${this.ico(t, 'icon_4', 16)}</div>
             <span style="width:10px"></span>
-            ${this.ico(t, 'icon_5', 16)}
-            <div class="${PREFIX}-excel-muted">上次修改是在刚刚进行的</div>
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-ico-btn" role="link" title="返回首页">${this.ico(t, 'icon_5', 16)}</div>
+            <div class="${PREFIX}-excel-muted ${PREFIX}-excel-home" role="link" title="返回首页">上次修改是在刚刚进行的</div>
             <div class="${PREFIX}-excel-grow"></div>
             ${this.vsep(24, '0 12px')}
             <div class="${PREFIX}-excel-chrome-actions" data-ldmy-chrome="1">
@@ -134,9 +134,14 @@ export const excelThemes = {
           ${this.ico(t, 'icon_2', 12)}
           <div class="${PREFIX}-excel-footer-meta">
             <span class="${PREFIX}-excel-count"></span>
-            <div class="${PREFIX}-excel-zoom">
+            <div class="${PREFIX}-excel-zoom" data-ldmy-timeline="1">
               ${this.ico(t, 'icon_36', 24)}
-              <span>-</span><span>100%</span><span>+</span>
+              <button type="button" class="${PREFIX}-excel-zoom-btn ${PREFIX}-excel-zoom-minus" title="上一楼 / 顶部">-</button>
+              <div class="${PREFIX}-excel-slider-wrap">
+                <input type="range" class="${PREFIX}-excel-floor-slider" min="1" max="100" value="100" step="1" title="滑动跳转楼层" />
+              </div>
+              <button type="button" class="${PREFIX}-excel-zoom-btn ${PREFIX}-excel-zoom-plus" title="下一楼 / 底部">+</button>
+              <span class="${PREFIX}-excel-floor-text" title="点击输入楼层跳转">100%</span>
             </div>
           </div>
         </div>`;
@@ -160,6 +165,7 @@ export const excelThemes = {
 		return `
         <div class="${PREFIX}-excel-header" data-theme="office">
           <div class="${PREFIX}-excel-h1">
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-h1-home" role="link" title="返回首页"></div>
             <div class="${PREFIX}-excel-h1-title">${title} - Excel</div>
             ${this.slice(t, 'H_L_1', 'l')}
             ${this.slice(t, 'H_R_1', 'r')}
@@ -170,6 +176,7 @@ export const excelThemes = {
             </div>
           </div>
           <div class="${PREFIX}-excel-h2">
+            <div class="${PREFIX}-excel-home ${PREFIX}-excel-h2-file" role="link" title="返回首页"></div>
             ${this.slice(t, 'H_L_2', 'l')}
             ${this.slice(t, 'H_R_2', 'r')}
           </div>
@@ -191,6 +198,14 @@ export const excelThemes = {
           <div class="${PREFIX}-excel-f2">
             ${this.slice(t, 'F_L_2', 'l')}
             ${this.slice(t, 'F_R_2', 'r')}
+            <div class="${PREFIX}-excel-zoom ${PREFIX}-excel-zoom-office" data-ldmy-timeline="1">
+              <button type="button" class="${PREFIX}-excel-zoom-btn ${PREFIX}-excel-zoom-minus" title="上一楼 / 顶部">-</button>
+              <div class="${PREFIX}-excel-slider-wrap">
+                <input type="range" class="${PREFIX}-excel-floor-slider" min="1" max="100" value="100" step="1" title="滑动跳转楼层" />
+              </div>
+              <button type="button" class="${PREFIX}-excel-zoom-btn ${PREFIX}-excel-zoom-plus" title="下一楼 / 底部">+</button>
+              <span class="${PREFIX}-excel-floor-text" title="点击输入楼层跳转">100%</span>
+            </div>
           </div>
         </div>`;
 	}

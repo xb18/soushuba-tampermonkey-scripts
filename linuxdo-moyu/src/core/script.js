@@ -445,6 +445,15 @@ export class LinuxDoMoyu {
 					bar.querySelector('input').blur();
 				}
 			});
+			// 点击外部自动收起跳转输入框
+			document.addEventListener('pointerdown', (e) => {
+				if (!bar.classList.contains('open')) return;
+				const isInsideBar = bar.contains(e.target);
+				const isFabFloorBtn = e.target.closest?.(`button[data-action="floor"]`);
+				if (!isInsideBar && !isFabFloorBtn) {
+					bar.classList.remove('open');
+				}
+			});
 			document.body.appendChild(bar);
 		}
 

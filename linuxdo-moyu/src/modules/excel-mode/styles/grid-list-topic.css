@@ -89,7 +89,6 @@ body.ldmy-excel .progress-bar-container,
 body.ldmy-excel .skip-link,
 body.ldmy-excel .welcome-banner,
 body.ldmy-excel .welcome-banner--visible,
-body.ldmy-excel .container.posts .topic-navigation,
 body.ldmy-excel .topic-map,
 body.ldmy-excel .topic-status-info,
 body.ldmy-excel footer.topic-footer-main-buttons,
@@ -103,6 +102,13 @@ body.ldmy-excel .discourse-browser-update-alert,
 body.ldmy-excel .list-container > .show-more,
 body.ldmy-excel .topic-list-bottom,
 body.ldmy-excel .footer-message {
+  display: none !important;
+}
+
+/* Excel 模式下彻底隐藏论坛竖向 Timeline（已完美整合至底栏横向缩放滑块） */
+body.ldmy-excel .topic-navigation,
+body.ldmy-excel .timeline-container,
+body.ldmy-excel .topic-timeline {
   display: none !important;
 }
 /* 隐藏导航/侧栏：顶栏控件 + 左侧分类/tag/板块 */
@@ -517,7 +523,7 @@ body.ldmy-excel:not(.ldmy-excel-hide-nav) .select-kit-collection {
   box-shadow: 0 1px 4px rgba(0,0,0,.12) !important;
   border: 1px solid #c6c6c6 !important;
 }
-/* 帖内右侧 timeline 占列清掉 */
+/* 帖内详情页：恢复 100% 满宽表格 */
 body.ldmy-excel .container.posts {
   display: block !important;
   grid-template-columns: none !important;
@@ -527,12 +533,6 @@ body.ldmy-excel .container.posts {
   gap: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
-}
-body.ldmy-excel .container.posts > .topic-navigation,
-body.ldmy-excel .timeline-container,
-body.ldmy-excel .topic-navigation {
-  display: none !important;
-  width: 0 !important;
 }
 body.ldmy-excel .post-stream,
 body.ldmy-excel .topic-area,
