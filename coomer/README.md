@@ -4,7 +4,9 @@
 >
 > 专为 Coomer 打造的沉浸式浏览体验增强脚本，提供艺术家收藏、作品管理、Video.js 增强播放（快进/倍速/自动全屏）及全站 UI 重构。
 
-![Version](https://img.shields.io/badge/version-1.0.6-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
+![Version](https://img.shields.io/badge/version-1.0.6-blue.svg?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)
 
 ## ✨ 主要功能
 

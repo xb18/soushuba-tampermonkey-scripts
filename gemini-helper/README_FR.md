@@ -1,5 +1,7 @@
 # Gemini-helper
 
+[![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
+
 > [!CAUTION]
 > **Arrêt des mises à jour fonctionnelles de Gemini Helper**
 >

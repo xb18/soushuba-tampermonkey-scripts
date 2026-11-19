@@ -4,7 +4,9 @@
 >
 > 专为搜书吧（Discuz! 论坛）打造的轻量脚本，自动为付费附件生成免积分直链。
 
-![Version](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork) ![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
+![Version](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork)
+![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)
 
 ## ✨ 主要功能
 

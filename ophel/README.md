@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/urzeye/tampermonkey-scripts"><img src="https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github" alt="tampermonkey-scripts"></a>
   <img src="https://img.shields.io/github/package-json/v/urzeye/ophel?color=blue" alt="Version">
   <a href="https://github.com/urzeye/ophel/stargazers"><img src="https://img.shields.io/github/stars/urzeye/ophel?style=social" alt="Stars"></a>
   <a href="https://opencollective.com/urzeye-oss"><img src="https://img.shields.io/badge/Sponsor-Open%20Collective-blue?logo=opencollective" alt="Sponsor"></a>

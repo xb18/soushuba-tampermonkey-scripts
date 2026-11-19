@@ -1,5 +1,7 @@
 # lib - 通用工具库
 
+[![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
+
 供油猴脚本通过 `@require` 引入的通用工具集。
 
 ## 目录
