@@ -1,13 +1,15 @@
 # 坚果云 WebDAV 网页端密码管理
 
 [![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
-[![Version](https://img.shields.io/badge/version-1.0.4-blue.svg?style=flat-square)](./jianguoyun-webdav.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Tampermonkey](https://img.shields.io/badge/Tampermonkey-Userscript-green.svg?style=flat-square)](https://www.tampermonkey.net/)
+[![Greasy Fork](https://img.shields.io/badge/GreasyFork-install-red?style=flat-square&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)
+[![Version](https://img.shields.io/greasyfork/v/606310?style=flat-square&label=version)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)
+[![Installs](https://img.shields.io/greasyfork/dt/606310?style=flat-square&label=installs)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)
 
 > 恢复坚果云网页版在“安全选项”页面中被官方隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 
 **脚本文件**: [`jianguoyun-webdav.user.js`](./jianguoyun-webdav.user.js)  
+**发布地址**: [Greasy Fork #606310](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)  
 **当前版本**: v1.0.4  
 **适配站点**: `https://www.jianguoyun.com/d/home#/safety` 及 `https://www.jianguoyun.com/d/account#safe`
 
@@ -41,8 +43,13 @@
 
 ## 🚀 安装方法
 
-1. 安装浏览器脚本管理器扩展：[Tampermonkey（油猴）](https://www.tampermonkey.net/)。
-2. 点击下载或将 [`jianguoyun-webdav.user.js`](./jianguoyun-webdav.user.js) 内容新建至 Tampermonkey 脚本编辑器中保存。
+### 方式 1：通过 Greasy Fork 一键安装（推荐）
+1. 安装浏览器脚本管理器扩展：[Tampermonkey（油猴）](https://www.tampermonkey.net/)；
+2. 前往 [Greasy Fork 脚本主页](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)，点击绿色的 **“安装此脚本”** 按钮即可。
+
+### 方式 2：手动新建脚本
+1. 安装浏览器脚本管理器扩展：[Tampermonkey（油猴）](https://www.tampermonkey.net/)；
+2. 点击下载或将 [`jianguoyun-webdav.user.js`](./jianguoyun-webdav.user.js) 源码内容复制新建至 Tampermonkey 脚本编辑器中保存。
 3. 打开或刷新 [坚果云 - 安全选项](https://www.jianguoyun.com/d/home#/safety) 页面，即可看到已恢复的第三方应用管理面板。
 
 ---
