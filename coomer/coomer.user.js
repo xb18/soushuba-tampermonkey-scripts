@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Coomer 佬友严选
 // @namespace    http://tampermonkey.net/
-// @version      1.0.4
+// @version      1.0.5
 // @description  OnlyFans 赛博菩萨，佬友严选，值得信赖！艺术家收藏、作品管理、Video.js 增强播放（快进/倍速/自动全屏），去广告适配
 // @author       urzeye
 // @match        https://coomer.st/*
@@ -11,6 +11,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setClipboard
 // @grant        GM_getResourceText
+// @grant        unsafeWindow
 // @grant        window.onurlchange
 // @resource     videojs_css https://cdnjs.cloudflare.com/ajax/libs/video.js/8.16.1/video-js.min.css
 // @require      https://cdnjs.cloudflare.com/ajax/libs/video.js/8.16.1/video.min.js
@@ -20,6 +21,8 @@
 
 (function () {
     'use strict';
+
+    const pageWindow = typeof unsafeWindow !== 'undefined' ? unsafeWindow : window;
 
     // ============================================
     // 常量与配置
@@ -467,7 +470,42 @@
     // ============================================
     // AdBlocker - 广告拦截
     // ============================================
-    const AD_DOMAINS = ['tsyndicate.com', 'trafficstars.com', 'exoclick.com', 'exosrv.com', 'trafserv.io', 'tsyndlab.com', 'clksite.com', 'syndication.exoclick.com'];
+    const AD_DOMAINS = [
+        'tsyndicate.com',
+        'trafficstars.com',
+        'exoclick.com',
+        'exosrv.com',
+        'trafserv.io',
+        'tsyndlab.com',
+        'clksite.com',
+        'syndication.exoclick.com',
+        'mnaspm.com',
+        'rmhfrtnd.com',
+        'soonpubplatform.online',
+        'popcash.net',
+        'popads.net',
+        'juicyads.com',
+        'realsrv.com',
+        'adxpansion.com',
+        'adxadserv.com',
+        'trafficfactory.biz',
+        'ero-advertising.com',
+        'tsyndicate.org',
+        'exosrv.net',
+        'etahub.com',
+        'whomeet.online',
+        'creative.trafficstars.com',
+    ];
+
+    const isAdUrl = (url) => {
+        if (!url || typeof url !== 'string') return false;
+        try {
+            const lowerUrl = url.toLowerCase();
+            return AD_DOMAINS.some((d) => lowerUrl.includes(d));
+        } catch {
+            return false;
+        }
+    };
 
     const AdBlocker = {
         init() {
@@ -475,103 +513,191 @@
             if (!settings.blockAds) return;
 
             this.hookFluidPlayer();
+            this.hookDOMInsertion();
+            this.hookPopups();
             this.hookXHR();
             this.hookFetch();
+            this.initDOMCleaner();
+        },
+
+        hookDOMInsertion() {
+            try {
+                const originalAppendChild = pageWindow.Node.prototype.appendChild;
+                const originalInsertBefore = pageWindow.Node.prototype.insertBefore;
+
+                pageWindow.Node.prototype.appendChild = function (child) {
+                    if (child && (child.tagName === 'SCRIPT' || child.tagName === 'IFRAME')) {
+                        const src = child.src || child.getAttribute('src');
+                        if (src && isAdUrl(src)) {
+                            console.log('[Coomer] Blocked ad element append:', src);
+                            return child;
+                        }
+                    }
+                    return originalAppendChild.call(this, child);
+                };
+
+                pageWindow.Node.prototype.insertBefore = function (child, referenceNode) {
+                    if (child && (child.tagName === 'SCRIPT' || child.tagName === 'IFRAME')) {
+                        const src = child.src || child.getAttribute('src');
+                        if (src && isAdUrl(src)) {
+                            console.log('[Coomer] Blocked ad element insertBefore:', src);
+                            return child;
+                        }
+                    }
+                    return originalInsertBefore.call(this, child, referenceNode);
+                };
+            } catch (e) {
+                console.warn('[Coomer] Failed to hook DOM insertion:', e);
+            }
+        },
+
+        hookPopups() {
+            try {
+                const originalOpen = pageWindow.open;
+                pageWindow.open = function (url, target, features) {
+                    if (url && (isAdUrl(url) || (typeof url === 'string' && !url.includes(location.hostname) && !url.startsWith('/')))) {
+                        console.log('[Coomer] Blocked popup window.open:', url);
+                        return null;
+                    }
+                    return originalOpen.call(pageWindow, url, target, features);
+                };
+            } catch (e) {
+                console.warn('[Coomer] Failed to hook window.open:', e);
+            }
         },
 
         hookFluidPlayer() {
-            // 在 document-start 时执行，确保在 Fluid Player 加载前 hook
-            const script = document.createElement('script');
-            script.textContent = `
-                (function() {
-                    const originalDefineProperty = Object.defineProperty;
-                    Object.defineProperty = function(obj, prop, descriptor) {
-                        if (prop === 'fluidPlayer' && obj === window) {
-                            const originalGetter = descriptor.get;
-                            const originalValue = descriptor.value;
-                            
-                            const wrapper = function(...args) {
-                                // 移除广告配置
-                                if (args[1] && args[1].vastOptions) {
-                                    delete args[1].vastOptions;
-                                }
-                                if (args[1] && args[1].adList) {
-                                    args[1].adList = [];
-                                }
-                                const fn = originalGetter ? originalGetter() : originalValue;
-                                return fn.apply(this, args);
-                            };
-                            
-                            if (originalGetter) {
-                                descriptor.get = () => wrapper;
-                            } else {
-                                descriptor.value = wrapper;
-                            }
+            try {
+                let _fluidPlayer = pageWindow.fluidPlayer;
+                const wrapFluidPlayer = (fn) => {
+                    if (typeof fn !== 'function') return fn;
+                    return function (...args) {
+                        // 移除广告配置
+                        if (args[1]) {
+                            if (args[1].vastOptions) delete args[1].vastOptions;
+                            if (args[1].adList) args[1].adList = [];
                         }
-                        return originalDefineProperty.call(this, obj, prop, descriptor);
+                        return fn.apply(this, args);
                     };
-                })();
-            `;
-            document.documentElement.appendChild(script);
-            script.remove();
+                };
+
+                if (_fluidPlayer) {
+                    _fluidPlayer = wrapFluidPlayer(_fluidPlayer);
+                }
+
+                Object.defineProperty(pageWindow, 'fluidPlayer', {
+                    configurable: true,
+                    enumerable: true,
+                    get() {
+                        return _fluidPlayer;
+                    },
+                    set(val) {
+                        _fluidPlayer = wrapFluidPlayer(val);
+                    },
+                });
+            } catch (e) {
+                console.warn('[Coomer] Failed to hook fluidPlayer:', e);
+            }
         },
 
         hookXHR() {
-            const script = document.createElement('script');
-            script.textContent = `
-                (function() {
-                    const adDomains = ${JSON.stringify(AD_DOMAINS)};
-                    const isAdUrl = (url) => {
-                        try {
-                            const urlObj = new URL(url, location.origin);
-                            return adDomains.some(d => urlObj.hostname.includes(d));
-                        } catch { return false; }
-                    };
+            try {
+                const originalOpen = pageWindow.XMLHttpRequest.prototype.open;
+                const originalSend = pageWindow.XMLHttpRequest.prototype.send;
 
-                    const originalOpen = XMLHttpRequest.prototype.open;
-                    XMLHttpRequest.prototype.open = function(method, url, ...args) {
-                        if (isAdUrl(url)) {
-                            this._blocked = true;
-                            return;
-                        }
-                        return originalOpen.call(this, method, url, ...args);
-                    };
+                pageWindow.XMLHttpRequest.prototype.open = function (method, url, ...args) {
+                    if (url && isAdUrl(url)) {
+                        this._coomerBlocked = true;
+                        return;
+                    }
+                    return originalOpen.call(this, method, url, ...args);
+                };
 
-                    const originalSend = XMLHttpRequest.prototype.send;
-                    XMLHttpRequest.prototype.send = function(...args) {
-                        if (this._blocked) return;
-                        return originalSend.apply(this, args);
-                    };
-                })();
-            `;
-            document.documentElement.appendChild(script);
-            script.remove();
+                pageWindow.XMLHttpRequest.prototype.send = function (...args) {
+                    if (this._coomerBlocked) {
+                        console.log('[Coomer] Blocked XHR ad send');
+                        return;
+                    }
+                    return originalSend.apply(this, args);
+                };
+            } catch (e) {
+                console.warn('[Coomer] Failed to hook XHR:', e);
+            }
         },
 
         hookFetch() {
-            const script = document.createElement('script');
-            script.textContent = `
-                (function() {
-                    const adDomains = ${JSON.stringify(AD_DOMAINS)};
-                    const isAdUrl = (url) => {
-                        try {
-                            const urlObj = new URL(url, location.origin);
-                            return adDomains.some(d => urlObj.hostname.includes(d));
-                        } catch { return false; }
-                    };
+            try {
+                const originalFetch = pageWindow.fetch;
+                pageWindow.fetch = function (input, init) {
+                    const url = typeof input === 'string' ? input : input?.url;
+                    if (url && isAdUrl(url)) {
+                        console.log('[Coomer] Blocked fetch ad:', url);
+                        return Promise.reject(new Error('Blocked by Coomer AdBlocker'));
+                    }
+                    return originalFetch.apply(this, arguments);
+                };
+            } catch (e) {
+                console.warn('[Coomer] Failed to hook fetch:', e);
+            }
+        },
 
-                    const originalFetch = window.fetch;
-                    window.fetch = function(input, init) {
-                        const url = typeof input === 'string' ? input : input.url;
-                        if (isAdUrl(url)) {
-                            return Promise.reject(new Error('Blocked by AdBlocker'));
-                        }
-                        return originalFetch.apply(this, arguments);
-                    };
-                })();
-            `;
-            document.documentElement.appendChild(script);
-            script.remove();
+        cleanAdElements() {
+            const adSelectors = [
+                '#announcement-banner',
+                '.ad-container',
+                '.ad-wrapper',
+                '.ads-container',
+                '.ts-im-container',
+                '[id^="ts_ad_"]',
+                '[class*="ts_ad_"]',
+                '[class*="ts-ad"]',
+                '[class*="native-ad"]',
+                '.global-sidebar-entry-item[href*="tsyndicate.com"]',
+                '.global-sidebar-entry-item[href*="trafficstars.com"]',
+                '.global-sidebar-entry-item[href*="exoclick.com"]',
+                'iframe[src*="tsyndicate"]',
+                'iframe[src*="trafficstars"]',
+                'iframe[src*="exoclick"]',
+                'iframe[src*="exosrv"]',
+                'iframe[src*="mnaspm"]',
+                'iframe[src*="rmhfrtnd"]',
+                'a[href*="tsyndicate.com"]',
+                'a[href*="trafficstars.com"]',
+                'a[href*="exoclick.com"]',
+                'a[href*="mnaspm.com"]',
+                'a[href*="rmhfrtnd.com"]',
+                'a[href*="soonpubplatform.online"]',
+            ];
+            try {
+                const elements = document.querySelectorAll(adSelectors.join(','));
+                elements.forEach((el) => {
+                    try {
+                        el.remove();
+                    } catch {}
+                });
+            } catch {}
+        },
+
+        initDOMCleaner() {
+            const setupObserver = () => {
+                this.cleanAdElements();
+                const observer = new MutationObserver(() => {
+                    this.cleanAdElements();
+                });
+                if (document.body) {
+                    observer.observe(document.body, { childList: true, subtree: true });
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    });
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupObserver);
+            } else {
+                setupObserver();
+            }
         },
     };
 
@@ -992,16 +1118,38 @@
                     --coomer-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
                 }
 
-                /* 隐藏公告横幅 */
-                #announcement-banner {
-                    display: none !important;
-                }
-
-                /* 屏蔽广告元素 */
+                /* 屏蔽广告元素与横幅 */
+                #announcement-banner,
+                .ad-container,
+                .ad-wrapper,
+                .ads-container,
+                .ts-im-container,
+                [id^="ts_ad_"],
+                [class*="ts_ad_"],
+                [class*="ts-ad"],
+                [class*="native-ad"],
                 .global-sidebar-entry-item[href*="tsyndicate.com"],
-                #ts_ad_native_wxfxp,
-                .ts-im-container {
+                .global-sidebar-entry-item[href*="trafficstars.com"],
+                .global-sidebar-entry-item[href*="exoclick.com"],
+                iframe[src*="tsyndicate"],
+                iframe[src*="trafficstars"],
+                iframe[src*="exoclick"],
+                iframe[src*="exosrv"],
+                iframe[src*="mnaspm"],
+                iframe[src*="rmhfrtnd"],
+                a[href*="tsyndicate.com"],
+                a[href*="trafficstars.com"],
+                a[href*="exoclick.com"],
+                a[href*="mnaspm.com"],
+                a[href*="rmhfrtnd.com"],
+                a[href*="soonpubplatform.online"] {
                     display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                    height: 0 !important;
+                    width: 0 !important;
+                    overflow: hidden !important;
                 }
 
                 /* 悬浮按钮 - The Orb */
@@ -1785,13 +1933,61 @@
                 /* 无搜索结果 */
                 .coomer-no-results {
                     text-align: center;
-                    padding: 40px 20px;
+                    padding: 32px 16px;
                     color: var(--coomer-text-sec);
                 }
                 .coomer-no-results-icon {
-                    font-size: 48px;
+                    font-size: 40px;
                     margin-bottom: 12px;
-                    opacity: 0.5;
+                    opacity: 0.6;
+                }
+                /* 全站搜索条 & 按钮 */
+                .coomer-search-global-bar {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                    margin-top: 14px;
+                    padding: 10px 14px;
+                    background: rgba(224, 170, 62, 0.08);
+                    border: 1px dashed rgba(224, 170, 62, 0.35);
+                    border-radius: 8px;
+                    font-size: 12px;
+                    color: var(--coomer-text-sec);
+                    box-sizing: border-box;
+                }
+                .coomer-search-global-bar span {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .coomer-search-global-link {
+                    background: transparent;
+                    border: none;
+                    color: var(--coomer-primary);
+                    font-weight: 600;
+                    font-size: 12px;
+                    cursor: pointer;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    white-space: nowrap;
+                    transition: all 0.2s;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+                .coomer-search-global-link:hover {
+                    background: rgba(224, 170, 62, 0.2);
+                    color: var(--coomer-primary-hover);
+                }
+                .coomer-global-search-btn {
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                }
+                .coomer-global-search-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 14px rgba(224, 170, 62, 0.4);
                 }
             `);
         },
@@ -1964,6 +2160,17 @@
                 });
             });
 
+            // 回车键直接触发 Coomer 全站搜索
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        this.searchGlobal(query);
+                    }
+                }
+            });
+
             searchClear.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1994,6 +2201,21 @@
             this.renderTab('artists');
         },
 
+        // 全站搜索跳转
+        searchGlobal(query, type = this.activeTab) {
+            const q = (query || '').trim();
+            if (!q) return;
+            let targetUrl = '';
+            if (type === 'artists') {
+                targetUrl = `https://coomer.st/artists?q=${encodeURIComponent(q)}`;
+            } else if (type === 'posts') {
+                targetUrl = `https://coomer.st/posts?q=${encodeURIComponent(q)}`;
+            }
+            if (targetUrl) {
+                this.navigateTo(targetUrl);
+            }
+        },
+
         // 处理搜索
         handleSearch(query) {
             SearchManager.currentQuery = query.trim();
@@ -2004,8 +2226,8 @@
         updateSearchPlaceholder() {
             if (!this.searchInput) return;
             const placeholders = {
-                artists: '搜索艺术家...',
-                posts: '搜索作品...',
+                artists: '搜索严选/收藏艺术家 (Enter 搜全站)...',
+                posts: '搜索已收藏作品 (Enter 搜全站)...',
                 settings: '搜索设置...',
             };
             this.searchInput.placeholder = placeholders[this.activeTab] || '搜索...';
@@ -2343,10 +2565,20 @@
                     container.innerHTML = `
                         <div class="coomer-no-results">
                             <div class="coomer-no-results-icon">🔍</div>
-                            <div>未找到匹配的艺术家</div>
-                            <div style="font-size: 12px; margin-top: 8px; opacity: 0.7;">尝试其他关键词</div>
+                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px;">本地严选与收藏中未找到该艺术家</div>
+                            <div style="font-size: 12px; color: var(--coomer-text-sec); margin-bottom: 16px; line-height: 1.5;">
+                                当前仅检索内置 12 位严选及您已收藏的艺术家。<br>
+                                您可以直接检索 Coomer 全站艺术家：
+                            </div>
+                            <button class="coomer-btn coomer-btn-primary coomer-global-search-btn" style="max-width: 280px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>🌐</span>
+                                <span>在 Coomer 全站搜索 "${query}" ↗</span>
+                            </button>
                         </div>
                     `;
+                    container.querySelector('.coomer-global-search-btn')?.addEventListener('click', () => {
+                        this.searchGlobal(query, 'artists');
+                    });
                     return;
                 }
 
@@ -2356,6 +2588,18 @@
                     grid.appendChild(this.createArtistCard(artist, artist.isPreset));
                 });
                 container.appendChild(grid);
+
+                // 底部提供去全站搜索的操作项
+                const globalSearchCard = document.createElement('div');
+                globalSearchCard.className = 'coomer-search-global-bar';
+                globalSearchCard.innerHTML = `
+                    <span>未找到目标艺术家？</span>
+                    <button class="coomer-search-global-link">🌐 在 Coomer 全站搜索 "${query}" ↗</button>
+                `;
+                globalSearchCard.querySelector('.coomer-search-global-link')?.addEventListener('click', () => {
+                    this.searchGlobal(query, 'artists');
+                });
+                container.appendChild(globalSearchCard);
                 return;
             }
 
@@ -2543,10 +2787,20 @@
                     container.innerHTML = `
                         <div class="coomer-no-results">
                             <div class="coomer-no-results-icon">🔍</div>
-                            <div>未找到匹配的作品</div>
-                            <div style="font-size: 12px; margin-top: 8px; opacity: 0.7;">尝试其他关键词</div>
+                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px;">本地收藏中未找到该作品</div>
+                            <div style="font-size: 12px; color: var(--coomer-text-sec); margin-bottom: 16px; line-height: 1.5;">
+                                当前仅检索您本地已收藏的作品。<br>
+                                您可以直接检索 Coomer 全站作品：
+                            </div>
+                            <button class="coomer-btn coomer-btn-primary coomer-global-search-btn" style="max-width: 280px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>🌐</span>
+                                <span>在 Coomer 全站搜索作品 "${query}" ↗</span>
+                            </button>
                         </div>
                     `;
+                    container.querySelector('.coomer-global-search-btn')?.addEventListener('click', () => {
+                        this.searchGlobal(query, 'posts');
+                    });
                     return;
                 }
                 posts = results;
@@ -2614,6 +2868,20 @@
             });
 
             container.appendChild(grid);
+
+            // 搜索模式下底部提供去全站搜索的操作项
+            if (query.trim()) {
+                const globalSearchCard = document.createElement('div');
+                globalSearchCard.className = 'coomer-search-global-bar';
+                globalSearchCard.innerHTML = `
+                    <span>未找到目标作品？</span>
+                    <button class="coomer-search-global-link">🌐 在 Coomer 全站搜索 "${query}" ↗</button>
+                `;
+                globalSearchCard.querySelector('.coomer-search-global-link')?.addEventListener('click', () => {
+                    this.searchGlobal(query, 'posts');
+                });
+                container.appendChild(globalSearchCard);
+            }
         },
 
         showPostDetail(post) {
@@ -2904,7 +3172,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 16px; text-align: center; color: #666; font-size: 12px;">
-                    <div>Coomer 佬友严选 v1.0.0</div>
+                    <div>Coomer 佬友严选 v1.0.5</div>
                     <div style="margin-top: 4px;">艺术家: ${ArtistManager.count()} | 作品: ${PostManager.count()}</div>
                 </div>
             `;
@@ -3002,14 +3270,14 @@
     }
 
     function initUI() {
-        // 注入样式
+        // 注入样式并立即启动播放器拦截及全屏监听（防止广告播放器时间差）
         VideoPlayerEnhancer.injectStyles();
+        VideoPlayerEnhancer.init();
+        AutoFullscreen.init();
 
-        // 等待页面完全渲染（SPA 需要延迟）
+        // 等待页面基础骨架就绪后初始化 UI 面板
         setTimeout(() => {
             UIPanel.init();
-            AutoFullscreen.init();
-            VideoPlayerEnhancer.init();
 
             // 监听 SPA URL 变化
             if (window.onurlchange === null) {
@@ -3018,7 +3286,7 @@
                     UIPanel.recreateQuickActions();
                 });
             }
-        }, 1000);
+        }, 300);
     }
 
     init();

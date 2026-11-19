@@ -4,7 +4,7 @@
 >
 > 专为 Coomer 打造的沉浸式浏览体验增强脚本，提供艺术家收藏、作品管理、Video.js 增强播放（快进/倍速/自动全屏）及全站 UI 重构。
 
-![Version](https://img.shields.io/badge/version-1.0.4-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Version](https://img.shields.io/badge/version-1.0.5-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## ✨ 主要功能
 
@@ -65,6 +65,21 @@
     - 在浏览页面时，鼠标悬停在悬浮球上会弹出快捷操作按钮，可快速收藏当前页面。
 
 ## 📝 更新日志
+
+### v1.0.5 (2026-11-19)
+
+-   🚫 **去广告深度强化**：
+    -   新增 `unsafeWindow` 穿透，彻底解决 CSP 拦截与早期注入报错。
+    -   DOM 原型级拦截：阻止广告 `<script>` / `<iframe>` 动态挂载插入。
+    -   弹窗与点击劫持防御：拦截恶意 `window.open` 广告跳转。
+    -   Fluid Player 深度劫持：彻底剥离播放器贴片广告配置 (`vastOptions`, `adList`)。
+    -   扩充活跃成人站广告域名库与全量 CSS 规则，MutationObserver 实时清扫。
+    -   播放器替换时机前移，消除原生广告播放器初始化时间差。
+-   🔍 **搜索体验重构**：
+    -   明确搜索框语义文案，消除“误以为全站搜索”的误解。
+    -   支持输入关键词后按 `Enter` 回车键直接唤起 Coomer 官方全站搜索。
+    -   本地 0 匹配时展示友好引导，并提供一键检索全站艺术家的醒目按钮。
+    -   本地命中结果末尾常驻提供全站搜索快捷通道，兼顾严选与全站需求。
 
 ### v1.0.4 (2025-12-24)
 
