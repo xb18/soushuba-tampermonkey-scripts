@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         Coomer 佬友严选
 // @namespace    http://tampermonkey.net/
-// @version      1.0.5
+// @version      1.0.6
 // @description  OnlyFans 赛博菩萨，佬友严选，值得信赖！艺术家收藏、作品管理、Video.js 增强播放（快进/倍速/自动全屏），去广告适配
 // @author       urzeye
 // @match        https://coomer.st/*
+// @match        https://coomer.su/*
+// @match        https://coomer.party/*
 // @icon         https://thumbs.onlyfans.com/public/files/thumbs/c50/m/mk/mka/mkamcrf6rjmcwo0jj4zoavhmalzohe5a1640180203/avatar.jpg
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -23,6 +25,11 @@
     'use strict';
 
     const pageWindow = typeof unsafeWindow !== 'undefined' ? unsafeWindow : window;
+    const getSiteOrigin = () => window.location.origin || 'https://coomer.st';
+    const getImgHost = () => {
+        const host = window.location.hostname || 'coomer.st';
+        return `https://img.${host}`;
+    };
 
     // ============================================
     // 常量与配置
@@ -43,92 +50,26 @@
     };
 
     // 预置艺术家列表（佬友严选）
-    const PRESET_ARTISTS = [
-        {
-            id: 'thedirectortong',
-            nickname: 'thedirectortong',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/thedirectortong',
-            avatar: 'https://img.coomer.st/icons/onlyfans/thedirectortong',
-        },
-        {
-            id: '347914002094895104',
-            nickname: 'Thelittlejuicer',
-            platform: 'Fansly',
-            homepageUrl: 'https://coomer.st/fansly/user/347914002094895104',
-            avatar: 'https://img.coomer.st/icons/fansly/347914002094895104',
-        },
-        {
-            id: 'thelittlejuicer',
-            nickname: 'thelittlejuicer',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/thelittlejuicer',
-            avatar: 'https://img.coomer.st/icons/onlyfans/thelittlejuicer',
-        },
-        {
-            id: 'applecptv',
-            nickname: 'applecptv',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/applecptv',
-            avatar: 'https://img.coomer.st/icons/onlyfans/applecptv',
-        },
-        {
-            id: 'kimchi.couple',
-            nickname: 'kimchi.couple',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/kimchi.couple',
-            avatar: 'https://img.coomer.st/icons/onlyfans/kimchi.couple',
-        },
-        {
-            id: '531599132742135808',
-            nickname: 'candy_factory',
-            platform: 'Fansly',
-            homepageUrl: 'https://coomer.st/fansly/user/531599132742135808',
-            avatar: 'https://img.coomer.st/icons/fansly/531599132742135808',
-        },
-        {
-            id: 'chocoletmilkk',
-            nickname: 'chocoletmilkk',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/chocoletmilkk',
-            avatar: 'https://img.coomer.st/icons/onlyfans/chocoletmilkk',
-        },
-        {
-            id: '504758618625683456',
-            nickname: 'demifairytw',
-            platform: 'Fansly',
-            homepageUrl: 'https://coomer.st/fansly/user/504758618625683456',
-            avatar: 'https://img.coomer.st/icons/fansly/504758618625683456',
-        },
-        {
-            id: 'skylar_blue',
-            nickname: 'skylar_blue',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/skylar_blue',
-            avatar: 'https://img.coomer.st/icons/onlyfans/skylar_blue',
-        },
-        {
-            id: 'yui_xin_tw',
-            nickname: 'yui_xin_tw',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/yui_xin_tw',
-            avatar: 'https://img.coomer.st/icons/onlyfans/yui_xin_tw',
-        },
-        {
-            id: 'yuyuhwa',
-            nickname: 'yuyuhwa',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/yuyuhwa',
-            avatar: 'https://img.coomer.st/icons/onlyfans/yuyuhwa',
-        },
-        {
-            id: 'xxapple',
-            nickname: 'xxapple',
-            platform: 'OnlyFans',
-            homepageUrl: 'https://coomer.st/onlyfans/user/xxapple',
-            avatar: 'https://img.coomer.st/icons/onlyfans/xxapple',
-        },
+    const PRESET_ARTISTS_DATA = [
+        { id: 'thedirectortong', nickname: 'thedirectortong', platform: 'OnlyFans' },
+        { id: '347914002094895104', nickname: 'Thelittlejuicer', platform: 'Fansly' },
+        { id: 'thelittlejuicer', nickname: 'thelittlejuicer', platform: 'OnlyFans' },
+        { id: 'applecptv', nickname: 'applecptv', platform: 'OnlyFans' },
+        { id: 'kimchi.couple', nickname: 'kimchi.couple', platform: 'OnlyFans' },
+        { id: '531599132742135808', nickname: 'candy_factory', platform: 'Fansly' },
+        { id: 'chocoletmilkk', nickname: 'chocoletmilkk', platform: 'OnlyFans' },
+        { id: '504758618625683456', nickname: 'demifairytw', platform: 'Fansly' },
+        { id: 'skylar_blue', nickname: 'skylar_blue', platform: 'OnlyFans' },
+        { id: 'yui_xin_tw', nickname: 'yui_xin_tw', platform: 'OnlyFans' },
+        { id: 'yuyuhwa', nickname: 'yuyuhwa', platform: 'OnlyFans' },
+        { id: 'xxapple', nickname: 'xxapple', platform: 'OnlyFans' },
     ];
+
+    const PRESET_ARTISTS = PRESET_ARTISTS_DATA.map((item) => ({
+        ...item,
+        homepageUrl: `${getSiteOrigin()}/${item.platform.toLowerCase()}/user/${item.id}`,
+        avatar: `${getImgHost()}/icons/${item.platform.toLowerCase()}/${item.id}`,
+    }));
 
     const DOM_SELECTORS = {
         // 艺术家页面
@@ -258,7 +199,7 @@
 
             // 备用：如果没有获取到头像，根据 URL 构造一个
             if (!avatar && urlInfo.userId) {
-                avatar = `https://img.coomer.st/icons/${urlInfo.platform}/${urlInfo.userId}`;
+                avatar = `${getImgHost()}/icons/${urlInfo.platform}/${urlInfo.userId}`;
             }
 
             // 备用：如果没有获取到昵称，使用 userId
@@ -267,7 +208,7 @@
             }
 
             // 构造正确的艺术家主页 URL
-            const artistHomepageUrl = `https://coomer.st/${urlInfo.platform}/user/${urlInfo.userId}`;
+            const artistHomepageUrl = `${getSiteOrigin()}/${urlInfo.platform}/user/${urlInfo.userId}`;
 
             return {
                 id: urlInfo.userId,
@@ -285,7 +226,12 @@
             if (!urlInfo || !urlInfo.postId) return null;
 
             const artistInfo = this.parseArtistInfo();
-            const title = document.querySelector(DOM_SELECTORS.postTitle)?.textContent?.trim() || '';
+            const title =
+                document.querySelector(DOM_SELECTORS.postTitle)?.textContent?.trim() ||
+                document.querySelector('.post__title')?.textContent?.trim() ||
+                document.querySelector('h1')?.textContent?.trim() ||
+                document.title.replace(/\s*\|\s*Coomer.*$/i, '').trim() ||
+                '';
 
             // 获取所有媒体下载链接
             const attachments = document.querySelectorAll(DOM_SELECTORS.postAttachment);
@@ -293,12 +239,11 @@
                 .map((a) => a.href)
                 .filter(Boolean);
 
-            // 如果没有找到附件链接，尝试从图片链接获取
+            // 如果没有找到附件链接，尝试从图片和视频链接获取
             if (mediaUrls.length === 0) {
-                // 获取 .fileThumb 大图链接
-                const imageLinks = document.querySelectorAll('.post__files .fileThumb');
-                mediaUrls = Array.from(imageLinks)
-                    .map((a) => a.href)
+                const mediaLinks = document.querySelectorAll('.post__files .fileThumb, .post__files video source, .post__files video');
+                mediaUrls = Array.from(mediaLinks)
+                    .map((el) => el.href || el.src)
                     .filter(Boolean);
             }
 
@@ -809,7 +754,6 @@
         replacePlayer(fluidWrapper) {
             // 防止重复处理
             if (fluidWrapper._coomerReplaced) return;
-            fluidWrapper._coomerReplaced = true;
 
             // 获取原始视频元素和视频源
             const originalVideo = fluidWrapper.querySelector('video');
@@ -817,7 +761,19 @@
 
             const source = originalVideo.querySelector('source');
             const videoSrc = source?.src || originalVideo.src;
-            if (!videoSrc) return;
+            if (!videoSrc) {
+                // 若视频尚未分配 src，等待 loadstart / loadedmetadata 触发再替换，不提前打上 _coomerReplaced 标记
+                const onReady = () => {
+                    if (!fluidWrapper._coomerReplaced) {
+                        this.replacePlayer(fluidWrapper);
+                    }
+                };
+                originalVideo.addEventListener('loadstart', onReady, { once: true });
+                originalVideo.addEventListener('loadedmetadata', onReady, { once: true });
+                return;
+            }
+
+            fluidWrapper._coomerReplaced = true;
 
             // 获取原始尺寸
             const computedStyle = window.getComputedStyle(fluidWrapper);
@@ -915,6 +871,11 @@
 
                 const videoEl = player.el();
                 videoEl.addEventListener('keydown', (e) => {
+                    // 如果焦点位于可输入控件，不拦截键盘事件
+                    const activeEl = document.activeElement;
+                    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) {
+                        return;
+                    }
                     switch (e.key) {
                         case 'ArrowLeft':
                             e.preventDefault();
@@ -982,57 +943,59 @@
     };
 
     // ============================================
-    // SearchManager - 搜索过滤
+    // SearchManager - 搜索过滤 (具备 Fuse.js 实例缓存)
     // ============================================
     const SearchManager = {
         artistFuse: null,
         postFuse: null,
+        cachedArtists: null,
+        cachedPosts: null,
         currentQuery: '',
         debounceTimer: null,
 
-        // 初始化艺术家搜索
-        initArtistSearch(artists) {
-            if (typeof Fuse === 'undefined') {
-                console.warn('[Coomer] Fuse.js not loaded');
-                return false;
+        // 仅在数据源变更时初始化或更新艺术家搜索索引
+        getArtistFuse(artists) {
+            if (typeof Fuse === 'undefined') return null;
+            if (!this.artistFuse || this.cachedArtists !== artists) {
+                this.cachedArtists = artists;
+                this.artistFuse = new Fuse(artists, {
+                    keys: ['id', 'nickname', 'platform'],
+                    threshold: 0.4, // 较严格的匹配，允许少量拼写错误
+                    includeScore: true,
+                    ignoreLocation: true,
+                    minMatchCharLength: 1,
+                });
             }
-            this.artistFuse = new Fuse(artists, {
-                keys: ['id', 'nickname', 'platform'],
-                threshold: 0.4, // 较严格的匹配，允许少量拼写错误
-                includeScore: true,
-                ignoreLocation: true,
-                minMatchCharLength: 1,
-            });
-            return true;
+            return this.artistFuse;
         },
 
-        // 初始化作品搜索
-        initPostSearch(posts) {
-            if (typeof Fuse === 'undefined') {
-                console.warn('[Coomer] Fuse.js not loaded');
-                return false;
+        // 仅在数据源变更时初始化或更新作品搜索索引
+        getPostFuse(posts) {
+            if (typeof Fuse === 'undefined') return null;
+            if (!this.postFuse || this.cachedPosts !== posts) {
+                this.cachedPosts = posts;
+                this.postFuse = new Fuse(posts, {
+                    keys: ['title', 'artistName', 'content'],
+                    threshold: 0.4, // 较严格的匹配，允许少量拼写错误
+                    includeScore: true,
+                    ignoreLocation: true,
+                    minMatchCharLength: 1,
+                });
             }
-            this.postFuse = new Fuse(posts, {
-                keys: ['title', 'artistName', 'content'],
-                threshold: 0.4, // 较严格的匹配，允许少量拼写错误
-                includeScore: true,
-                ignoreLocation: true,
-                minMatchCharLength: 1,
-            });
-            return true;
+            return this.postFuse;
         },
 
         // 搜索艺术家
         searchArtists(query, artists) {
             const q = query.trim();
             if (!q) return null;
-            if (!this.initArtistSearch(artists)) {
+            const fuse = this.getArtistFuse(artists);
+            if (!fuse) {
                 // Fuse 未加载，使用简单的字符串匹配
                 const lowerQ = q.toLowerCase();
                 return artists.filter((a) => a.id?.toLowerCase().includes(lowerQ) || a.nickname?.toLowerCase().includes(lowerQ) || a.platform?.toLowerCase().includes(lowerQ));
             }
-            const results = this.artistFuse.search(q);
-            console.log('[Coomer] Artist search results:', q, results.length);
+            const results = fuse.search(q);
             return results.map((r) => r.item);
         },
 
@@ -1040,18 +1003,18 @@
         searchPosts(query, posts) {
             const q = query.trim();
             if (!q) return null;
-            if (!this.initPostSearch(posts)) {
+            const fuse = this.getPostFuse(posts);
+            if (!fuse) {
                 // Fuse 未加载，使用简单的字符串匹配
                 const lowerQ = q.toLowerCase();
                 return posts.filter((p) => p.title?.toLowerCase().includes(lowerQ) || p.artistName?.toLowerCase().includes(lowerQ) || p.content?.toLowerCase().includes(lowerQ));
             }
-            const results = this.postFuse.search(q);
-            console.log('[Coomer] Post search results:', q, results.length);
+            const results = fuse.search(q);
             return results.map((r) => r.item);
         },
 
         // 防抖搜索
-        debounceSearch(callback, delay = 300) {
+        debounceSearch(callback, delay = 200) {
             if (this.debounceTimer) clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(callback, delay);
         },
@@ -1065,26 +1028,25 @@
         panel: null,
         isOpen: false,
         activeTab: 'artists',
+        selectedPlatform: 'all',
 
         // SPA 无刷新跳转
         navigateTo(url) {
             this.close(); // 先关闭面板
 
-            // 策略：优先查找页面上已存在的精确链接进行点击（触发 SPA 路由）
-            // 如果找不到，则回退到 window.location.href（硬跳转）
-            // 移除不稳定的“链接劫持”逻辑，避免误跳到首页
-
-            const targetPath = url.replace(window.location.origin, '');
+            // 将绝对 URL 规范化到当前站点 origin（自适应镜像站）
+            const normalizedUrl = url.startsWith('http') ? url.replace(/^https?:\/\/[^/]+/, window.location.origin) : url;
+            const targetPath = normalizedUrl.replace(window.location.origin, '');
 
             // 1. 优先找页面上已有的完全匹配的目标链接（且不是 _blank）
-            const exactLink = document.querySelector(`a[href="${targetPath}"]:not([target="_blank"]), a[href="${url}"]:not([target="_blank"])`);
+            const exactLink = document.querySelector(`a[href="${targetPath}"]:not([target="_blank"]), a[href="${normalizedUrl}"]:not([target="_blank"])`);
             if (exactLink) {
                 exactLink.click();
                 return;
             }
 
             // 2. 实在没办法，通过 location 跳转（会刷新，但最稳妥）
-            window.location.href = url;
+            window.location.href = normalizedUrl;
         },
 
         init() {
@@ -1989,6 +1951,41 @@
                     transform: translateY(-2px);
                     box-shadow: 0 4px 14px rgba(224, 170, 62, 0.4);
                 }
+
+                /* 平台筛选药丸标签栏 */
+                .coomer-platform-filter {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-bottom: 12px;
+                    overflow-x: auto;
+                    padding-bottom: 4px;
+                }
+                .coomer-platform-filter::-webkit-scrollbar {
+                    display: none;
+                }
+                .coomer-platform-pill {
+                    padding: 4px 10px;
+                    font-size: 11px;
+                    font-weight: 500;
+                    border-radius: 12px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background: rgba(255, 255, 255, 0.04);
+                    color: var(--coomer-text-sec);
+                    cursor: pointer;
+                    white-space: nowrap;
+                    transition: all 0.2s;
+                }
+                .coomer-platform-pill:hover {
+                    border-color: rgba(224, 170, 62, 0.4);
+                    color: var(--coomer-text);
+                }
+                .coomer-platform-pill.active {
+                    background: var(--coomer-primary);
+                    color: #000;
+                    font-weight: 700;
+                    border-color: var(--coomer-primary);
+                }
             `);
         },
 
@@ -1996,13 +1993,36 @@
             const fab = document.createElement('button');
             fab.className = 'coomer-fab';
             fab.innerHTML = '⭐';
-            fab.title = 'Coomer 佬友严选 (可拖拽移动)';
+            fab.title = 'Coomer 佬友严选 (快捷键 Alt+C，可拖拽移动)';
 
             // 恢复保存的位置
             const settings = StorageManager.getSettings();
             const pos = settings.fabPosition || DEFAULT_SETTINGS.fabPosition;
             fab.style.right = pos.right + 'px';
             fab.style.bottom = pos.bottom + 'px';
+
+            // 监听屏幕尺寸变化，防止悬浮球越界逃逸
+            const clampFabPosition = () => {
+                const currentRight = parseInt(fab.style.right) || pos.right;
+                const currentBottom = parseInt(fab.style.bottom) || pos.bottom;
+                const safeRight = Math.max(10, Math.min(window.innerWidth - 66, currentRight));
+                const safeBottom = Math.max(10, Math.min(window.innerHeight - 66, currentBottom));
+                fab.style.right = safeRight + 'px';
+                fab.style.bottom = safeBottom + 'px';
+            };
+            window.addEventListener('resize', clampFabPosition);
+
+            // 全局快捷键 Alt + C 快速打开/关闭面板
+            window.addEventListener('keydown', (e) => {
+                if (e.altKey && (e.key === 'c' || e.key === 'C')) {
+                    const activeEl = document.activeElement;
+                    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) {
+                        if (!activeEl.classList?.contains('coomer-search-input')) return;
+                    }
+                    e.preventDefault();
+                    this.toggle();
+                }
+            });
 
             // 拖拽功能
             let isDragging = false;
@@ -2207,9 +2227,9 @@
             if (!q) return;
             let targetUrl = '';
             if (type === 'artists') {
-                targetUrl = `https://coomer.st/artists?q=${encodeURIComponent(q)}`;
+                targetUrl = `${getSiteOrigin()}/artists?q=${encodeURIComponent(q)}`;
             } else if (type === 'posts') {
-                targetUrl = `https://coomer.st/posts?q=${encodeURIComponent(q)}`;
+                targetUrl = `${getSiteOrigin()}/posts?q=${encodeURIComponent(q)}`;
             }
             if (targetUrl) {
                 this.navigateTo(targetUrl);
@@ -2246,10 +2266,23 @@
                 this.quickActions = null;
                 this.updateQuickActionsPosition = null;
             }
-            // 延迟一点重新创建（等待页面渲染）
-            setTimeout(() => {
-                this.createQuickActions();
-            }, 500);
+            // 异步重试检查关键 DOM 节点就绪，避免 SPA 异步渲染时间差导致数据抓取失败
+            let attempts = 0;
+            const tryCreate = () => {
+                attempts++;
+                const pageType = PageParser.getCurrentPageType();
+                const ready =
+                    pageType === 'other' ||
+                    (pageType === 'artist' && (document.querySelector('.user-header') || document.querySelector('h1') || document.querySelector('span[itemprop="name"]'))) ||
+                    (pageType === 'post' && (document.querySelector('.post__content') || document.querySelector('.post__user-name') || document.querySelector('.post__title')));
+
+                if (ready || attempts >= 6) {
+                    this.createQuickActions();
+                } else {
+                    setTimeout(tryCreate, 250);
+                }
+            };
+            setTimeout(tryCreate, 200);
         },
 
         createQuickActions() {
@@ -2551,6 +2584,7 @@
         },
 
         renderArtistsTab(container) {
+            container.innerHTML = '';
             const myArtists = ArtistManager.getSortedList();
             const presetArtists = PRESET_ARTISTS;
             const settings = StorageManager.getSettings();
@@ -2603,23 +2637,59 @@
                 return;
             }
 
+            // 提取所有涉及的平台种类并渲染平台筛选药丸
+            const allArtistsCombined = [...presetArtists, ...myArtists];
+            const platforms = Array.from(new Set(allArtistsCombined.map((a) => a.platform).filter(Boolean)));
+            if (platforms.length > 1) {
+                const filterBar = document.createElement('div');
+                filterBar.className = 'coomer-platform-filter';
+
+                const createPill = (plat, label) => {
+                    const pill = document.createElement('button');
+                    pill.className = `coomer-platform-pill ${this.selectedPlatform === plat ? 'active' : ''}`;
+                    pill.textContent = label;
+                    pill.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.selectedPlatform = plat;
+                        this.renderArtistsTab(container);
+                    });
+                    return pill;
+                };
+
+                filterBar.appendChild(createPill('all', `全部 (${allArtistsCombined.length})`));
+                platforms.forEach((p) => {
+                    const count = allArtistsCombined.filter((a) => a.platform === p).length;
+                    filterBar.appendChild(createPill(p, `${p} (${count})`));
+                });
+                container.appendChild(filterBar);
+            }
+
+            const filterByPlatform = (list) => {
+                if (this.selectedPlatform === 'all') return list;
+                return list.filter((a) => a.platform === this.selectedPlatform);
+            };
+
+            const displayPreset = filterByPlatform(presetArtists);
+            const displayMy = filterByPlatform(myArtists);
+
             // 如果都没有内容，显示空状态
-            if (myArtists.length === 0 && presetArtists.length === 0) {
-                container.innerHTML = `
-                    <div class="coomer-empty">
-                        <div class="coomer-empty-icon">📌</div>
-                        <div>暂无收藏的艺术家</div>
-                        <div style="font-size: 12px; margin-top: 8px;">访问艺术家主页并点击收藏按钮</div>
-                    </div>
+            if (displayMy.length === 0 && displayPreset.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'coomer-empty';
+                emptyDiv.innerHTML = `
+                    <div class="coomer-empty-icon">📌</div>
+                    <div>暂无${this.selectedPlatform === 'all' ? '' : this.selectedPlatform}艺术家</div>
+                    <div style="font-size: 12px; margin-top: 8px;">访问艺术家主页并点击收藏按钮</div>
                 `;
+                container.appendChild(emptyDiv);
                 return;
             }
 
             // 渲染预置艺术家分组（佬友严选）
-            if (presetArtists.length > 0) {
+            if (displayPreset.length > 0) {
                 const presetGroup = this.createArtistGroup(
                     '📌 佬友严选',
-                    presetArtists,
+                    displayPreset,
                     settings.presetCollapsed,
                     'preset',
                     true, // 是预置列表
@@ -2628,16 +2698,16 @@
             }
 
             // 渲染我的收藏分组
-            if (myArtists.length > 0) {
+            if (displayMy.length > 0) {
                 const myGroup = this.createArtistGroup(
                     '⭐ 我的收藏',
-                    myArtists,
+                    displayMy,
                     settings.myCollectionCollapsed,
                     'myCollection',
                     false, // 不是预置列表
                 );
                 container.appendChild(myGroup);
-            } else if (presetArtists.length > 0) {
+            } else if (displayPreset.length > 0 && this.selectedPlatform === 'all') {
                 // 有预置但没有自己收藏的，显示提示
                 const emptyHint = document.createElement('div');
                 emptyHint.style.cssText = 'text-align: center; color: #888; padding: 20px; font-size: 12px;';
@@ -2947,7 +3017,7 @@
             if (post.platform) {
                 this.contentArea.querySelector('#artist-link').addEventListener('click', (e) => {
                     e.preventDefault();
-                    const artistUrl = `https://coomer.st/${post.platform}/user/${post.artistId}`;
+                    const artistUrl = `${getSiteOrigin()}/${post.platform}/user/${post.artistId}`;
                     this.navigateTo(artistUrl);
                 });
             }
@@ -3172,7 +3242,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 16px; text-align: center; color: #666; font-size: 12px;">
-                    <div>Coomer 佬友严选 v1.0.5</div>
+                    <div>Coomer 佬友严选 v1.0.6 (快捷键: Alt + C)</div>
                     <div style="margin-top: 4px;">艺术家: ${ArtistManager.count()} | 作品: ${PostManager.count()}</div>
                 </div>
             `;
