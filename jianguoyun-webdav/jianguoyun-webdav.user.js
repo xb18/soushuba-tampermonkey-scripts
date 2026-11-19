@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         坚果云 WebDAV 网页端密码管理
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.0.3
+// @version      1.0.4
 // @description  恢复坚果云网页版在安全选项页面中被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 // @author       urzeye
-// @match        https://www.jianguoyun.com/d/home*
-// @match        https://www.jianguoyun.com/d/account*
+// @match        https://*.jianguoyun.com/*
+// @match        https://jianguoyun.com/*
 // @grant        none
-// @run-at       document-end
+// @run-at       document-start
 // @license      MIT
 // ==/UserScript==
 
@@ -1020,7 +1020,6 @@
    * 初始化监听页面与路由
    */
   function init() {
-    // 优先注入去广告样式与执行初步清理
     injectAdBlockStyles();
     cleanAds();
 
@@ -1035,22 +1034,30 @@
     });
 
     // 观察 DOM 变化以兼容 SPA 视图渲染
-    let timer = null;
-    observer = new MutationObserver(() => {
-      cleanAds();
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        checkAndMount();
-      }, 200);
-    });
+    const target = document.body || document.documentElement;
+    if (target && !observer) {
+      let timer = null;
+      observer = new MutationObserver(() => {
+        cleanAds();
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          checkAndMount();
+        }, 150);
+      });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+      observer.observe(target, {
+        childList: true,
+        subtree: true
+      });
+    }
 
     checkAndMount();
   }
+
+  // 立即注入去广告 CSS，确保页面初始渲染零闪烁
+  try {
+    injectAdBlockStyles();
+  } catch (e) {}
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

@@ -1,14 +1,14 @@
 # 坚果云 WebDAV 网页端密码管理
 
 [![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
-[![Version](https://img.shields.io/badge/version-1.0.3-blue.svg?style=flat-square)](./jianguoyun-webdav.user.js)
+[![Version](https://img.shields.io/badge/version-1.0.4-blue.svg?style=flat-square)](./jianguoyun-webdav.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Tampermonkey](https://img.shields.io/badge/Tampermonkey-Userscript-green.svg?style=flat-square)](https://www.tampermonkey.net/)
 
 > 恢复坚果云网页版在“安全选项”页面中被官方隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 
 **脚本文件**: [`jianguoyun-webdav.user.js`](./jianguoyun-webdav.user.js)  
-**当前版本**: v1.0.3  
+**当前版本**: v1.0.4  
 **适配站点**: `https://www.jianguoyun.com/d/home#/safety` 及 `https://www.jianguoyun.com/d/account#safe`
 
 ---
