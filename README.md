@@ -18,7 +18,7 @@
 | [Coomer 佬友严选](./coomer/README.md) | [![Version](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer) | Coomer 体验增强（极简 UI、视频播放器、批量下载） | [![Installs](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
 | [搜书吧免积分下载](./soushu-bypass/README.md) | [![Version](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) | 搜书吧附件免积分下载 | [![Installs](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
 | [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md) | [![Version](https://img.shields.io/greasyfork/v/590271?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) | Discourse/LINUX DO 摸鱼增强（Excel 高仿、元数据前置、Boost 批注、快捷回复、[图]占位、黑名单等） | [![Installs](https://img.shields.io/greasyfork/dt/590271?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/590271?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) |
-| [坚果云 WebDAV 网页端密码管理](./jianguoyun-webdav/README.md) | v1.0.2 | 恢复坚果云网页版被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码 | [脚本源码](./jianguoyun-webdav/jianguoyun-webdav.user.js) |
+| [坚果云 WebDAV 网页端密码管理](./jianguoyun-webdav/README.md) | v1.0.3 | 恢复坚果云网页版被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码；支持网页端纯净去广告 | [脚本源码](./jianguoyun-webdav/jianguoyun-webdav.user.js) |
 
 ### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
 
@@ -105,9 +105,10 @@
 
 **主要功能**：
 - ✅ 原生还原应用密码管理表格（应用名称、授权日期、密码明文/暗文切换、撤消授权）
+- ✅ 网页端纯净去广告（屏蔽侧边栏应用推荐推广项与左下角悬浮轮播广告卡片）
 - ✅ 一键复制 WebDAV 服务器地址、账号以及应用密码
 - ✅ 网页端直接添加新应用并生成专属应用密码，生成后自动复制
-- ✅ 撤销授权安全确认防误触
+- ✅ 撤销授权安全确认防误触（自定义优雅模态弹窗）
 - ✅ 智能适配 SPA 单页路由无感挂载
 
 [文档 Docs](./jianguoyun-webdav/README.md) | [脚本文件 Script](./jianguoyun-webdav/jianguoyun-webdav.user.js)

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         坚果云 WebDAV 网页端密码管理
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.0.2
-// @description  恢复坚果云网页版在安全选项页面中被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）
+// @version      1.0.3
+// @description  恢复坚果云网页版在安全选项页面中被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 // @author       urzeye
 // @match        https://www.jianguoyun.com/d/home*
 // @match        https://www.jianguoyun.com/d/account*
@@ -976,20 +976,68 @@
   }
 
   /**
+   * 注入去广告专属样式，确保全站第一时间生效且无闪烁
+   */
+  function injectAdBlockStyles() {
+    if (document.getElementById('jgy-adblock-styles')) return;
+
+    const style = document.createElement('style');
+    style.id = 'jgy-adblock-styles';
+    style.textContent = `
+      /* 去除左侧侧边栏“应用推荐”广告项目 */
+      .bar-item:has(.recommend-ad),
+      .recommend-ad,
+      /* 去除左下角悬浮推广轮播广告卡片 */
+      .teaser-container,
+      .teaser {
+        display: none !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  /**
+   * DOM 辅助去广告（兼容不支持 :has 的浏览器与动态渲染）
+   */
+  function cleanAds() {
+    // 隐藏侧边栏“应用推荐”整个 item（包含图标和文字）
+    document.querySelectorAll('.recommend-ad').forEach(el => {
+      const barItem = el.closest('.bar-item') || el;
+      if (barItem.style.display !== 'none') {
+        barItem.style.setProperty('display', 'none', 'important');
+      }
+    });
+
+    // 隐藏底部轮播广告卡片
+    document.querySelectorAll('.teaser-container, .teaser').forEach(el => {
+      if (el.style.display !== 'none') {
+        el.style.setProperty('display', 'none', 'important');
+      }
+    });
+  }
+
+  /**
    * 初始化监听页面与路由
    */
   function init() {
+    // 优先注入去广告样式与执行初步清理
+    injectAdBlockStyles();
+    cleanAds();
+
     window.addEventListener('hashchange', () => {
+      cleanAds();
       setTimeout(checkAndMount, 150);
     });
 
     window.addEventListener('popstate', () => {
+      cleanAds();
       setTimeout(checkAndMount, 150);
     });
 
     // 观察 DOM 变化以兼容 SPA 视图渲染
     let timer = null;
     observer = new MutationObserver(() => {
+      cleanAds();
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
         checkAndMount();

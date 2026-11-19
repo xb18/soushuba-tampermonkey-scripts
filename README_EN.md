@@ -18,7 +18,7 @@
 | [Coomer Picks](./coomer/README.md) | [![Version](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer) | Enhance Coomer with modern UI, video player & batch download | [![Installs](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
 | [Soushu Bypass](./soushu-bypass/README.md) | [![Version](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) | One-click free download for Soushu attachments | [![Installs](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
 | [LINUX DO Moyu Enhancer](./linuxdo-moyu/README.md) | [![Version](https://img.shields.io/greasyfork/v/590271?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) | Discourse/LINUX DO moyu enhancer (Excel look, meta leading, Boost annotations, quick reply, [img] placeholder, blacklist, etc.) | [![Installs](https://img.shields.io/greasyfork/dt/590271?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/590271?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) |
-| [Jianguoyun WebDAV Password Manager](./jianguoyun-webdav/README.md) | v1.0.2 | Restore hidden WebDAV third-party app password management in Jianguoyun web app without desktop client | [Source Code](./jianguoyun-webdav/jianguoyun-webdav.user.js) |
+| [Jianguoyun WebDAV Password Manager](./jianguoyun-webdav/README.md) | v1.0.3 | Restore hidden WebDAV third-party app password management in Jianguoyun web app without desktop client; clean sidebar & carousel ads | [Source Code](./jianguoyun-webdav/jianguoyun-webdav.user.js) |
 
 ### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
 
@@ -103,9 +103,10 @@ Restore hidden WebDAV third-party app password management in Jianguoyun web app 
 
 **Key Features**:
 - ✅ Restore full app passwords management table (app name, authorization date, show/hide password, revoke authorization)
+- ✅ Clean web ads (hide sidebar "App Recommendation" item and floating carousel promo card)
 - ✅ One-click copy for WebDAV server URL, account email, and app passwords
 - ✅ Generate new app passwords directly from the web interface with automatic copying
-- ✅ Safe revocation with confirmation dialog
+- ✅ Safe revocation with custom elegant confirmation dialog
 - ✅ Smooth SPA auto-mounting and zero external dependencies
 
 [Docs](./jianguoyun-webdav/README.md) | [Script](./jianguoyun-webdav/jianguoyun-webdav.user.js)
