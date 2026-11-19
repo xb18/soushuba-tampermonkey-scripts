@@ -1,5 +1,7 @@
 # 坚果云 WebDAV 网页端密码管理
 
+[![GitHub](https://img.shields.io/badge/GitHub-urzeye%2Ftampermonkey--scripts-blue?style=flat-square&logo=github)](https://github.com/urzeye/tampermonkey-scripts)
+[![Version](https://img.shields.io/badge/version-1.0.2-blue.svg?style=flat-square)](./jianguoyun-webdav.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Tampermonkey](https://img.shields.io/badge/Tampermonkey-Userscript-green.svg?style=flat-square)](https://www.tampermonkey.net/)
 
