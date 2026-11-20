@@ -101,7 +101,7 @@
 
 Restore hidden WebDAV third-party app password management in Jianguoyun web app without desktop client.
 
-<img width="3795" height="1871" alt="image" src="https://github.com/user-attachments/assets/135af64d-29e2-425a-a7f3-eaf5fe347cf0" />
+<img alt="image" src="https://github.com/user-attachments/assets/135af64d-29e2-425a-a7f3-eaf5fe347cf0" />
 
 **Key Features**:
 - ✅ Restore full app passwords management table (app name, authorization date, show/hide password, revoke authorization)
