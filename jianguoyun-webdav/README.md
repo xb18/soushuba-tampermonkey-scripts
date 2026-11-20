@@ -8,11 +8,6 @@
 
 > 恢复坚果云网页版在“安全选项”页面中被官方隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 
-**脚本文件**: [`jianguoyun-webdav.user.js`](./jianguoyun-webdav.user.js)  
-**发布地址**: [Greasy Fork #606310](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)  
-**当前版本**: v1.0.4  
-**适配站点**: `https://www.jianguoyun.com/d/home#/safety` 及 `https://www.jianguoyun.com/d/account#safe`
-
 ---
 
 ## 📖 背景
@@ -44,10 +39,12 @@
 ## 🚀 安装方法
 
 ### 方式 1：通过 Greasy Fork 一键安装（推荐）
+
 1. 安装浏览器脚本管理器扩展：[Tampermonkey（油猴）](https://www.tampermonkey.net/)；
 2. 前往 [Greasy Fork 脚本主页](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)，点击绿色的 **“安装此脚本”** 按钮即可。
 
 ### 方式 2：手动新建脚本
+
 1. 安装浏览器脚本管理器扩展：[Tampermonkey（油猴）](https://www.tampermonkey.net/)；
 2. 点击下载或将 [`jianguoyun-webdav.user.js`](./jianguoyun-webdav.user.js) 源码内容复制新建至 Tampermonkey 脚本编辑器中保存。
 3. 打开或刷新 [坚果云 - 安全选项](https://www.jianguoyun.com/d/home#/safety) 页面，即可看到已恢复的第三方应用管理面板。
@@ -58,11 +55,11 @@
 
 在第三方应用（如 **Obsidian**、**Zotero**、**KeePass**、**WPS** 等）配置 WebDAV 同步时，请填写：
 
-| 配置项 | 值 | 说明 |
-| :--- | :--- | :--- |
-| **服务器地址 (URL)** | `https://dav.jianguoyun.com/dav/` | 可点击页面示例一键复制 |
-| **账号 (Username)** | 您的坚果云注册邮箱 | 可点击页面示例一键复制 |
-| **密码 (Password)** | 本脚本生成的独立应用密码 | **请勿使用坚果云登录密码** |
+| 配置项                     | 值                                  | 说明                             |
+| :------------------------- | :---------------------------------- | :------------------------------- |
+| **服务器地址 (URL)** | `https://dav.jianguoyun.com/dav/` | 可点击页面示例一键复制           |
+| **账号 (Username)**  | 您的坚果云注册邮箱                  | 可点击页面示例一键复制           |
+| **密码 (Password)**  | 本脚本生成的独立应用密码            | **请勿使用坚果云登录密码** |
 
 ---
 

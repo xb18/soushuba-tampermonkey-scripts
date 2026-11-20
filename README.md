@@ -11,29 +11,29 @@
 
 ## 📦 脚本列表
 
-| 名称 | 版本 | 简介 | 安装量 / 评分 |
-| :--- | :--- | :--- | :--- |
-| [Ophel](./ophel/README.md) | [![Version](https://img.shields.io/greasyfork/v/563646?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/563646-ophel) | 全能 AI 助手（Gemini、ChatGPT、Claude、DeepSeek 等 15+ 站点） | [![Installs](https://img.shields.io/greasyfork/dt/563646?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/563646-ophel)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/563646?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/563646-ophel) |
-| [Gemini Helper](./gemini-helper/README.md) | [![Version](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) | Gemini 体验增强（大纲、会话管理、宽屏等） | [![Installs](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper) |
-| [Coomer 佬友严选](./coomer/README.md) | [![Version](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer) | Coomer 体验增强（极简 UI、视频播放器、批量下载） | [![Installs](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer) |
-| [搜书吧免积分下载](./soushu-bypass/README.md) | [![Version](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) | 搜书吧附件免积分下载 | [![Installs](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD) |
-| [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md) | [![Version](https://img.shields.io/greasyfork/v/590271?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) | Discourse/LINUX DO 摸鱼增强（Excel 高仿、元数据前置、Boost 批注、快捷回复、[图]占位、黑名单等） | [![Installs](https://img.shields.io/greasyfork/dt/590271?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/590271?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C) |
-| [坚果云 WebDAV 网页端密码管理](./jianguoyun-webdav/README.md) | [![Version](https://img.shields.io/greasyfork/v/606310?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86) | 恢复坚果云网页版被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码；支持网页端纯净去广告 | [![Installs](https://img.shields.io/greasyfork/dt/606310?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)<br>[![Rating](https://img.shields.io/greasyfork/rating-count/606310?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86) |
+| 名称                                                         | 版本                                                                                                                                                                                                                                                           | 简介                                                                                                                                   | 安装量 / 评分                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| :----------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Ophel](./ophel/README.md)                                    | [![Version](https://img.shields.io/greasyfork/v/563646?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/563646-ophel)                                                                                              | 全能 AI 助手（Gemini、ChatGPT、Claude、DeepSeek 等 15+ 站点）                                                                          | [![Installs](https://img.shields.io/greasyfork/dt/563646?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/563646-ophel)[![Rating](https://img.shields.io/greasyfork/rating-count/563646?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/563646-ophel)                                                                                                                                                                                           |
+| [Gemini Helper](./gemini-helper/README.md)                    | [![Version](https://img.shields.io/greasyfork/v/558318?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper)                                                                                      | Gemini 体验增强（大纲、会话管理、宽屏等）                                                                                              | [![Installs](https://img.shields.io/greasyfork/dt/558318?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper)[![Rating](https://img.shields.io/greasyfork/rating-count/558318?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/558318-gemini-helper)                                                                                                                                                                           |
+| [Coomer 佬友严选](./coomer/README.md)                         | [![Version](https://img.shields.io/greasyfork/v/559828?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer)                                                                                             | Coomer 体验增强（极简 UI、视频播放器、批量下载）                                                                                       | [![Installs](https://img.shields.io/greasyfork/dt/559828?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer)[![Rating](https://img.shields.io/greasyfork/rating-count/559828?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/559828-coomer)                                                                                                                                                                                         |
+| [搜书吧免积分下载](./soushu-bypass/README.md)                 | [![Version](https://img.shields.io/greasyfork/v/584799?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)                           | 搜书吧附件免积分下载                                                                                                                   | [![Installs](https://img.shields.io/greasyfork/dt/584799?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)[![Rating](https://img.shields.io/greasyfork/rating-count/584799?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)                                                     |
+| [LINUX DO 摸鱼增强](./linuxdo-moyu/README.md)                 | [![Version](https://img.shields.io/greasyfork/v/590271?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)                                    | Discourse/LINUX DO 摸鱼增强（Excel 高仿、元数据前置、Boost 批注、快捷回复、[图]占位、黑名单等）                                        | [![Installs](https://img.shields.io/greasyfork/dt/590271?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)[![Rating](https://img.shields.io/greasyfork/rating-count/590271?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/590271-linux-do-%E4%BC%98%E5%8C%96%E6%91%B8%E9%B1%BC%E4%BD%93%E9%AA%8C)                                                                       |
+| [坚果云 WebDAV 网页端密码管理](./jianguoyun-webdav/README.md) | [![Version](https://img.shields.io/greasyfork/v/606310?style=flat-square&color=orange&label=V&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86) | 恢复坚果云网页版被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码；支持网页端纯净去广告 | [![Installs](https://img.shields.io/greasyfork/dt/606310?style=flat-square&label=INSTALLS&color=blue&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86)[![Rating](https://img.shields.io/greasyfork/rating-count/606310?style=flat-square&label=RATING&color=brightgreen&logo=greasyfork)](https://greasyfork.org/zh-CN/scripts/606310-%E5%9D%9A%E6%9E%9C%E4%BA%91-webdav-%E7%BD%91%E9%A1%B5%E7%AB%AF%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86) |
 
-### <img src="./ophel/assets/logo.png" height="24" alt="Ophel Logo"> [Ophel](./ophel/README.md)
+###  [Ophel](./ophel/README.md)
 
 <p align="center">
   <strong>✨ AI's Benefit, Within Reach ✨</strong><br/>
   <em>AI 之益，触手可及</em>
 </p>
 
-👋 **Ophel** 是 `gemini-helper` 的继任者，使用现代技术栈完全重写。它同时支持**浏览器扩展**和**油猴脚本**，旨在增强你在 **Gemini**、**ChatGPT**、**Claude**、**Grok** 和 **AI Studio** 上的 AI 交互体验。
+👋 **Ophel** 是 `gemini-helper` 的继任者，使用现代技术栈完全重写。它同时支持**浏览器扩展**和**油猴脚本**，旨在增强你在 **Gemini**、**ChatGPT**、**Claude**、**Grok** 、**AI Studio、DeepSeek 等30+站点** 上的 AI 交互体验。
 
 [👉 前往 GitHub 仓库查看项目源码与详细文档](https://github.com/urzeye/ophel)
 
 ---
 
-### <img src="https://raw.githubusercontent.com/gist/urzeye/8d1d3afbbcd0193dbc8a2019b1ba54d3/raw/f7113d329a259963ed1b1ab8cb981e8f635d4cea/gemini.svg" height="24" alt="Gemini" /> [Gemini Helper](./gemini-helper/README.md)
+###  [Gemini Helper](./gemini-helper/README.md)
 
 <p align="center">
   <strong>✨ Your Gemini, Your Way. ✨</strong><br/>
@@ -63,8 +63,8 @@
 **📹 功能演示 Demo**：
 
 | 大纲 Outline | 会话 Conversations | 功能 Features |
-|:---:|:---:|:---:|
-| <video src="https://github.com/user-attachments/assets/a40eb655-295e-4f9c-b432-9313c9242c9d" width="280" controls></video> | <video src="https://github.com/user-attachments/assets/a249baeb-2e82-4677-847c-2ff584c3f56b" width="280" controls></video> | <video src="https://github.com/user-attachments/assets/c704463c-1ca9-4ab1-937d-7ce638a4f4bb" width="280" controls></video> |
+| :----------: | :----------------: | :-----------: |
+|              |                    |              |
 
 **最新版本**: v999.0.1
 
@@ -72,7 +72,7 @@
 
 🌐 [EN](./gemini-helper/README_EN.md) [JA](./gemini-helper/README_JA.md) [KO](./gemini-helper/README_KO.md) [DE](./gemini-helper/README_DE.md) [FR](./gemini-helper/README_FR.md) [ES](./gemini-helper/README_ES.md) [PT](./gemini-helper/README_PT.md) [RU](./gemini-helper/README_RU.md)
 
-### <img src="https://thumbs.onlyfans.com/public/files/thumbs/c50/m/mk/mka/mkamcrf6rjmcwo0jj4zoavhmalzohe5a1640180203/avatar.jpg" height="24" alt="Coomer" /> coomer 佬友严选
+###  coomer 佬友严选
 
 > coomer 佬友严选，值得信赖！
 
@@ -87,7 +87,6 @@
 **最新版本**: v1.0.0
 
 [文档 Docs](./soushu-bypass/README.md) | [安装 Install](https://greasyfork.org/zh-CN/scripts/584799-%E6%90%9C%E4%B9%A6%E5%90%A7%E5%85%8D%E7%A7%AF%E5%88%86%E4%B8%8B%E8%BD%BD)
-
 
 ### 🐟 LINUX DO 摸鱼增强
 
@@ -104,6 +103,7 @@
 恢复坚果云网页版在安全选项页面中被官方隐藏的 WebDAV 第三方应用密码管理功能。
 
 **主要功能**：
+
 - ✅ 原生还原应用密码管理表格（应用名称、授权日期、密码明文/暗文切换、撤消授权）
 - ✅ 网页端纯净去广告（屏蔽侧边栏应用推荐推广项与左下角悬浮轮播广告卡片）
 - ✅ 一键复制 WebDAV 服务器地址、账号以及应用密码
@@ -117,11 +117,10 @@
 
 如有问题或建议，请在 [GitHub Issues](https://github.com/urzeye/tampermonkey-scripts/issues) 反馈
 
-
 ## 🔗 友情链接
 
-| 站点 | 简介 |
-| --- | --- |
+| 站点                        | 简介                               |
+| --------------------------- | ---------------------------------- |
 | [LINUX DO](https://linux.do) | 新一代的技术社区，连接每一位探索者 |
 
 ## ⭐ Star History
