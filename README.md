@@ -102,7 +102,7 @@
 
 恢复坚果云网页版在安全选项页面中被官方隐藏的 WebDAV 第三方应用密码管理功能。
 
-<img alt="image" src="https://github.com/user-attachments/assets/135af64d-29e2-425a-a7f3-eaf5fe347cf0" />
+<img alt="image" src="https://github.com/user-attachments/assets/4bd0fc0c-508d-4ca1-ba90-19ddec32f399" />
 
 **主要功能**：
 
