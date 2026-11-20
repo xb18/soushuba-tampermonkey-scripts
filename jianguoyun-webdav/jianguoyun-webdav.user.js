@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         坚果云 WebDAV 网页端密码管理
 // @namespace    https://github.com/urzeye/tampermonkey-scripts
-// @version      1.0.4
+// @version      1.0.5
 // @description  恢复坚果云网页版在安全选项页面中被隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 // @author       urzeye
 // @match        https://*.jianguoyun.com/*
@@ -250,7 +250,8 @@
       #${PANEL_ID} .jgy-table-wrap {
         border: 1px solid #f0f0f0;
         border-radius: 4px;
-        overflow: hidden;
+        overflow-x: auto;
+        overflow-y: hidden;
         margin-bottom: 16px;
       }
       #${PANEL_ID} .jgy-table {
@@ -289,10 +290,11 @@
       #${PANEL_ID} .jgy-col-pwd {
         width: 35%;
         font-family: Menlo, Monaco, Consolas, monospace;
+        white-space: nowrap;
       }
       #${PANEL_ID} .jgy-pwd-val {
         display: inline-block;
-        width: 155px;
+        width: 130px;
         vertical-align: middle;
         font-family: Menlo, Monaco, Consolas, monospace;
         letter-spacing: 0;
@@ -322,6 +324,7 @@
         text-decoration: none;
         margin-left: 8px;
         font-size: 13px;
+        white-space: nowrap;
       }
       #${PANEL_ID} .jgy-link-action:hover {
         color: #0b66ca;
