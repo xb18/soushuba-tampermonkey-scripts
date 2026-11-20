@@ -102,6 +102,8 @@
 
 恢复坚果云网页版在安全选项页面中被官方隐藏的 WebDAV 第三方应用密码管理功能。
 
+<img width="3795" height="1871" alt="image" src="https://github.com/user-attachments/assets/135af64d-29e2-425a-a7f3-eaf5fe347cf0" />
+
 **主要功能**：
 
 - ✅ 原生还原应用密码管理表格（应用名称、授权日期、密码明文/暗文切换、撤消授权）

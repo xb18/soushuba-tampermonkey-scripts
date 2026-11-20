@@ -8,6 +8,8 @@
 
 > 恢复坚果云网页版在“安全选项”页面中被官方隐藏的 WebDAV 第三方应用密码管理功能，免下载客户端，直接在网页端查看、创建、复制和撤销应用密码（支持 Obsidian / Zotero / KeePass 等）；同时净化侧边栏应用推荐与底部轮播广告。
 
+<img width="3795" height="1871" alt="image" src="https://github.com/user-attachments/assets/135af64d-29e2-425a-a7f3-eaf5fe347cf0" />
+
 ---
 
 ## 📖 背景
